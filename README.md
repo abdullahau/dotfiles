@@ -1,4 +1,6 @@
-# Abdullah's Dotfiles
+# dotfiles
+
+Configuration repository containing my customized home folder dotfiles.
 
 ## Steps to bootstrap a new Mac
 
