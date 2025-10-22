@@ -48,6 +48,14 @@ brew bundle --file ~/.dotfiles/Brewfile
 cd ~/.dotfiles && brew bundle
 ```
 
+## TODO 
+- Terminal Preferences
+- Change Shell to ZSH
+- Dock Preferences
+- Mission Control Preference (Don't Rearrange Spaces)
+- Finder Show Path Bar and Set to Column View
+- .zshrc
+- Git (config and SSH)
 
 ## TODO List
 
