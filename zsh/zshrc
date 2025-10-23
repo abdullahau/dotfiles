@@ -114,7 +114,7 @@ export LOCAL_NOTEBOOK_DEV=1
 alias zed-preview="/opt/homebrew/bin/zed-preview"
 
 # Starship
-eval "$(starship init zsh)"
+# eval "$(starship init zsh)"
 
 # uv and uvx autocomplete
 eval "$(uv generate-shell-completion zsh)"

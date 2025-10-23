@@ -18,7 +18,7 @@ words = [
 	"abdullah","mahmood",
 	"codebook",
 	"rustc", "omarchy",
-	"jupyter", "jupyterlab", "jupytext",
+	"jupyter", "jupyterlab", "jupytext", "conda",
 	"ipykernel",
 	"scipy",
 	"yfinance",
@@ -49,7 +49,8 @@ words = [
 	"pydantic", "pydantic's",
 	"oop",
 	"hackathon",
-	"zstyle", "eza", "yazi", "fzf", "starship", "ghostty", "autoload", "tmux", "direnv", "envrc", "zoxide"
+	"zstyle", "eza", "yazi", "fzf", "starship", "ghostty", "autoload", "tmux", "direnv", "envrc", "zoxide",
+	"powerlevel", "colormap", "powerline"
 ]
 
 # Words that should always be flagged as incorrect
