@@ -17,7 +17,7 @@ dictionaries = ["en_us", "en_gb"]
 words = [
 	"abdullah","mahmood",
 	"codebook",
-	"rustc", "omarchy",
+	"homebrew", "vscode", "rustc", "omarchy",
 	"jupyter", "jupyterlab", "jupytext", "conda",
 	"ipykernel",
 	"scipy",
