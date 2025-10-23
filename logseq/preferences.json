@@ -1,0 +1,15 @@
+{
+  "theme": null,
+  "themes": {
+    "mode": "light",
+    "light": null,
+    "dark": null
+  },
+  "externals": [],
+  "pinnedToolbarItems": [
+    "logseq-journals-calendar:open-calendar",
+    "logseq-tags:tags-plugin-open",
+    "logseq-awesome-styler:AwesomeStyler",
+    "logseq-journals-calendar:goto-today"
+  ]
+}

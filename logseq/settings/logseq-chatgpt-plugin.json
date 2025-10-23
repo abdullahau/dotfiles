@@ -1,0 +1,19 @@
+{
+  "heading1": null,
+  "OPENAI_API_KEY": "",
+  "CHATGPT_API_ENDPOINT": "",
+  "heading2": null,
+  "CHATGPT_MODEL": "gpt-3.5-turbo",
+  "CHATGPT_SYSTEM_PROMPT": "You are a assistant who replies using markdown. Current date: {{today}}",
+  "CHATGPT_MAX_TOKENS": 4000,
+  "ENABLE_LANGCHAIN_TOOL_PROMPTS": true,
+  "ZAPIER_NLA_API_KEY": "",
+  "heading3": null,
+  "SHOW_CHATGPT_PAGE_LIST_IN_SIDE_NAVBAR": true,
+  "heading4": null,
+  "ASK_CHATGPT_SHORTCUT": "mod+shift+/",
+  "CREATE_CHATGPT_PAGE_SHORTCUT": "",
+  "SHOW_CHATGPT_PAGE_LIST_SHORTCUT": "mod+shift+l",
+  "disabled": false,
+  "DELETE_PAGE_AFTER_PROMPT_ACTION": true
+}

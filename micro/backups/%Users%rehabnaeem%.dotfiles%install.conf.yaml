@@ -17,6 +17,7 @@
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
     ~/Library/Application Support/com.mitchellh.ghostty/config: ghostty/config
+    ~/.logseq: logseq
     ~/.ssh/config: ssh/config
     ~/.config/codebook: codebook
     ~/.config/zed: zed
