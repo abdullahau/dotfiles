@@ -167,9 +167,6 @@ open() {
   xdg-open "$@" >/dev/null 2>&1 &
 }
 
-# rust
-. "$HOME/.cargo/env"
-
 # Docker CLI completions.
 fpath=($HOME/.docker/completions $fpath)
 

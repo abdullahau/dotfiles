@@ -5,6 +5,8 @@ tap "jesseduffield/lazydocker"
 brew "openssl@3"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Bash scripts that integrate bat with various command-line tools
+brew "bat-extras"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
 # Modern, maintained replacement for ls
@@ -21,6 +23,8 @@ brew "git"
 brew "sqlite"
 # Graph visualization software from AT&T and Bell Labs
 brew "graphviz"
+# User-friendly cURL replacement (command-line HTTP client)
+brew "httpie"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
 # Lightweight and flexible command-line JSON processor
@@ -83,8 +87,12 @@ brew "zsh-syntax-highlighting"
 brew "jandedobbeleer/oh-my-posh/oh-my-posh"
 # A simple terminal UI for docker, written in Go
 brew "jesseduffield/lazydocker/lazydocker"
+# Transfer files from and to an Android smartphone
+cask "android-file-transfer"
 # Compact TeX distribution as alternative to the full TeX Live / MacTeX
 cask "basictex"
+# App to build and share containerised applications and microservices
+cask "docker-desktop"
 # File transfer over ad-hoc wifi
 cask "flying-carpet"
 cask "font-hack-nerd-font"
@@ -93,20 +101,40 @@ cask "font-jetbrains-mono-nerd-font"
 cask "font-symbols-only-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Web browser
+cask "google-chrome"
+# File archiver
+cask "keka"
 # Open-source cross-platform alternative to AirDrop
 cask "localsend"
+# Privacy-first, open-source platform for knowledge sharing and management
+cask "logseq"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
 # Data science IDE
 cask "positron"
 # Scientific and technical publishing system built on Pandoc
 cask "quarto"
 # Environment for statistical computing and graphics
 cask "r-app"
+# All-in-one bookmark manager
+cask "raindropio"
 # Data science software focusing on R and Python
 cask "rstudio"
+# Music streaming service
+cask "spotify"
+# Mesh VPN based on WireGuard
+cask "tailscale-app"
 # Python IDE for beginners
 cask "thonny"
+# Open-source BitTorrent client
+cask "transmission"
 # Open-source code editor
 cask "visual-studio-code"
+# Multimedia player
+cask "vlc"
+# Native desktop client for WhatsApp
+cask "whatsapp"
 # Open-source version of the X.Org X Window System
 cask "xquartz"
 # Multiplayer code editor

@@ -45,7 +45,7 @@ fi
 setopt rcs
 
 
-export HOMEBREW_CASK_OPTS="--no-quarantine --no-binaries"
+export HOMEBREW_CASK_OPTS="--no-quarantine"
 
 function exists() {
   # `command -v` is similar to `which`
