@@ -1,0 +1,18 @@
+Host 100.105.211.56
+  HostName 100.105.211.56
+  ForwardAgent yes
+  User abdullah
+
+Host 130.0.0.104
+  HostName 130.0.0.104
+  ForwardAgent yes
+  User root
+
+Host 130.0.0.104
+  HostName 130.0.0.104
+  ForwardAgent yes
+  User noco
+
+Host github.com
+  AddKeysToAgent yes
+  IdentityFile ~/.ssh/id_ed25519
