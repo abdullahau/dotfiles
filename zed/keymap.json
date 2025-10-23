@@ -1,0 +1,33 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-e": "editor::ToggleFocus"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-enter": [
+        "workspace::SendKeystrokes",
+        "cmd-c  ctrl-` cmd-v enter ctrl-e  down home"
+      ]
+    }
+  }
+  // {
+  //   "context": "Editor",
+  //   "bindings": {
+  //     "cmd-enter": [
+  //       "workspace::SendKeystrokes",
+  //       "cmd-c cmd-2 cmd-v enter cmd-1 down home"
+  //     ]
+  //   }
+  // }
+]

@@ -1,0 +1,244 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  // Visual
+  "show_edit_predictions": true,
+  "inlay_hints": {
+    "enabled": true
+  },
+  "ui_font_size": 13,
+  "buffer_font_size": 11,
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_fallbacks": ["JetBrainsMono Nerd Font"],
+  "theme": {
+    "mode": "system",
+    "light": "JetBrains Light",
+    "dark": "Catppuccin Mocha (Blur) [Heavy]"
+  },
+  "icon_theme": "Material Icon Theme",
+  "indent_guides": {
+    "enabled": true,
+    "line_width": 1,
+    "active_line_width": 1,
+    "coloring": "indent_aware",
+    "background_coloring": "disabled"
+  },
+  "repl": {
+    // Clamped with [20, 512] range.
+    "max_columns": 500,
+    // Clamped with [4, 256] range.
+    "max_lines": 40
+  },
+
+  // Python
+  // Python - venv
+  "terminal": {
+    "detect_venv": {
+      "on": {
+        "directories": [".env", "env", ".venv", "venv", "../.venv"],
+        "activate_script": "default"
+      }
+    }
+  },
+
+  // Python - Jupyter IPython Kernel
+  "jupyter": {
+    "kernel_selections": {
+      "python": "python3",
+      "r": "ark"
+    }
+  },
+
+  // Python - LSP
+  "languages": {
+    "Python": {
+      "language_servers": ["pylsp", "ty", "basedpyright", "..."],
+      "format_on_save": "on",
+      "formatter": [
+        {
+          "code_actions": {
+            "source.organizeImports.ruff": true,
+            "source.fixAll.ruff": true
+          }
+        },
+        {
+          "language_server": { "name": "ruff" }
+        }
+      ],
+      "debuggers": ["Debugpy"]
+    }
+  },
+  "lsp": {
+    "ty": {
+      "binary": {
+        "path": ".venv/bin/ty",
+        "arguments": ["server"]
+      },
+      "settings": {
+        "ty": {
+          "diagnosticMode": "workspace",
+          "disableLanguageServices": false,
+          "inlayHints": {
+            "callArgumentNames": true,
+            "variableTypes": true
+          },
+          "experimental": {
+            "rename": true,
+            "autoImport": true
+          }
+        }
+      }
+    },
+    "pyrefly": {
+      "binary": {
+        "path": ".venv/bin/pyrefly",
+        "arguments": ["lsp"]
+      },
+      "settings": {
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        },
+        "pyrefly": {
+          "project_includes": ["src/**/*.py", "tests/**/*.py"],
+          "project_excludes": ["**/.[!/.]*", "**/*venv/**"],
+          "search_path": ["src"],
+          "ignore_errors_in_generated_code": true
+        }
+      }
+    },
+    "basedpyright": {
+      "settings": {
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        },
+        "basedpyright.analysis": {
+          "diagnosticMode": "workspace",
+          "typeCheckingMode": "standard",
+          "inlayHints": {
+            "variablesTypes": true,
+            "functionReturnTypes": true,
+            "genericTypes": true,
+            "callArgumentNames": true
+          }
+        }
+      }
+    },
+    "pylsp": {
+      "settings": {
+        "plugins": {
+          // disable plugins superseded by ruff
+          "autopep8": { "enabled": false },
+          "black": { "enabled": false },
+          "flake8": { "enabled": false },
+          "isort": { "enabled": false },
+          "mccabe": { "enabled": false },
+          "pycodestyle": { "enabled": false },
+          "pydocstyle": { "enabled": false },
+          "pyflakes": { "enabled": false },
+          "pylint": { "enabled": false },
+          "yapf": { "enabled": false },
+
+          // keep the others
+          "pylsp_mypy": { "enabled": true },
+          "jedi": { "enabled": true },
+          "jedi_completion": {
+            "enabled": true,
+            // "include_class_objects": true,
+            // "include_function_objects": true,
+            "fuzzy": true
+            // "eager": true
+          },
+          "rope": { "enabled": true },
+          "rope_autoimport": { "enabled": true },
+          "rope_completion": { "enabled": true },
+
+          // disable pylsp ruff in favor of `ruff server`
+          "ruff": { "enabled": false }
+        }
+      }
+    },
+    "ruff": {
+      "initialization_options": {
+        "settings": {
+          "configurationPreference": "filesystemFirst",
+          "configuration": {
+            "format": {
+              "quote-style": "double",
+              "skip-magic-trailing-comma": false
+            }
+          },
+          "codeAction": {
+            "disableRuleComment": { "enable": false },
+            "fixViolation": { "enable": true }
+          },
+          "lint": {
+            "select": ["E4", "E7", "E9", "F"],
+            // "extendSelect": ["I"],
+            "enable": true
+          },
+          "format": {
+            "preview": true
+          },
+          "fixAll": true,
+          "organizeImports": false,
+          "showSyntaxErrors": true
+          // "lineLength": 100
+        }
+      }
+    },
+    "tinymist": {
+      "settings": {
+        "exportPdf": "onSave",
+        "outputPath": "$root/$name"
+      }
+    }
+  },
+
+  // SSH
+  "ssh_connections": [
+    {
+      "host": "130.0.0.104",
+      "username": "root",
+      "args": ["-A"],
+      "projects": [
+        {
+          "paths": ["/home/noco/Qubes"]
+        },
+        {
+          "paths": ["/home/noco/Qubes", "/home/noco/HR"]
+        },
+        {
+          "paths": ["/home/noco/RealEstate"]
+        },
+        {
+          "paths": ["/home/noco/nocoflow"]
+        }
+      ],
+      "nickname": "Noco-Linux"
+    }
+  ],
+
+  // Quarto & Markdown
+  "file_types": {
+    "Markdown": ["md", "qmd", "rmd"]
+  },
+
+  // Zed Misc. Settings
+  "disable_ai": true, // Disable AI and Agents
+  "features": {
+    "edit_prediction_provider": "none" // Turn off Zed predictions
+  },
+  "edit_predictions": {
+    "mode": "subtle"
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  }
+}
