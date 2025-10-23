@@ -1,0 +1,15 @@
+*.DS_Store
+!/__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.mypy_cache
+.ropeproject
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv

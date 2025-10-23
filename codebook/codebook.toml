@@ -16,8 +16,8 @@ dictionaries = ["en_us", "en_gb"]
 # Default: []
 words = [
 	"abdullah","mahmood",
-	"codebook", 
-	"rustc", 
+	"codebook",
+	"rustc", "omarchy",
 	"jupyter", "jupyterlab", "jupytext",
 	"ipykernel",
 	"scipy",
@@ -49,7 +49,7 @@ words = [
 	"pydantic", "pydantic's",
 	"oop",
 	"hackathon",
-	"eza", "yazi", "fzf", "starship", "ghostty", "autoload", "tmux", "direnv", "envrc", "zoxide"
+	"zstyle", "eza", "yazi", "fzf", "starship", "ghostty", "autoload", "tmux", "direnv", "envrc", "zoxide"
 ]
 
 # Words that should always be flagged as incorrect

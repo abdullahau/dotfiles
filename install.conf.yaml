@@ -10,26 +10,33 @@
     - ~/.zfunc
 
 - link:
+    # Shell
     ~/.zshrc: zsh/zshrc
     ~/.zshenv: zsh/zshenv
     ~/.p10k.zsh: zsh/p10k.zsh
     ~/.inputrc: inputrc
+    # Git
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
+    # Ghostty
     ~/Library/Application Support/com.mitchellh.ghostty/config: ghostty/config
+    # Terminal Packages & Apps
     ~/.logseq: logseq
-    ~/.ssh/config: ssh/config
-    ~/.config/codebook: codebook
     ~/.config/zed: zed
-    ~/.config/btop: btop
-    ~/.config/micro: micro
-    ~/.config/yazi: yazi
-    ~/.config/ruff: ruff/config
-    ~/.zfunc/_ruff: ruff/zfunc/_ruff
     ~/.config/marimo: marimo
     ~/.config/rstudio: rstudio
+    ~/.config/btop: btop
+    ~/.config/yazi: yazi          
+    # SSH
+    ~/.ssh/config: ssh/config
+    # Editors
+    ~/.config/micro: micro
     ~/.nanorc: nano/nanorc
     ~/.nano: nano/config
+    # Linters    
+    ~/.config/codebook: codebook
+    ~/.config/ruff: ruff/config
+    ~/.zfunc/_ruff: ruff/zfunc/_ruff
 
 # - shell:
 #   - [git submodule update --init --recursive, Installing submodules]

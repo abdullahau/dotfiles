@@ -36,14 +36,13 @@ zstyle ':z4h:direnv:success' notify 'yes'
 
 # Enable ('yes') or disable ('no') automatic teleportation of z4h over
 # SSH when connecting to these hosts.
-zstyle ':z4h:ssh:example-hostname1'   enable 'yes'
-zstyle ':z4h:ssh:*.example-hostname2' enable 'no'
+# zstyle ':z4h:ssh:abdullah@omarchy'   enable 'yes'
+# zstyle ':z4h:ssh:root@130.0.0.104' enable 'no'
 # The default value if none of the overrides above match the hostname.
-zstyle ':z4h:ssh:*'                   enable 'no'
+zstyle ':z4h:ssh:*'                   enable 'yes'
 
-# Send these files over to the remote host when connecting over SSH to the
-# enabled hosts.
-zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc' '~/.env.zsh'
+# Send these files over to the remote host when connecting over SSH to the enabled hosts.
+# zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc'
 
 # Clone additional Git repositories from GitHub.
 #
@@ -65,13 +64,13 @@ path=(~/bin $path)
 export GPG_TTY=$TTY
 
 # Source additional local files if they exist.
-z4h source ~/.env.zsh
+# z4h source ~/.env.zsh
 
 # Use additional Git repositories pulled in with `z4h install`.
 #
 # This is just an example that you should delete. It does nothing useful.
-z4h source ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
-z4h load   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
+# z4h source ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
+# z4h load   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
 
 # Define key bindings.
 z4h bindkey undo Ctrl+/   Shift+Tab  # undo the last command line change
@@ -123,7 +122,6 @@ eval "$(uvx --generate-shell-completion zsh)"
 
 # ruff autocomplete
 fpath+=~/.zfunc
-autoload -Uz compinit && compinit
 
 # zoxide
 eval "$(zoxide init zsh)"
@@ -171,4 +169,3 @@ open() {
 
 # Docker CLI completions.
 fpath=($HOME/.docker/completions $fpath)
-autoload -Uz compinit && compinit
