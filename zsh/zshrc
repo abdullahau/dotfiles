@@ -63,6 +63,9 @@ path=(~/bin $path)
 # Export environment variables.
 export GPG_TTY=$TTY
 
+# Explicitly set XDG config directory (defaults to ~/.config if unset)
+export XDG_CONFIG_HOME="$HOME/.config"
+
 # Source additional local files if they exist.
 # z4h source ~/.env.zsh
 

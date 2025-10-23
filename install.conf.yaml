@@ -2,11 +2,11 @@
     link:
       relink: true
 
-- clean: ['~', '~/.config', '~/.zfunc']
+- clean: ["~", "~/.config", "~/.zfunc"]
 
 - create:
     - ~/Developer
-    - ~/.config    
+    - ~/.config
     - ~/.zfunc
 
 - link:
@@ -19,6 +19,7 @@
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
     # Ghostty
+    ~/.config/ghostty: ghostty
     ~/Library/Application Support/com.mitchellh.ghostty/config: ghostty/config
     # Terminal Packages & Apps
     ~/.logseq: logseq
@@ -26,17 +27,16 @@
     ~/.config/marimo: marimo
     ~/.config/rstudio: rstudio
     ~/.config/btop: btop
-    ~/.config/yazi: yazi          
+    ~/.config/yazi: yazi
     # SSH
     ~/.ssh/config: ssh/config
     # Editors
     ~/.config/micro: micro
     ~/.nanorc: nano/nanorc
     ~/.nano: nano/config
-    # Linters    
+    # Linters
     ~/.config/codebook: codebook
     ~/.config/ruff: ruff/config
     ~/.zfunc/_ruff: ruff/zfunc/_ruff
-
 # - shell:
 #   - [git submodule update --init --recursive, Installing submodules]
