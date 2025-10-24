@@ -44,8 +44,10 @@ fi
 
 setopt rcs
 
+# uv
+export PATH="/home/abdullah/.local/share/../bin:$PATH"
 
-export HOMEBREW_CASK_OPTS="--no-quarantine"
+# TODO: Linux pacman / yay package manager automation
 
 function exists() {
   # `command -v` is similar to `which`

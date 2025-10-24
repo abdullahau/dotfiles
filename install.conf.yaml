@@ -14,29 +14,25 @@
     ~/.zshrc: zsh/zshrc
     ~/.zshenv: zsh/zshenv
     ~/.p10k.zsh: zsh/p10k.zsh
-    ~/.inputrc: inputrc
+    ~/.inputrc: zsh/inputrc
     # Git
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
     # Ghostty
-    ~/.config/ghostty: ghostty
-    ~/Library/Application Support/com.mitchellh.ghostty/config: ghostty/config
+    # ~/.config/ghostty: ghostty
     # Terminal Packages & Apps
-    ~/.logseq: logseq
     ~/.config/zed: zed
-    ~/.config/marimo: marimo
-    ~/.config/rstudio: rstudio
-    ~/.config/btop: btop
-    ~/.config/yazi: yazi
+    # ~/.config/btop: btop
+    # ~/.config/yazi: yazi
     # SSH
     ~/.ssh/config: ssh/config
     # Editors
-    ~/.config/micro: micro
-    ~/.nanorc: nano/nanorc
-    ~/.nano: nano/config
+    # ~/.config/micro: micro
+    # ~/.nanorc: nano/nanorc
+    # ~/.nano: nano/config
     # Linters
     ~/.config/codebook: codebook
-    ~/.config/ruff: ruff/config
-    ~/.zfunc/_ruff: ruff/zfunc/_ruff
+    # ~/.config/ruff: ruff/config
+    # ~/.zfunc/_ruff: ruff/zfunc/_ruff
 # - shell:
 #   - [git submodule update --init --recursive, Installing submodules]

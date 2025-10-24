@@ -56,6 +56,8 @@ cd ~/.dotfiles && brew bundle
 - Finder Show Path Bar and Set to Column View
 - .zshrc
 - Git (config and SSH)
+- uv tool installation automation (ruff, pyrefly, basedpyright, jupyterlab, jupyter-core)
+- Linux pacman / yay package manager automation
 
 ## TODO List
 
