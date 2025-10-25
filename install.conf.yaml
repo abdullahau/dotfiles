@@ -14,11 +14,11 @@
     ~/.zshenv: zsh/zshenv
     ~/.p10k.zsh: zsh/p10k.zsh
     ~/.inputrc: zsh/inputrc
-    # Shell - requires ruff and tailscale preinstalled
     ~/.zfunc: zsh/zfunc
     # Git
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
+    # Configurations
     # Terminal Packages & Apps
     ~/.config/zed: zed
     ~/.config/micro: micro
@@ -30,5 +30,12 @@
     ~/.config/codebook: codebook
     ~/.config/ruff: ruff
 
-# - shell:
-#   - [git submodule update --init --recursive, Installing submodules]
+- shell:
+    - sudo pacman -S zsh
+    - [chsh -s $(which zsh), Making zsh the default shell]
+    - exec zsh
+    - 
+        command: ./setup_omarchy.zsh
+        stdin: true
+        stdout: true
+        stderr: true
