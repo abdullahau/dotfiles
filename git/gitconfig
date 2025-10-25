@@ -1,6 +1,6 @@
 [user]
 	email = abdullah.au@outlook.com
-	name = abdullahau
+	name = Abdullah Mahmood
 [core]
 	excludesfile = $HOME/.gitignore_global
 	ignorecase = false

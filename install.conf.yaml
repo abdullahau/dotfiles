@@ -2,12 +2,11 @@
     link:
       relink: true
 
-- clean: ["~", "~/.config", "~/.zfunc"]
+- clean: ["~", "~/.config"]
 
 - create:
     - ~/Developer
     - ~/.config
-    - ~/.zfunc
 
 - link:
     # Shell
@@ -15,6 +14,8 @@
     ~/.zshenv: zsh/zshenv
     ~/.p10k.zsh: zsh/p10k.zsh
     ~/.inputrc: zsh/inputrc
+    # Shell - requires ruff and tailscale preinstalled
+    ~/.zfunc: zsh/zfunc
     # Git
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
@@ -36,7 +37,7 @@
     ~/.nano: nano/config
     # Linters
     ~/.config/codebook: codebook
-    ~/.config/ruff: ruff/config
-    ~/.zfunc/_ruff: ruff/zfunc/_ruff
+    ~/.config/ruff: ruff
+
 # - shell:
 #   - [git submodule update --init --recursive, Installing submodules]
