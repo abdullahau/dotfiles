@@ -7,7 +7,6 @@
 - create:
     - ~/Developer
     - ~/.config
-    - ~/.zfunc
 
 - link:
     # Shell
@@ -15,24 +14,21 @@
     ~/.zshenv: zsh/zshenv
     ~/.p10k.zsh: zsh/p10k.zsh
     ~/.inputrc: zsh/inputrc
+    # Shell - requires ruff and tailscale preinstalled
+    ~/.zfunc: zsh/zfunc
     # Git
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
-    # Ghostty
-    # ~/.config/ghostty: ghostty
     # Terminal Packages & Apps
     ~/.config/zed: zed
+    ~/.config/micro: micro
     # ~/.config/btop: btop
-    # ~/.config/yazi: yazi
+    ~/.config/yazi: yazi
     # SSH
     ~/.ssh/config: ssh/config
-    # Editors
-    # ~/.config/micro: micro
-    # ~/.nanorc: nano/nanorc
-    # ~/.nano: nano/config
     # Linters
     ~/.config/codebook: codebook
-    # ~/.config/ruff: ruff/config
-    # ~/.zfunc/_ruff: ruff/zfunc/_ruff
+    ~/.config/ruff: ruff/config
+
 # - shell:
 #   - [git submodule update --init --recursive, Installing submodules]

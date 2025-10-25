@@ -58,6 +58,8 @@ cd ~/.dotfiles && brew bundle
 - Git (config and SSH)
 - uv tool installation automation (ruff, pyrefly, basedpyright, jupyterlab, jupyter-core)
 - Linux pacman / yay package manager automation
+- Streamline completions from uv, uvx, ruff, docker, & tailscale
+- what is an fpath? How is this related to shell autocompletions? What is an ideal way to source package completion files in ZSH
 
 ## TODO List
 

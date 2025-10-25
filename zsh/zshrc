@@ -147,6 +147,9 @@ function y() {
 # default editor (set for yazi)
 export EDITOR='micro'
 
+# micro editor theming
+export "MICRO_TRUECOLOR=1"
+
 # eza config
 alias ls='eza -lh --group-directories-first --icons=auto'
 alias lsa='ls -a'
