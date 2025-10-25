@@ -2,6 +2,3 @@
 	path = dotbot
 	url = https://github.com/anishathalye/dotbot
 	ignore = dirty
-[submodule "micro/micro"]
-	path = micro/micro
-	url = https://github.com/catppuccin/micro.git
