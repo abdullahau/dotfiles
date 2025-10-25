@@ -6,7 +6,7 @@ echo "\n<<< Starting Omarchy Setup >>>\n"
 # Package Installation
 #----------------------------------------------------------------------
 
-echo "\nInstalling Packages...\n"
+echo "\n1) Installing Packages...\n"
 
 sudo pacman -S --needed - < packages/Pacman
 yay -S --needed - < packages/AUR
@@ -14,6 +14,8 @@ yay -S --needed - < packages/AUR
 #----------------------------------------------------------------------
 # Omarchy Bloat Cleaner (https://github.com/maxart/omarchy-cleaner)
 #----------------------------------------------------------------------
+
+echo "\n2) Omarchy Cleaner...\n"
 
 read -q "REPLY?Do you want to run the Omarchy Bloat Cleaner? (y/N) "
 
@@ -28,10 +30,14 @@ fi
 # zsh4humans Setup
 #----------------------------------------------------------------------
 
-if command -v z4h >/dev/null 2>&1; then
-    echo "zsh4humans (z4h) is already installed. Skipping installation."
+echo "\n3) Setting up zsh4humans...\n"
+
+Z4H_DIR="$HOME/.cache/zsh4humans"
+
+if [ -d "$Z4H_DIR" ]; then
+    echo "zsh4humans is already installed (directory found at $Z4H_DIR). Skipping installation."
 else
-    echo "zsh4humans (z4h) not found. Starting installation."
+    echo "zsh4humans not found. Starting installation."
     if command -v curl >/dev/null 2>&1; then
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
     elif command -v wget >/dev/null 2>&1; then
@@ -41,16 +47,11 @@ else
     fi
 fi
 
-# Run update only if z4h is now installed (either previously or newly installed)
-if command -v z4h >/dev/null 2>&1; then
-    z4h update
-fi
-
 #----------------------------------------------------------------------
 # Tailscale Setup
 #----------------------------------------------------------------------
 
-echo "\nSetting up Tailscale...\n"
+echo "\n4) Setting up Tailscale...\n"
 
 sudo systemctl enable --now tailscaled
 sudo tailscale up
@@ -60,7 +61,7 @@ tailscale ip -4
 # Plex Setup
 #----------------------------------------------------------------------
 
-echo "\nSetting up Plex Media Server...\n"
+echo "\n5) Setting up Plex Media Server...\n"
 
 systemctl enable plexmediaserver.service
 systemctl start plexmediaserver.service

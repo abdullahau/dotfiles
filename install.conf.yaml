@@ -31,9 +31,20 @@
     ~/.config/ruff: ruff
 
 - shell:
-    - sudo pacman -S zsh
-    - [chsh -s $(which zsh), Making zsh the default shell]
-    - exec zsh
+    - 
+        command: sudo pacman -S zsh
+        stdin: true
+        stdout: true
+        stderr: true
+    -
+        command: [chsh -s $(which zsh), Making zsh the default shell]
+        stdin: true
+        stdout: true
+        stderr: true
+    - 
+        command: [exec zsh, Running ZSH shell]
+        stdout: true
+        stderr: true
     - 
         command: ./setup_omarchy.zsh
         stdin: true
