@@ -1,3 +1,0 @@
-# include /opt/homebrew/opt/nanorc/share/nanorc/*.nanorc
-# include "/opt/homebrew/Cellar/nano/*/share/nano/*.nanorc"
-include ~/.nano/*.nanorc
