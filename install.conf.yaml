@@ -28,7 +28,7 @@
     ~/.ssh/config: ssh/config
     # Linters
     ~/.config/codebook: codebook
-    ~/.config/ruff: ruff/config
+    ~/.config/ruff: ruff
 
 # - shell:
 #   - [git submodule update --init --recursive, Installing submodules]
