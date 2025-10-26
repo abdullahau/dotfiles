@@ -9,9 +9,18 @@
 if [ -n "${ZSH_VERSION-}" ]; then
   # If you are certain that you must export some environment variables
   # in ~/.zshenv (see comments at the top!), do it here:
-  #
-  #   export GOPATH=$HOME/go
-  #
+
+  export HOMEBREW_CASK_OPTS="--no-quarantine"
+
+  function exists() {
+    # `command -v` is similar to `which`
+    # https://stackoverflow.com/a/677212/1341838
+    command -v $1 >/dev/null 2>&1
+
+    # More explicitly written:
+    # command -v $1 1>/dev/null 2>/dev/null
+  }
+
   # Do not change anything else in this file.
 
   : ${ZDOTDIR:=~}
@@ -43,15 +52,3 @@ fi
 . "$Z4H"/z4h.zsh || return
 
 setopt rcs
-
-
-export HOMEBREW_CASK_OPTS="--no-quarantine"
-
-function exists() {
-  # `command -v` is similar to `which`
-  # https://stackoverflow.com/a/677212/1341838
-  command -v $1 >/dev/null 2>&1
-
-  # More explicitly written:
-  # command -v $1 1>/dev/null 2>/dev/null
-}

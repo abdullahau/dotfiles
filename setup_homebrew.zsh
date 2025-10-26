@@ -9,16 +9,9 @@ else
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# TODO: Keep an eye out for a different `--no-quarantine` solution.
-# Currently, you can't do `brew bundle --no-quarantine` as an option.
-# export HOMEBREW_CASK_OPTS="--no-quarantine"
-# https://github.com/Homebrew/homebrew-bundle/issues/474
-
-# HOMEBREW_CASK_OPTS is exported in `zshenv` with
-# `--no-quarantine` options, which makes them available 
-# to Homebrew for the first install (before our `zshrc` is sourced).
-
-brew bundle --verbose
+# Brewfile update method: 
+# `brew bundle dump --describe --force --no-vscode --file=./packages/Brewfile`
+brew bundle --verbose --file=./packages/Brewfile
 
 # Should we wrap this in a conditional?
 echo "Enter superuser (sudo) password to accept Xcode license"

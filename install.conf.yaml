@@ -38,5 +38,14 @@
     ~/.config/codebook: codebook
     ~/.config/ruff: ruff
 
-# - shell:
-#   - [git submodule update --init --recursive, Installing submodules]
+- shell:
+    - 
+        command: ./setup_homebrew.zsh
+        stdin: true
+        stdout: true
+        stderr: true
+    -
+        command: ./setup_macos.zsh
+        stdin: true
+        stdout: true
+        stderr: true
