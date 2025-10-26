@@ -15,7 +15,7 @@ yay -S --needed - < packages/AUR
 # Omarchy Bloat Cleaner (https://github.com/maxart/omarchy-cleaner)
 #----------------------------------------------------------------------
 
-echo "\n2) Omarchy Cleaner...\n"
+echo "\n2) Running Omarchy Cleaner...\n"
 
 read -q "REPLY?Do you want to run the Omarchy Bloat Cleaner? (y/N) "
 
@@ -30,7 +30,7 @@ fi
 # zsh4humans Setup
 #----------------------------------------------------------------------
 
-echo "\n3) Setting up zsh4humans...\n"
+echo "\n3) Setting up Zsh4humans...\n"
 
 Z4H_DIR="$HOME/.cache/zsh4humans"
 

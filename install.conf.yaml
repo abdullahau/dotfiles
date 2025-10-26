@@ -50,3 +50,7 @@
         stdin: true
         stdout: true
         stderr: true
+    -
+        command: ./setup_docker.zsh
+        stdout: true
+        stderr: true
