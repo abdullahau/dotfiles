@@ -22,7 +22,6 @@
     # Terminal Packages & Apps
     ~/.config/zed: zed
     ~/.config/micro: micro
-    # ~/.config/btop: btop
     ~/.config/yazi: yazi
     # SSH
     ~/.ssh/config: ssh/config

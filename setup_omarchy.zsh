@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+setopt nounset  # Treat unset variables as an error
+
 echo "\n<<< Starting Omarchy Setup >>>\n"
 
 #----------------------------------------------------------------------
@@ -8,8 +10,8 @@ echo "\n<<< Starting Omarchy Setup >>>\n"
 
 echo "\n1) Installing Packages...\n"
 
-sudo pacman -S --needed - < packages/Pacman
-yay -S --needed - < packages/AUR
+sudo pacman -Syu --needed - < packages/Pacman || { echo "ERROR: Pacman installation failed."; exit 1; }
+yay -Syu --needed - < packages/AUR || { echo "ERROR: AUR installation failed."; exit 1; }
 
 #----------------------------------------------------------------------
 # Omarchy Bloat Cleaner (https://github.com/maxart/omarchy-cleaner)
@@ -21,10 +23,11 @@ read -q "REPLY?Do you want to run the Omarchy Bloat Cleaner? (y/N) "
 
 if [[ "$REPLY" =~ ^[Yy]$ ]]; then
     echo "\nRunning Omarchy Bloat Cleaner...\n"
-    curl -fsSL https://raw.githubusercontent.com/maxart/omarchy-cleaner/main/omarchy-cleaner.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/maxart/omarchy-cleaner/main/omarchy-cleaner.sh | bash || echo "WARNING: Cleaner script failed but continuing."
 else
     echo "\nSkipping Omarchy Bloat Cleaner.\n"
 fi
+
 
 #----------------------------------------------------------------------
 # zsh4humans Setup
@@ -47,15 +50,26 @@ else
     fi
 fi
 
+if [ -d "$Z4H_DIR" ]; then
+    echo "You may need to run 'z4h update' manually after logging into zsh for the first time."
+fi
+
 #----------------------------------------------------------------------
 # Tailscale Setup
 #----------------------------------------------------------------------
 
 echo "\n4) Setting up Tailscale...\n"
 
-sudo systemctl enable --now tailscaled
+sudo systemctl enable --now tailscaled || echo "WARNING: Tailscale service failed to enable/start."
 sudo tailscale up
-tailscale ip -4
+
+TAILSCALE_IP=$(tailscale ip -4 2>/dev/null)
+if [ -n "$TAILSCALE_IP" ]; then
+    echo "Tailscale IPv4 Address: $TAILSCALE_IP"
+else
+    echo "WARNING: Could not retrieve Tailscale IPv4 address."
+fi
+
 
 #----------------------------------------------------------------------
 # Plex Setup
@@ -63,38 +77,40 @@ tailscale ip -4
 
 echo "\n5) Setting up Plex Media Server...\n"
 
-systemctl enable plexmediaserver.service
-systemctl start plexmediaserver.service
+sudo systemctl enable plexmediaserver.service || echo "WARNING: Plex service enable failed."
+sudo systemctl start plexmediaserver.service || echo "WARNING: Plex service start failed."
+
 
 PLEX_UFW_FILE="/etc/ufw/applications.d/plexmediaserver"
-sudo tee "$PLEX_UFW_FILE" > /dev/null << EOF
-[plexmediaserver]
-title=Plex Media Server (Standard)
-description=The Plex Media Server
-ports=32400/tcp|3005/tcp|5353/udp|8324/tcp|32410:32414/udp
+PLEX_DOTFILE="./plex/plexmediaserver"
 
-[plexmediaserver-dlna]
-title=Plex Media Server (DLNA)
-description=The Plex Media Server (additional DLNA capability only)
-ports=1900/udp|32469/tcp
+echo "Writing UFW definition to $PLEX_UFW_FILE..."
 
-[plexmediaserver-all]
-title=Plex Media Server (Standard + DLNA)
-description=The Plex Media Server (with additional DLNA capability)
-ports=32400/tcp|3005/tcp|5353/udp|8324/tcp|32410:32414/udp|1900/udp|32469/tcp
-EOF
-
+cat "$PLEX_DOTFILE" | sudo tee "$PLEX_UFW_FILE" > /dev/null || echo "ERROR: Failed to write Plex UFW file."
 
 if command -v ufw >/dev/null 2>&1; then
+    echo "Updating and allowing Plex in UFW..."
     if sudo ufw status | grep -q "active"; then
         sudo ufw app update plexmediaserver
         sudo ufw allow plexmediaserver-all
         echo "Plex UFW rule added."
     else
-        echo "UFW is not active. Skipping rule application."
+        echo "UFW is installed but not active. Skipping rule application."
     fi
 else
     echo "UFW command not found. Skipping rule setup."
 fi
+
+#----------------------------------------------------------------------
+# Monitor Configuration
+#----------------------------------------------------------------------
+
+echo "\n6) Setting up Monitor Configuration...\n"
+
+MONITOR_CONFIG="$HOME/.config/hypr/monitors.conf"
+MONITOR_DOTFILE="./hypr/monitors.conf"
+cat $MONITOR_DOTFILE > $MONITOR_CONFIG
+
+echo "\nMonitor configuration written to $MONITOR_CONFIG.\n"
 
 echo "\n<<< Omarchy Setup Complete >>>\n"
