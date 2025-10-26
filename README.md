@@ -60,6 +60,7 @@ cd ~/.dotfiles && brew bundle
 - Linux pacman / yay package manager automation
 - Streamline completions from uv, uvx, ruff, docker, & tailscale
 - what is an fpath? How is this related to shell autocompletions? What is an ideal way to source package completion files in ZSH
+- AdGuard Home upstream DNS servers (Cloudflare, Quad9, Google, Etisalat)
 
 ## TODO List
 
