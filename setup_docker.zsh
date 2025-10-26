@@ -18,7 +18,6 @@ if [ ! -d "$TARGET_DIR/.git" ]; then
     git clone "$REPO_URL" "$TARGET_DIR"
 else
     echo "Git repository already exists in $TARGET_DIR. Skipping clone."
-    # Optional: You might want to run a 'git pull' here instead
     git -C "$TARGET_DIR" pull
 fi
 

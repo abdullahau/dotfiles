@@ -28,7 +28,6 @@ else
     echo "\nSkipping Omarchy Bloat Cleaner.\n"
 fi
 
-
 #----------------------------------------------------------------------
 # zsh4humans Setup
 #----------------------------------------------------------------------
@@ -70,7 +69,6 @@ else
     echo "WARNING: Could not retrieve Tailscale IPv4 address."
 fi
 
-
 #----------------------------------------------------------------------
 # Plex Setup
 #----------------------------------------------------------------------
@@ -109,6 +107,7 @@ echo "\n6) Setting up Monitor Configuration...\n"
 
 MONITOR_CONFIG="$HOME/.config/hypr/monitors.conf"
 MONITOR_DOTFILE="./hypr/monitors.conf"
+
 cat $MONITOR_DOTFILE > $MONITOR_CONFIG
 
 echo "\nMonitor configuration written to $MONITOR_CONFIG.\n"
