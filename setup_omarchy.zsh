@@ -112,4 +112,27 @@ cat $MONITOR_DOTFILE > $MONITOR_CONFIG
 
 echo "\nMonitor configuration written to $MONITOR_CONFIG.\n"
 
+#----------------------------------------------------------------------
+# Logind Configuration - Lid Switch
+#----------------------------------------------------------------------
+
+echo "\n7) Configuring Logind for Lid Switch behavior...\n"
+
+LOGIND_CONF="/etc/systemd/logind.conf"
+
+echo "Appending lid switch settings to $LOGIND_CONF..."
+
+cat << EOF | sudo tee -a "$LOGIND_CONF" > /dev/null
+
+
+# --- Omarchy Custom Lid Switch Settings ---
+HandleLidSwitch=ignore
+HandleLidSwitchDocked=ignore
+# ------------------------------------------
+EOF
+
+echo "Reloading systemd-logind service to apply changes..."
+sudo systemctl reload systemd-logind.service || echo "WARNING: Failed to reload systemd-logind."
+
+
 echo "\n<<< Omarchy Setup Complete >>>\n"
