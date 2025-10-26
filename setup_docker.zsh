@@ -2,13 +2,23 @@
 
 echo "\n<<< Starting Docker Services Setup >>>\n"
 
-echo "1) Creating Docker Container and Volume Directories...\n"
+echo "1) Creating Docker Container Directory and Volume Directories...\n"
 
 sudo mkdir -p /docker
 sudo mkdir -p /data/{books,downloads,movies,music,shows}
-sudo mkdir -p downloads/{complete,incomplete,torrents}
+sudo mkdir -p /data/downloads/{complete,incomplete,torrents}
 
-echo "\n2) Git Clone Homelab Repo...\n"
+echo "\n2) Changing Ownership and Permissions to $USER...\n"
+
+# Change ownership
+sudo chown -R "$USER":"$USER" /docker
+sudo chown -R "$USER":"$USER" /data
+
+# Change permissions 
+sudo chmod -R 755 /docker
+sudo chmod -R 755 /data
+
+echo "\n3) Git Clone Homelab Repo...\n"
 
 TARGET_DIR="/docker"
 REPO_URL="https://github.com/abdullahau/homelab.git"
@@ -21,12 +31,12 @@ else
     git -C "$TARGET_DIR" pull
 fi
 
-echo "\n3) Starting Docker Containers with Docker Compose...\n"
+echo "\n4) Starting Docker Containers with Docker Compose...\n"
 
 docker compose -f /docker/adguard-docker-compose.yml up -d
 docker compose -f /docker/media-docker-compose.yml up -d
 
-echo "\n4) Setting up Port 53 Bind for AdGuard Home...\n"
+echo "\n5) Setting up Port 53 Bind for AdGuard Home...\n"
 
 RESOLVED_DIR="/etc/systemd/resolved.conf.d"
 sudo mkdir -p $RESOLVED_DIR
