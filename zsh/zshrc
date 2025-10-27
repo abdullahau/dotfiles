@@ -147,7 +147,7 @@ export EDITOR='micro'
 # micro editor theming
 export "MICRO_TRUECOLOR=1"
 
-# eza config
+# eza, fzf, and zoxide config
 alias ls='eza -lh --group-directories-first --icons=auto'
 alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
@@ -171,4 +171,5 @@ open() {
 fpath=($HOME/.docker/completions $fpath)
 
 # `man` page colorizer using `bat` 
-export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
+# export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
+alias man=batman
