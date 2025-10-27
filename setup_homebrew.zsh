@@ -11,6 +11,7 @@ fi
 
 # Brewfile update method: 
 # `brew bundle dump --describe --force --no-vscode --file=./packages/Brewfile`
+# `brew bundle dump --describe --force --file=./packages/Brewfile`
 brew bundle --verbose --file=./packages/Brewfile
 
 # Should we wrap this in a conditional?
