@@ -20,7 +20,7 @@ zstyle ':z4h:direnv:success' notify 'yes'
 # --------------------------------------------------------------
 zstyle ':z4h:ssh:abdullah@omarchy'   enable 'no'
 zstyle ':z4h:ssh:root@130.0.0.104'   enable 'no'
-zstyle ':z4h:ssh:*'                  enable 'yes'  # default for others
+zstyle ':z4h:ssh:*'                  enable 'no'  # default for others
 
 # Send additional files when teleporting
 # zstyle ':z4h:ssh:*' send-extra-files '<file path>'
