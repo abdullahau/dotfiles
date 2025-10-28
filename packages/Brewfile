@@ -1,6 +1,7 @@
 tap "beeftornado/rmtree"
 tap "jandedobbeleer/oh-my-posh"
 tap "jesseduffield/lazydocker"
+tap "nikitabobko/tap"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -89,6 +90,8 @@ brew "zsh-syntax-highlighting"
 brew "jandedobbeleer/oh-my-posh/oh-my-posh"
 # A simple terminal UI for docker, written in Go
 brew "jesseduffield/lazydocker/lazydocker"
+# AeroSpace is an i3-like tiling window manager for macOS
+cask "aerospace"
 # Transfer files from and to an Android smartphone
 cask "android-file-transfer"
 # Compact TeX distribution as alternative to the full TeX Live / MacTeX

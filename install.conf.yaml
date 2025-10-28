@@ -37,6 +37,8 @@
     # Linters
     ~/.config/codebook: codebook
     ~/.config/ruff: ruff
+    # Mac Apps
+    ~/.aerospace.toml: aerospace/aerospace.toml
 
 - shell:
     - 
