@@ -28,6 +28,7 @@
     ~/.config/rstudio: rstudio
     ~/.config/btop: btop
     ~/.config/yazi: yazi
+    ~/.aerospace.toml: aerospace/aerospace.toml    
     # SSH
     ~/.ssh/config: ssh/config
     # Editors
@@ -37,8 +38,6 @@
     # Linters
     ~/.config/codebook: codebook
     ~/.config/ruff: ruff
-    # Mac Apps
-    ~/.aerospace.toml: aerospace/aerospace.toml
 
 - shell:
     - 
