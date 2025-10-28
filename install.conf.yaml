@@ -49,3 +49,8 @@
         stdin: true
         stdout: true
         stderr: true
+    - 
+        command: ./setup_uv.zsh
+        stdin: true
+        stdout: true
+        stderr: true
