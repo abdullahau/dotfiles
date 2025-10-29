@@ -60,7 +60,7 @@
     "Python": {
       "language_servers": [
         "pyrefly",
-        "ruff",
+        "ruff",        
         "!pylsp",
         "!ty",
         "!basedpyright",
@@ -82,7 +82,31 @@
     }
   },
   "lsp": {
+    "ty": {
+      "binary": {
+        "path": ".venv/bin/ty",
+        "arguments": ["server"]
+      },
+      "settings": {
+        "ty": {
+          "diagnosticMode": "workspace",
+          "disableLanguageServices": false,
+          "inlayHints": {
+            "callArgumentNames": true,
+            "variableTypes": true
+          },
+          "experimental": {
+            "rename": true,
+            "autoImport": true
+          }
+        }
+      }
+    },
     "pyrefly": {
+      "binary": {
+        "path": ".venv/bin/pyrefly",
+        "arguments": ["lsp"]
+      },
       "settings": {
         "python": {
           "pythonPath": ".venv/bin/python"
@@ -92,6 +116,57 @@
           "project_excludes": ["**/.[!/.]*", "**/*venv/**"],
           "search_path": ["src"],
           "ignore_errors_in_generated_code": true
+        }
+      }
+    },
+    "basedpyright": {
+      "settings": {
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        },
+        "basedpyright.analysis": {
+          "diagnosticMode": "workspace",
+          "typeCheckingMode": "standard",
+          "inlayHints": {
+            "variablesTypes": true,
+            "functionReturnTypes": true,
+            "genericTypes": true,
+            "callArgumentNames": true
+          }
+        }
+      }
+    },
+    "pylsp": {
+      "settings": {
+        "plugins": {
+          // disable plugins superseded by ruff
+          "autopep8": { "enabled": false },
+          "black": { "enabled": false },
+          "flake8": { "enabled": false },
+          "isort": { "enabled": false },
+          "mccabe": { "enabled": false },
+          "pycodestyle": { "enabled": false },
+          "pydocstyle": { "enabled": false },
+          "pyflakes": { "enabled": false },
+          "pylint": { "enabled": false },
+          "yapf": { "enabled": false },
+
+          // keep the others
+          "pylsp_mypy": { "enabled": true },
+          "jedi": { "enabled": true },
+          "jedi_completion": {
+            "enabled": true,
+            // "include_class_objects": true,
+            // "include_function_objects": true,
+            "fuzzy": true
+            // "eager": true
+          },
+          "rope": { "enabled": true },
+          "rope_autoimport": { "enabled": true },
+          "rope_completion": { "enabled": true },
+
+          // disable pylsp ruff in favor of `ruff server`
+          "ruff": { "enabled": false }
         }
       }
     },

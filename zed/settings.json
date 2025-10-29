@@ -137,29 +137,19 @@
     {
       "host": "130.0.0.104",
       "username": "root",
-      "args": [
-        "-A"
-      ],
+      "args": ["-A"],
       "projects": [
         {
-          "paths": [
-            "/home/noco/HR"
-          ]
+          "paths": ["/home/noco/HR"]
         },
         {
-          "paths": [
-            "/home/noco/Qubes"
-          ]
+          "paths": ["/home/noco/Qubes"]
         },
         {
-          "paths": [
-            "/home/noco/RealEstate"
-          ]
+          "paths": ["/home/noco/RealEstate"]
         },
         {
-          "paths": [
-            "/home/noco/nocoflow"
-          ]
+          "paths": ["/home/noco/nocoflow"]
         }
       ],
       "nickname": "Noco-Linux"
@@ -167,19 +157,13 @@
     {
       "host": "100.105.211.56",
       "username": "abdullah",
-      "args": [
-        "-A"
-      ],
+      "args": ["-A"],
       "projects": [
         {
-          "paths": [
-            "/docker"
-          ]
+          "paths": ["/docker"]
         },
         {
-          "paths": [
-            "/home/abdullah"
-          ]
+          "paths": ["/home/abdullah"]
         }
       ],
       "nickname": "Omarchy"
@@ -189,6 +173,47 @@
   // Quarto & Markdown
   "file_types": {
     "Markdown": ["md", "qmd", "rmd"]
+  },
+
+  // Extensions
+  "auto_install_extensions": {
+    "basedpyright": true,
+    "catppuccin": true,
+    "catppuccin-blur": true,
+    "catppuccin-icons": true,
+    "codebook": true,
+    "colored-zed-icons-theme": true,
+    "csv": true,
+    "docker-compose": true,
+    "dockerfile": true,
+    "env": true,
+    "git-firefly": true,
+    "html": true,
+    "ini": true,
+    "intellij-newui-theme": true,
+    "jetbrains-new-ui-icons": true,
+    "jetbrains-themes": true,
+    "latex": true,
+    "log": true,
+    "lua": true,
+    "macos-classic": true,
+    "make": true,
+    "markdown-oxide": true,
+    "markdownlint": true,
+    "material-icon-theme": true,
+    "postgres-language-server": true,
+    "pyrefly": true,
+    "python-requirements": true,
+    "python-snippets": true,
+    "rainbow-csv": true,
+    "ruff": true,
+    "sql": true,
+    "tokyo-night": true,
+    "toml": true,
+    "ty": true,
+    "typst": true,
+    "vscode-great-icons": true,
+    "vscode-icons": true
   },
 
   // Zed Misc. Settings

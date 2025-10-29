@@ -208,6 +208,11 @@ automatically-unhide-macos-hidden-apps = false
 
 # You can use `on-window-detected` callback to run commands every time a new window is detected.
 # The following callbacks move new windows of specified apps to their workspaces.
+# Find app-id with `aerospace list-apps` command
+# Outlook -> workspace O
+# Chrome -> Workspace B
+# vscode/zed/ghostty -> Workspace C
+# WhatsApp -> Workspace W
 [[on-window-detected]]
 if.app-id = 'com.microsoft.Outlook'
 run = "move-node-to-workspace O"
@@ -216,10 +221,18 @@ run = "move-node-to-workspace O"
 if.app-id = 'net.whatsapp.WhatsApp'
 run = "move-node-to-workspace W"
 
-# [[on-window-detected]]
-# if.app-id = 'com.mitchellh.ghostty'
-# run = "move-node-to-workspace T"
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = "move-node-to-workspace B"
 
-# [[on-window-detected]]
-# if.app-id = 'com.google.Chrome'
-# run = "move-node-to-workspace C"
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+if.app-id = 'dev.zed.Zed'
+run = "move-node-to-workspace C"
