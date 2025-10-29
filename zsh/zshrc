@@ -166,5 +166,6 @@ setopt APPEND_HISTORY         # append rather than overwrite
 setopt HIST_REDUCE_BLANKS     # clean up extra spaces
 setopt HIST_IGNORE_SPACE      # ignore commands starting with space
 setopt HIST_EXPIRE_DUPS_FIRST # expire duplicates first
+setopt HIST_IGNORE_DUPS		  # ignore duplicates
 setopt glob_dots              # show dotfiles in globs
 setopt no_auto_menu           # require second TAB to open menu

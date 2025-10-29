@@ -28,7 +28,7 @@
     ~/.config/rstudio: rstudio
     ~/.config/btop: btop
     ~/.config/yazi: yazi
-    ~/.aerospace.toml: aerospace/aerospace.toml    
+    ~/.config/aerospace: aerospace
     # SSH
     ~/.ssh/config: ssh/config
     # Editors

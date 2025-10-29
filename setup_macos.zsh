@@ -25,6 +25,16 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-time-modifier -float 0.25
 defaults write com.apple.dock autohide-delay -float 0.1
 
+# Mission Control 
+# Group windows by application
+defaults write com.apple.dock expose-group-apps -bool true
+
+# Spaces & Display 
+# Displays have separate Spaces System Settings → Desktop & Dock → Displays have separate Spaces
+# defaults write com.apple.spaces spans-displays -bool true 
+# killall SystemUIServer
+
+
 # Finish macOS Setup
 killall Finder
 killall Dock

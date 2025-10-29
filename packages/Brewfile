@@ -1,4 +1,5 @@
 tap "beeftornado/rmtree"
+tap "felixkratz/formulae"
 tap "jandedobbeleer/oh-my-posh"
 tap "jesseduffield/lazydocker"
 tap "nikitabobko/tap"

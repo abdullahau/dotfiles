@@ -18,6 +18,7 @@ brew bundle --verbose --file=./packages/Brewfile
 echo "Enter superuser (sudo) password to accept Xcode license"
 sudo xcodebuild -license accept
 sudo xcodebuild -runFirstLaunch
+# xcode-select --install
 
 # echo "Installing VS Code Extensions"
 # cat vscode_extensions | xargs -L 1 code --install-extension
