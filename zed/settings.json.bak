@@ -68,12 +68,8 @@
       ],
       "format_on_save": "on",
       "formatter": [
-        {
-          "code_actions": {
-            "source.organizeImports.ruff": true,
-            "source.fixAll.ruff": true
-          }
-        },
+        { "code_action": "source.organizeImports.ruff" },
+        { "code_action": "source.fixAll.ruff" },
         {
           "language_server": { "name": "ruff" }
         }
@@ -232,12 +228,67 @@
         }
       ],
       "nickname": "Noco-Linux"
+    },
+    {
+      "host": "100.105.211.56",
+      "username": "abdullah",
+      "args": ["-A"],
+      "projects": [
+        {
+          "paths": ["/docker"]
+        },
+        {
+          "paths": ["/home/abdullah"]
+        }
+      ],
+      "nickname": "Omarchy"
     }
   ],
 
   // Quarto & Markdown
   "file_types": {
     "Markdown": ["md", "qmd", "rmd"]
+  },
+
+    // Extensions
+  "auto_install_extensions": {
+    "basedpyright": true,
+    "catppuccin": true,
+    "catppuccin-blur": true,
+    "catppuccin-icons": true,
+    "codebook": true,
+    "colored-zed-icons-theme": true,
+    "csv": true,
+    "docker-compose": true,
+    "dockerfile": true,
+    "env": true,
+    "git-firefly": true,
+    "html": true,
+    "ini": true,
+    "intellij-newui-theme": true,
+    "jetbrains-new-ui-icons": true,
+    "jetbrains-themes": true,
+    "latex": true,
+    "log": true,
+    "lua": true,
+    "macos-classic": true,
+    "make": true,
+    "markdown-oxide": true,
+    "markdownlint": true,
+    "material-icon-theme": true,
+    "postgres-language-server": true,
+    "pyrefly": true,
+    "python-requirements": true,
+    "python-snippets": true,
+    "rainbow-csv": true,
+    "ruff": true,
+    "sql": true,
+    "tokyo-night": true,
+    "toml": true,
+    "ty": true,
+    "typst": true,
+    "vscode-great-icons": true,
+    "vscode-icons": true
   },
 
   // Zed Misc. Settings
