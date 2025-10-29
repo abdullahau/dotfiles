@@ -140,10 +140,10 @@
       "args": ["-A"],
       "projects": [
         {
-          "paths": ["/home/noco/Qubes"]
+          "paths": ["/home/noco/HR"]
         },
         {
-          "paths": ["/home/noco/HR"]
+          "paths": ["/home/noco/Qubes"]
         },
         {
           "paths": ["/home/noco/RealEstate"]
@@ -164,6 +164,9 @@
         },
         {
           "paths": ["/home/abdullah"]
+        },
+        {
+          "paths": ["/home/abdullah/Developer/dotfiles"]
         }
       ],
       "nickname": "Omarchy"
@@ -177,7 +180,6 @@
 
   // Extensions
   "auto_install_extensions": {
-    "basedpyright": true,
     "catppuccin": true,
     "catppuccin-blur": true,
     "catppuccin-icons": true,
@@ -206,11 +208,9 @@
     "python-requirements": true,
     "python-snippets": true,
     "rainbow-csv": true,
-    "ruff": true,
     "sql": true,
     "tokyo-night": true,
     "toml": true,
-    "ty": true,
     "typst": true,
     "vscode-great-icons": true,
     "vscode-icons": true
