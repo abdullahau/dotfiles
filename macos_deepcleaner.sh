@@ -10,16 +10,21 @@ set -euo pipefail
 # CONFIGURATION
 #--------------------------------------
 EXCLUDE_DIRS=(
+  "/Volumes"
   "/System/Volumes"
   "/System/Library"
-  "/Volumes"
   "/private/var/vm"
   "/dev"
   "/proc"
   "/sys"
   "/cores"
+  "/Applications/Xcode.app"
+  "/var"
+  "/etc"
+  "/tmp"
   "$HOME/Library/CloudStorage"
-  "$HOME/.Trash/"
+  "$HOME/OneDrive"
+  "$HOME/.Trash"
 )
 
 EXCLUDE_PATTERNS=(
@@ -27,6 +32,7 @@ EXCLUDE_PATTERNS=(
   ".venv"
   ".vscode"
   ".positron"
+  "OneDrive"
 )
 
 fzf_args=(
@@ -64,13 +70,14 @@ echo "🔎 Searching filesystem for '$keyword'... (please wait)"
 sleep 1
 
 # Build fd command
-fd_cmd=(fd "$keyword" /
+fd_cmd=(sudo fd "$keyword" /
   --hidden
   --color never
   --type f
   --type d
-  --type x  
-  --ignore-file /dev/null
+  --type x
+  --type l
+  --unrestricted
   --ignore-case
   --follow
   --threads=4
@@ -111,8 +118,16 @@ read -rp "Are you sure? (y/N): " confirm
 echo "🗑️  Removing selected files/folders..."
 echo "$selected" | while IFS= read -r path; do
   if [[ -n "$path" ]]; then
-    # sudo rm -rfv "$path"
-    sudo mv "$path" ~/.Trash/
+    if [[ -e "$path" ]] || [[ -L "$path" ]]; then
+      base=$(basename "$path")
+      dest="$HOME/.Trash/$base"
+
+      if [[ -e "$dest" ]]; then
+        dest="$HOME/.Trash/${base}_$(date +%s)"
+      fi
+      
+      sudo mv "$path" "$dest"
+    fi
   fi
 done
 
