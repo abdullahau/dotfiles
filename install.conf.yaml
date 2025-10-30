@@ -23,6 +23,7 @@
     ~/.config/zed: zed
     ~/.config/micro: micro
     ~/.config/yazi: yazi
+    ~/.config/bat: bat
     # SSH
     ~/.ssh/config: ssh/config
     # Linters

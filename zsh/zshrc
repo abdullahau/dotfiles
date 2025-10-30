@@ -9,9 +9,17 @@ zstyle ':z4h:bindkey' keyboard  'mac'
 zstyle ':z4h:' start-tmux       no
 zstyle ':z4h:' term-shell-integration 'yes'
 zstyle ':z4h:autosuggestions' forward-char 'accept'
-zstyle ':z4h:fzf-complete' recurse-dirs 'no'
 zstyle ':z4h:direnv' enable 'no'
 zstyle ':z4h:direnv:success' notify 'yes'
+
+# fzf completion settings
+zstyle ':z4h:fzf-complete' recurse-dirs 'yes'
+zstyle ':z4h:fzf-complete' fzf-bindings tab:repeat
+
+# SSH Completions
+zstyle ':completion:*:ssh:argument-1:'       tag-order  hosts users
+zstyle ':completion:*:scp:argument-rest:'    tag-order  hosts files users
+zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 
 # run `z4h update` to update everything
 
@@ -22,6 +30,7 @@ zstyle ':z4h:ssh:root@130.0.0.104'   enable 'no'
 zstyle ':z4h:ssh:*'                  enable 'no'  # default for others
 
 # Send additional files when teleporting
+# zstyle ':z4h:ssh:*' send-extra-files '~/.p10k.zsh'
 # zstyle ':z4h:ssh:*' send-extra-files '<file path>'
 
 # --------------------------------------------------------------
@@ -48,7 +57,6 @@ export LOCAL_NOTEBOOK_DEV=1              # Zed Preview flag
 export EDITOR='micro'                    # Default terminal editor (yazi)
 export MICRO_TRUECOLOR=1                 # Micro editor theming
 export GPG_TTY=$TTY                      # For GPG TTY binding
-
 
 # --------------------------------------------------------------
 # LOCAL ENVIRONMENT OVERRIDES
@@ -128,10 +136,15 @@ eval "$(zoxide init zsh)"                      # zoxide
 eval "$(uv generate-shell-completion zsh)"     # uv
 eval "$(uvx --generate-shell-completion zsh)"  # uvx
 
+source <(fzf --zsh) # fzf
+
+# Setting fd as the default source for fzf
+export FZF_DEFAULT_COMMAND='fd --type f --type d --strip-cwd-prefix --hidden --follow --exclude .git --exclude .venv'
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # eval "$(starship init zsh)" # Starship
 # eval "$(oh-my-posh init zsh)" # Oh My Posh
-# source <(fzf --zsh) # fzf
 
 # --------------------------------------------------------------
 # DEFINE NAMED DIRECTORIES
@@ -160,5 +173,6 @@ setopt APPEND_HISTORY         # append rather than overwrite
 setopt HIST_REDUCE_BLANKS     # clean up extra spaces
 setopt HIST_IGNORE_SPACE      # ignore commands starting with space
 setopt HIST_EXPIRE_DUPS_FIRST # expire duplicates first
+setopt HIST_IGNORE_DUPS		  # ignore duplicates
 setopt glob_dots              # show dotfiles in globs
 setopt no_auto_menu           # require second TAB to open menu
