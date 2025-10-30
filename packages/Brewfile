@@ -93,6 +93,8 @@ brew "jandedobbeleer/oh-my-posh/oh-my-posh"
 brew "jesseduffield/lazydocker/lazydocker"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "aerospace"
+# Menu bar tool to limit maximum charging percentage
+cask "aldente"
 # Transfer files from and to an Android smartphone
 cask "android-file-transfer"
 # Compact TeX distribution as alternative to the full TeX Live / MacTeX
@@ -117,6 +119,8 @@ cask "localsend"
 cask "logseq"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Verify system files structure, run miscellaneous maintenance and more
+cask "onyx"
 # Data science IDE
 cask "positron"
 # Scientific and technical publishing system built on Pandoc
