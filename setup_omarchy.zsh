@@ -54,10 +54,28 @@ if [ -d "$Z4H_DIR" ]; then
 fi
 
 #----------------------------------------------------------------------
+# SSH Setup
+#----------------------------------------------------------------------
+
+echo "\n4) Setting up OpenSSH...\n"
+
+sudo systemctl start sshd || echo "WARNING: SSH service failed to enable/start."
+sudo systemctl enable sshd || echo "WARNING: SSH service failed to enable/start."
+
+SSH_STATUS=$(sudo systemctl status sshd 2>/dev/null)
+if [ -n "$SSH_STATUS" ]; then
+    echo "SSH is active"
+else
+    echo "WARNING: SSH is not active"
+fi
+
+sudo ufw allow 22/tcp
+
+#----------------------------------------------------------------------
 # Tailscale Setup
 #----------------------------------------------------------------------
 
-echo "\n4) Setting up Tailscale...\n"
+echo "\n5) Setting up Tailscale...\n"
 
 sudo systemctl enable --now tailscaled || echo "WARNING: Tailscale service failed to enable/start."
 sudo tailscale up
@@ -73,7 +91,7 @@ fi
 # Plex Setup
 #----------------------------------------------------------------------
 
-echo "\n5) Setting up Plex Media Server...\n"
+echo "\n6) Setting up Plex Media Server...\n"
 
 sudo systemctl enable plexmediaserver.service || echo "WARNING: Plex service enable failed."
 sudo systemctl start plexmediaserver.service || echo "WARNING: Plex service start failed."
@@ -103,7 +121,7 @@ fi
 # Monitor Configuration
 #----------------------------------------------------------------------
 
-echo "\n6) Setting up Monitor Configuration...\n"
+echo "\n7) Setting up Monitor Configuration...\n"
 
 MONITOR_CONFIG="$HOME/.config/hypr/monitors.conf"
 MONITOR_DOTFILE="./hypr/monitors.conf"
@@ -116,7 +134,7 @@ echo "\nMonitor configuration written to $MONITOR_CONFIG.\n"
 # Logind Configuration - Lid Switch
 #----------------------------------------------------------------------
 
-echo "\n7) Configuring Logind for Lid Switch behavior...\n"
+echo "\n8) Configuring Logind for Lid Switch behavior...\n"
 
 LOGIND_CONF="/etc/systemd/logind.conf"
 
