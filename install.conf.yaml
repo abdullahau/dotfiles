@@ -30,6 +30,8 @@
     ~/.config/yazi: yazi
     ~/.config/bat: bat
     ~/.config/aerospace: aerospace
+    ~/.config/fastfetch: fastfetch
+    ~/.config/raycast/scripts: raycast/scripts
     # SSH
     ~/.ssh/config: ssh/config
     # Editors
