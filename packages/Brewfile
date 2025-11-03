@@ -91,14 +91,14 @@ brew "zsh-syntax-highlighting"
 brew "jandedobbeleer/oh-my-posh/oh-my-posh"
 # A simple terminal UI for docker, written in Go
 brew "jesseduffield/lazydocker/lazydocker"
-# AeroSpace is an i3-like tiling window manager for macOS
-cask "aerospace"
 # Menu bar tool to limit maximum charging percentage
 cask "aldente"
 # Transfer files from and to an Android smartphone
 cask "android-file-transfer"
 # Compact TeX distribution as alternative to the full TeX Live / MacTeX
 cask "basictex"
+# Display management tool
+cask "betterdisplay"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
 # File transfer over ad-hoc wifi
@@ -129,6 +129,8 @@ cask "quarto"
 cask "r-app"
 # All-in-one bookmark manager
 cask "raindropio"
+# Control your tools with a few keystrokes
+cask "raycast"
 # Data science software focusing on R and Python
 cask "rstudio"
 # Music streaming service
@@ -230,9 +232,11 @@ vscode "shadesofbuntu.flexoki-light"
 vscode "shd101wyy.markdown-preview-enhanced"
 vscode "stkb.rewrap"
 vscode "streetsidesoftware.code-spell-checker"
+vscode "tailscale.vscode-tailscale"
 vscode "tamasfe.even-better-toml"
 vscode "tecosaur.latex-utilities"
 vscode "thomanq.math-snippets"
+vscode "timonwong.shellcheck"
 vscode "tomoki1207.pdf"
 vscode "torn4dom4n.latex-support"
 vscode "visualstudioexptteam.intellicode-api-usage-examples"

@@ -149,8 +149,8 @@ export FZF_DEFAULT_COMMAND='fd --type f --type d --strip-cwd-prefix --hidden --f
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-# eval "$(starship init zsh)" # Starship
-# eval "$(oh-my-posh init zsh)" # Oh My Posh
+# eval "$(starship init zsh)" 				   # Starship
+# eval "$(oh-my-posh init zsh)" 			   # Oh My Posh
 
 # --------------------------------------------------------------
 # DEFINE NAMED DIRECTORIES
@@ -168,6 +168,8 @@ alias ff="fzf --preview 'bat --style=numbers --color=always {}'" # fzf
 alias cd="zd"                                                    # use zoxide wrapper
 alias man=batman                                                 # `man` page colorizer using `bat`
 alias tree='tree -a -I .git'
+alias 'ip-local'='ipconfig getifaddr en0'						             # Local network IP address
+alias 'ip-public'='curl checkip.amazonaws.com'					         # Public IP Address
 
 # Add flags to existing aliases
 alias ls="${aliases[ls]:-ls} -A"                                 # z4h default enhancement
@@ -180,6 +182,6 @@ setopt APPEND_HISTORY         # append rather than overwrite
 setopt HIST_REDUCE_BLANKS     # clean up extra spaces
 setopt HIST_IGNORE_SPACE      # ignore commands starting with space
 setopt HIST_EXPIRE_DUPS_FIRST # expire duplicates first
-setopt HIST_IGNORE_DUPS		  # ignore duplicates
+setopt HIST_IGNORE_DUPS		    # ignore duplicates
 setopt glob_dots              # show dotfiles in globs
 setopt no_auto_menu           # require second TAB to open menu
