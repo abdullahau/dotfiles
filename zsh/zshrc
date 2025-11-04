@@ -186,4 +186,7 @@ setopt HIST_IGNORE_DUPS		    # ignore duplicates
 setopt glob_dots              # show dotfiles in globs
 setopt no_auto_menu           # require second TAB to open menu
 
-fastfetch --pipe false
+
+if [[ $- == *i* && $TERM_PROGRAM == "ghostty" ]]; then
+  fastfetch --pipe false
+fi
