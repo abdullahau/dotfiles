@@ -37,6 +37,8 @@ brew "jq"
 brew "lapack"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Pager program similar to more
+brew "less"
 # Mac App Store command-line interface
 brew "mas"
 # Modern and intuitive terminal-based text editor
@@ -83,6 +85,8 @@ brew "yazi"
 brew "zlib"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
+# UNIX shell (command interpreter)
+brew "zsh"
 # Fish-like fast/unobtrusive autosuggestions for zsh
 brew "zsh-autosuggestions"
 # Zsh port of Fish shell's history search
@@ -159,7 +163,6 @@ mas "Developer", id: 640199958
 mas "Keynote", id: 409183694
 mas "PDFgear", id: 6469021132
 mas "Save to Raindrop.io", id: 1549370672
-mas "Xcode", id: 497799835
 vscode "aaron-bond.better-comments"
 vscode "adpyke.codesnap"
 vscode "arcticicestudio.nord-visual-studio-code"
