@@ -134,13 +134,13 @@ if [[ "$OSTYPE" == "darwin"* && -x "$(command -v brew)" && -z "$Z4H_SSH" ]]; the
   eval "$(brew shellenv)"
 fi
 
-# Initialize Zsh’s completion system
-autoload -Uz compinit && compinit
-
 # Initialize tool-specific completions
 eval "$(zoxide init zsh)"                      # zoxide
 eval "$(uv generate-shell-completion zsh)"     # uv
 eval "$(uvx --generate-shell-completion zsh)"  # uvx
+
+# Initialize Zsh’s completion system
+autoload -Uz compinit && compinit
 
 source <(fzf --zsh) # fzf
 
@@ -160,7 +160,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # ALIASES
 # --------------------------------------------------------------
 alias zed-preview="/opt/homebrew/bin/zed-preview"                # Zed Preview
-alias ls='eza -lh --group-directories-first --icons=auto'        # eza
+alias ls='eza -lh --git --group-directories-first --icons=auto'        # eza
 alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
@@ -168,7 +168,7 @@ alias ff="fzf --preview 'bat --style=numbers --color=always {}'" # fzf
 alias cd="zd"                                                    # use zoxide wrapper
 alias man=batman                                                 # `man` page colorizer using `bat`
 alias tree='tree -a -I .git'
-alias trail='print -l $path'                                     # $PATH array to multi-line string. Alternative: alias trail='<<<${(F)path}'
+alias trail='print -l $path'                                     # $path array to multi-line string. Alternative: alias trail='<<<${(F)path}'
 alias 'ip-local'='ipconfig getifaddr en0'                        # Local network IP address
 alias 'ip-public'='curl checkip.amazonaws.com'                   # Public IP Address
 alias bbd='brew bundle dump --describe --force --file=~/.dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
