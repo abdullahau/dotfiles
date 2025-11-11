@@ -58,6 +58,7 @@ export LOCAL_NOTEBOOK_DEV=1              # Zed Preview flag
 export EDITOR='micro'                    # Default terminal editor (yazi)
 export MICRO_TRUECOLOR=1                 # Micro editor theming
 export GPG_TTY=$TTY                      # For GPG TTY binding
+# export NULLCMD=bat                     # set bat as the NULLCMD instead of cat
 
 # --------------------------------------------------------------
 # LOCAL ENVIRONMENT OVERRIDES

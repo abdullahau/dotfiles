@@ -10,7 +10,6 @@ cat "$PACKAGE_LIST_PATH" | while read -r tool_package; do
         if uv tool install "$tool_package"; then
             echo "   ✅ Successfully installed $tool_package."
         else
-            # uv often reports details on failure, so we just log the outcome here.
             echo "   ❌ Installation failed for $tool_package. Check the error message above."
         fi
     fi

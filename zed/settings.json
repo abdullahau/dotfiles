@@ -109,7 +109,7 @@
           "lint": {
             "select": ["ALL"],
             // "extendSelect": ["PTH", "I"],
-            "ignore": ["F401", "CPY", "D", "T20", "I", "ERA001"],
+            "ignore": ["F401", "CPY", "D", "T20", "I", "ERA001", "COM812"],
             "enable": true,
             "preview": true
           },
