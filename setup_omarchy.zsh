@@ -87,6 +87,20 @@ else
     echo "WARNING: Could not retrieve Tailscale IPv4 address."
 fi
 
+echo "\n5.a) Setting Up Exit Node...\n"
+
+sudo tailscale set --advertise-exit-node
+
+echo "\n5.b) Setting Up Subnet Router...\n"
+
+sudo tailscale set --advertise-routes=192.168.0.0/24
+
+echo "\n5.b) Part 2: Setting up IP Forwarding...\n"
+
+echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+
 #----------------------------------------------------------------------
 # Plex Setup
 #----------------------------------------------------------------------
