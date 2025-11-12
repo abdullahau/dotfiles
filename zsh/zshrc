@@ -146,6 +146,13 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # eval "$(starship init zsh)" # Starship
 # eval "$(oh-my-posh init zsh)" # Oh My Posh
 
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"		# Homebrew
+
+. "$HOME/.local/bin/env"
+. "$HOME/.cargo/env"		# Rust
+
+PATH=~/.local/bin:$PATH
+
 # --------------------------------------------------------------
 # DEFINE NAMED DIRECTORIES
 # --------------------------------------------------------------
@@ -153,19 +160,22 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # --------------------------------------------------------------
 # ALIASES
 # --------------------------------------------------------------
+alias bat='batcat'
 alias ls='eza -lh --git --group-directories-first --icons=auto'        # eza 
 alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
-alias ff="fzf --preview 'bat --style=numbers --color=always {}'" # fzf
-alias cd="zd"                                                    # use zoxide wrapper
-alias man=batman                                                 # `man` page colorizer using `bat`
+alias ff="fzf --preview 'bat --style=numbers --color=always {}'"	   # fzf
+alias cd="z"                                                    	   # use zoxide wrapper
+alias man=batman                                                 	   # `man` page colorizer using `bat`
 alias tree='tree -a -I .git'
 alias "ip-local"="ip -4 addr show wlan0 | awk '/inet / {print \$2}' | cut -d/ -f1"  # Local network IP address
 alias "ip-public"="curl checkip.amazonaws.com"									    # Public IP address
+alias bbd='brew bundle dump --describe --force --file=~/Developer/dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
+alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all' 	     # brew update, upgrade, and cleanup cache
 
 # Add flags to existing aliases
-alias ls="${aliases[ls]:-ls} -A"                                 # z4h default enhancement
+alias ls="${aliases[ls]:-ls} -A"                                 	  # z4h default enhancement
 
 # --------------------------------------------------------------
 # SHELL OPTIONS

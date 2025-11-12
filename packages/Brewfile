@@ -1,0 +1,14 @@
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Bash scripts that integrate bat with various command-line tools
+brew "bat-extras"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# GNU compiler collection
+brew "gcc"
+# Lazier way to manage everything docker
+brew "lazydocker"
+# Simple terminal UI for git commands
+brew "lazygit"
+# Blazing fast terminal file manager written in Rust, based on async I/O
+brew "yazi"

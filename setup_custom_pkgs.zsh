@@ -2,34 +2,18 @@
 
 echo "\n<<< Starting Docker Services Setup >>>\n"
 
-echo "1) Installing Docker...\n"
+echo "1) Installing Rust toolchain via rustup...\n"
 
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup update
 
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-sudo systemctl status docker
-sudo systemctl start docker
-
-echo "\n2) Creating Docker Container Directory and Volume Directories...\n"
+echo "1) Creating Docker Container Directory and Volume Directories...\n"
 
 sudo mkdir -p /docker
 sudo mkdir -p /data/{books,downloads,movies,music,shows}
 sudo mkdir -p /data/downloads/{complete,incomplete,torrents}
 
-echo "\n3) Changing Ownership and Permissions to $USER...\n"
+echo "\n2) Changing Ownership and Permissions to $USER...\n"
 
 # Change ownership
 sudo chown -R "$USER":"$USER" /docker
@@ -39,7 +23,7 @@ sudo chown -R "$USER":"$USER" /data
 sudo chmod -R 755 /docker
 sudo chmod -R 755 /data
 
-echo "\n4) Git Clone Homelab Repo...\n"
+echo "\n3) Git Clone Homelab Repo...\n"
 
 TARGET_DIR="/docker"
 REPO_URL="https://github.com/abdullahau/homelab.git"
@@ -52,12 +36,12 @@ else
     git -C "$TARGET_DIR" pull
 fi
 
-echo "\n5) Starting Docker Containers with Docker Compose...\n"
+echo "\n4) Starting Docker Containers with Docker Compose...\n"
 
 docker compose -f /docker/adguard-docker-compose.yml up -d
 docker compose -f /docker/media-docker-compose.yml up -d
 
-echo "\n6) Setting up Port 53 Bind for AdGuard Home...\n"
+echo "\n5) Setting up Port 53 Bind for AdGuard Home...\n"
 
 RESOLVED_DIR="/etc/systemd/resolved.conf.d"
 sudo mkdir -p $RESOLVED_DIR
