@@ -1,9 +1,17 @@
+tap "jesseduffield/lazydocker"
+tap "philocalyst/tap"
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Bash scripts that integrate bat with various command-line tools
+brew "bat-extras"
 # Modern, maintained replacement for ls
 brew "eza"
 # Like neofetch, but much faster because written mostly in C
 brew "fastfetch"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
+# GNU compiler collection
+brew "gcc"
 # Play, record, convert, and stream audio and video
 brew "ffmpeg"
 # Command-line fuzzy finder written in Go
@@ -12,6 +20,10 @@ brew "fzf"
 brew "imagemagick"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# Lazier way to manage everything docker
+brew "lazydocker"
+# Simple terminal UI for git commands
+brew "lazygit"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # SVG rendering tool and library
@@ -24,8 +36,11 @@ brew "sevenzip"
 brew "speedtest-cli"
 # Simplified and community-driven man pages
 brew "tldr"
+# Extremely fast Python package installer and resolver, written in Rust
+brew "uv"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-vscode "command is only available in wsl or inside a visual studio code terminal."
+# User-friendly, lightweight TUI for disk imaging
+brew "philocalyst/tap/caligula"

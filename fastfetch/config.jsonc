@@ -141,12 +141,6 @@
       "keyColor": "blue",
     },
     {
-      "type": "command",
-      "key": "│ ├󰸌",
-      "keyColor": "blue",
-      "text": "for i in {0..15}; do printf '\\e[38;5;%dm●' $i; done; printf '\\e[0m\\n'",
-    },
-    {
       "type": "terminalfont",
       "key": "└ └",
       "keyColor": "blue",

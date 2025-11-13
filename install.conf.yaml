@@ -20,7 +20,6 @@
     ~/.gitignore_global: git/gitignore_global
     # Configurations
     # Terminal Packages & Apps
-    ~/.config/zed: zed
     ~/.config/micro: micro
     ~/.config/yazi: yazi
     ~/.config/bat: bat
@@ -43,16 +42,18 @@
     -   command: [exec zsh, Running ZSH shell]
         stdout: true
         stderr: true
-    # -   command: ./setup_ubuntu.zsh
-    #     stdout: true
-    #     stderr: true
-    # -   command: ./setup_homebrew.zsh
-    #     stdout: true
-    #     stderr: true        
+    -   command: ./setup_ubuntu.zsh
+        stdin: true
+        stdout: true
+        stderr: true
+    -   command: ./setup_homebrew.zsh
+        stdin: true
+        stdout: true
+        stderr: true
     -   command: ./setup_docker.zsh
         stdin: true
         stdout: true
         stderr: true
-    # -   command: ./setup_uv.zsh
-    #     stdout: true
-    #     stderr: true
+    -   command: ./setup_uv.zsh
+        stdout: true
+        stderr: true

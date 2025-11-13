@@ -53,7 +53,6 @@ path=(~/bin $path)
 # --------------------------------------------------------------
 export XDG_CONFIG_HOME="$HOME/.config"   # XDG base directory
 export TERM=xterm-256color               # Ghostty terminal compatibility
-export LOCAL_NOTEBOOK_DEV=1              # Zed Preview flag
 export EDITOR='micro'                    # Default terminal editor (yazi)
 export MICRO_TRUECOLOR=1                 # Micro editor theming
 export GPG_TTY=$TTY                      # For GPG TTY binding
@@ -132,6 +131,7 @@ fpath+=("$HOME/.docker/completions")
 eval "$(zoxide init zsh)"                      # zoxide
 eval "$(uv generate-shell-completion zsh)"     # uv
 eval "$(uvx --generate-shell-completion zsh)"  # uvx
+eval "$(brew shellenv)"						   # homebrew
 
 # Initialize Zsh’s completion system
 autoload -Uz compinit && compinit
@@ -140,18 +140,14 @@ source <(fzf --zsh) # fzf
 
 # Setting fd as the default source for fzf
 export FZF_DEFAULT_COMMAND='fd --type f --type d --strip-cwd-prefix --hidden --follow --exclude .git --exclude .venv'
-
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-# eval "$(starship init zsh)" # Starship
-# eval "$(oh-my-posh init zsh)" # Oh My Posh
+# eval "$(starship init zsh)" 								# Starship
+# eval "$(oh-my-posh init zsh)" 							# Oh My Posh
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"		# Homebrew
 
-. "$HOME/.local/bin/env"
-. "$HOME/.cargo/env"		# Rust
-
-PATH=~/.local/bin:$PATH
+. "$HOME/.cargo/env"										# Rust
 
 # --------------------------------------------------------------
 # DEFINE NAMED DIRECTORIES
@@ -160,7 +156,6 @@ PATH=~/.local/bin:$PATH
 # --------------------------------------------------------------
 # ALIASES
 # --------------------------------------------------------------
-alias bat='batcat'
 alias ls='eza -lh --git --group-directories-first --icons=auto'        # eza 
 alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
@@ -169,10 +164,12 @@ alias ff="fzf --preview 'bat --style=numbers --color=always {}'"	   # fzf
 alias cd="z"                                                    	   # use zoxide wrapper
 alias man=batman                                                 	   # `man` page colorizer using `bat`
 alias tree='tree -a -I .git'
-alias "ip-local"="ip -4 addr show wlan0 | awk '/inet / {print \$2}' | cut -d/ -f1"  # Local network IP address
+alias trail='print -l $path'										   # $path array to multi-line string
+alias "ip-local"="ip -4 addr show enxc8a362d8c536 | awk '/inet / {print \$2}' | cut -d/ -f1"  # Local network IP address
 alias "ip-public"="curl checkip.amazonaws.com"									    # Public IP address
 alias bbd='brew bundle dump --describe --force --file=~/Developer/dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
 alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all' 	     # brew update, upgrade, and cleanup cache
+alias disks='lsblk'													   # List information about block devices (Int./Ext. HDD & SSD) 
 
 # Add flags to existing aliases
 alias ls="${aliases[ls]:-ls} -A"                                 	  # z4h default enhancement
@@ -180,11 +177,16 @@ alias ls="${aliases[ls]:-ls} -A"                                 	  # z4h defaul
 # --------------------------------------------------------------
 # SHELL OPTIONS
 # --------------------------------------------------------------
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=2000
+SAVEHIST=2000
 setopt SHARE_HISTORY          # share history across sessions
 setopt APPEND_HISTORY         # append rather than overwrite
 setopt HIST_REDUCE_BLANKS     # clean up extra spaces
 setopt HIST_IGNORE_SPACE      # ignore commands starting with space
 setopt HIST_EXPIRE_DUPS_FIRST # expire duplicates first
 setopt HIST_IGNORE_DUPS		  # ignore duplicates
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
 setopt glob_dots              # show dotfiles in globs
 setopt no_auto_menu           # require second TAB to open menu

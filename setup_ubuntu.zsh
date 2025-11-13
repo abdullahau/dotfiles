@@ -50,13 +50,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rustup update
 
 #----------------------------------------------------------------------
-# Plex Setup
-#----------------------------------------------------------------------
-
-echo "\n4) Setting up Plex Media Server...\n"
-
-
-#----------------------------------------------------------------------
 # Logind Configuration - Lid Switch
 #----------------------------------------------------------------------
 
@@ -79,5 +72,16 @@ EOF
 echo "Reloading systemd-logind service to apply changes..."
 sudo systemctl reload systemd-logind.service || echo "WARNING: Failed to reload systemd-logind."
 
+#----------------------------------------------------------------------
+# Samba Setup
+#----------------------------------------------------------------------
+
+echo "\n5) Setting Up Samba SMB...\n"
+
+# https://chriskalos.notion.site/The-0-Home-Server-Written-Guide-5d5ff30f9bdd4dfbb9ce68f0d914f1f6#ad77305c83424605b859168b243ff81d
+sudo ln -s ~/Developer/dotfiles/samba/smb.conf /etc/samba/smb.conf
+
+sudo smbpasswd -a abdullah
+sudo systemctl restart smbd
 
 echo "\n<<< Ubuntu Setup Complete >>>\n"
