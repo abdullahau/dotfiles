@@ -32,31 +32,27 @@
     ~/.config/ruff: ruff
 
 - shell:
-    - 
-        command: sudo pacman -S zsh
+    -   command: sudo apt install zsh
         stdin: true
         stdout: true
         stderr: true
-    -
-        command: [chsh -s $(which zsh), Making zsh the default shell]
+    -   command: [chsh -s $(which zsh), Making zsh the default shell]
         stdin: true
         stdout: true
         stderr: true
-    - 
-        command: [exec zsh, Running ZSH shell]
+    -   command: [exec zsh, Running ZSH shell]
         stdout: true
         stderr: true
-    - 
-        command: ./setup_omarchy.zsh
+    # -   command: ./setup_ubuntu.zsh
+    #     stdout: true
+    #     stderr: true
+    # -   command: ./setup_homebrew.zsh
+    #     stdout: true
+    #     stderr: true        
+    -   command: ./setup_docker.zsh
         stdin: true
         stdout: true
         stderr: true
-    -
-        command: ./setup_docker.zsh
-        stdout: true
-        stderr: true
-    - 
-        command: ./setup_uv.zsh
-        stdin: true
-        stdout: true
-        stderr: true
+    # -   command: ./setup_uv.zsh
+    #     stdout: true
+    #     stderr: true
