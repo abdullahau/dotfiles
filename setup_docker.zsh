@@ -4,6 +4,7 @@ echo "\n<<< Starting Docker Services Setup >>>\n"
 
 echo "\n1) Installing Docker...\n"
 
+# https://docs.docker.com/engine/install/ubuntu/
 # Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
@@ -25,6 +26,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 echo "\n1a) Granting root-level Docker privilage to a non-root user"
 
+# https://docs.docker.com/engine/install/linux-postinstall
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker

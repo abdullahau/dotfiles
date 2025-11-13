@@ -48,6 +48,29 @@ brew bundle --file ~/.dotfiles/Brewfile
 cd ~/.dotfiles && brew bundle
 ```
 
+## Debug Docker context error
+
+```bash
+# 1. Check your current context
+docker context ls
+
+# 2. Switch to the default (root daemon) context
+docker context use default
+
+# 3. Verify it's now using the correct socket
+docker context ls
+
+# 4. Test
+docker version
+
+# Remove rootless context
+docker context rm rootless 2>/dev/null
+
+# Clean up any remaining rootless config
+rm -rf ~/.config/docker
+rm -rf ~/.local/share/docker
+```
+
 ## TODO 
 - Terminal Preferences
 - Change Shell to ZSH
