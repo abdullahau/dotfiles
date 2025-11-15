@@ -170,6 +170,7 @@ alias "ip-public"="curl checkip.amazonaws.com"									    # Public IP address
 alias bbd='brew bundle dump --describe --force --file=~/Developer/dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
 alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all' 	     # brew update, upgrade, and cleanup cache
 alias disks='lsblk'													   # List information about block devices (Int./Ext. HDD & SSD) 
+alias ports='sudo lsof -i -P -n'									   # List all open ports
 
 # Add flags to existing aliases
 alias ls="${aliases[ls]:-ls} -A"                                 	  # z4h default enhancement

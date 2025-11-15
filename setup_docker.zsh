@@ -35,7 +35,7 @@ newgrp docker
 echo "\n2) Creating Docker Container Directory and Volume Directories...\n"
 
 sudo mkdir -p /docker
-sudo mkdir -p /data/{books,downloads,movies,music,shows}
+sudo mkdir -p /data/{books,documents,downloads,movies,music,shows,videos}
 sudo mkdir -p /data/downloads/{complete,incomplete,torrents}
 
 echo "\n3) Changing Ownership and Permissions to $USER...\n"

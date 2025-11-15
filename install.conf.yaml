@@ -24,6 +24,8 @@
     ~/.config/yazi: yazi
     ~/.config/bat: bat
     ~/.config/fastfetch: fastfetch
+    ~/.config/btop: btop
+    ~/.config/rclone: rclone
     # SSH
     ~/.ssh/config: ssh/config
     # Linters

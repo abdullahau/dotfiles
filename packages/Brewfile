@@ -26,6 +26,8 @@ brew "lazydocker"
 brew "lazygit"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
+# Rsync for cloud storage
+brew "rclone"
 # SVG rendering tool and library
 brew "resvg"
 # Search tool like grep and The Silver Searcher
