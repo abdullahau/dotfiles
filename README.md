@@ -2,7 +2,7 @@
 
 Configuration repository containing my customized home folder dotfiles.
 
-## Steps to bootstrap a new Mac
+## Steps to bootstrap a new Ubuntu Server
 
 1. Install Apple's Command Line Tools, which are prerequisites for Git and Homebrew.
 
@@ -47,6 +47,76 @@ brew bundle --file ~/.dotfiles/Brewfile
 # ...or move to the directory first.
 cd ~/.dotfiles && brew bundle
 ```
+
+## Running rclone in the background
+
+### Simple background process
+
+```bash
+nohup rclone sync onedrive: /path/to/local/folder > rclone.log -filter-from /path/to/rclone-filter.txt 2>&1 &
+```
+
+### Using `tmux` 
+
+**Create and run the tmux session:**
+
+```bash
+# Start a new named tmux session
+tmux new -s rclone
+
+# From inside the tmux session - run your command
+rclone sync onedrive: /mnt/hdd/onedrive --filter-from ~/.config/rclone/rclone-filters.txt
+```
+
+**Detach (leave it running in background):**
+
+While inside the tmux session, press:
+
+```
+Ctrl+b, then d
+```
+(Press Ctrl+b, release, then press d)
+
+This detaches you from the session but the process keeps running.
+
+**Re-attach (come back to check on it):**
+
+```bash
+tmux attach -t rclone
+# or shorthand:
+tmux a -t rclone
+```
+
+**One-liner to create detached session:**
+
+```bash
+# Create detached session and run command immediately
+tmux new -d -s rclone 'rclone sync onedrive: /mnt/hdd/onedrive --filter-from ~/.config/rclone/rclone-filters.txt'
+```
+
+**Useful tmux commands:**
+
+```bash
+# List all sessions
+tmux ls
+
+# Kill the session when done
+tmux kill-session -t rclone
+
+# Attach to last session (if you forgot the name)
+tmux attach
+```
+
+**Check if it's still running:**
+
+```bash
+tmux ls  # Will show [session_name] if running
+```
+
+The session persists even if you:
+- Close your terminal
+- Log out of SSH
+- Disconnect from the server
 
 ## Debug Docker context error
 

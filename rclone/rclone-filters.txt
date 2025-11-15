@@ -1,0 +1,9 @@
+- .Trash*/**
+- desktop.ini
+- *.tmp
+- ~$*
+- Personal Vault/**
+- Pictures/**
+- Music/**
+- Personal Files/Nikkah & Valeema/**
+- Cold West/**
