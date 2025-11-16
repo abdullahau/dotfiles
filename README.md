@@ -50,6 +50,14 @@ cd ~/.dotfiles && brew bundle
 
 ## Running rclone in the background
 
+Rclone is a command line program to manage files on cloud storage.
+
+`rclone copy` - Copy files from source to dest, skipping already copied.
+`rclone sync` - Make source and dest identical, modifying destination only.
+
+- `rclone sync source:path dest:path [flags]`
+- `rclone copy source:sourcepath dest:destpath`
+
 ### Simple background process
 
 ```bash
@@ -117,6 +125,17 @@ The session persists even if you:
 - Close your terminal
 - Log out of SSH
 - Disconnect from the server
+
+**Sync with progress and stats**
+
+```bash
+rclone sync onedrive: /mnt/hdd/onedrive \
+  --filter-from ~/.config/rclone/rclone-filters.txt \
+  --progress \
+  --stats 5s \
+  --stats-one-line \
+  -v
+```
 
 ## Debug Docker context error
 

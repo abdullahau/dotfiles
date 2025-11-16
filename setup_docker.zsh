@@ -5,7 +5,7 @@ echo "\n<<< Starting Docker Services Setup >>>\n"
 echo "\n1) Installing Docker...\n"
 
 # https://docs.docker.com/engine/install/ubuntu/
-# Add Docker's official GPG key:
+# 1) Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -15,16 +15,17 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-# Add the repository to Apt sources:
+# 2) Add the repository to Apt sources:
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 
+# 3) Install Docker packages
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-echo "\n1a) Granting root-level Docker privilage to a non-root user"
+echo "\n1a) Granting root-level Docker privilege to a non-root user"
 
 # https://docs.docker.com/engine/install/linux-postinstall
 sudo groupadd docker
@@ -44,7 +45,7 @@ echo "\n3) Changing Ownership and Permissions to $USER...\n"
 sudo chown -R "$USER":"$USER" /docker
 sudo chown -R "$USER":"$USER" /data
 
-# Change permissions 
+# Change permissions
 sudo chmod -R 755 /docker
 sudo chmod -R 755 /data
 
@@ -65,22 +66,23 @@ echo "\n5) Starting Docker Containers with Docker Compose...\n"
 
 docker compose -f /docker/adguard-docker-compose.yml up -d
 docker compose -f /docker/media-docker-compose.yml up -d
+docker compose -f /docker/glance-docker-compose.yml up -d
 
 echo "\n6) Setting up Port 53 Bind for AdGuard Home...\n"
 
-# RESOLVED_DIR="/etc/systemd/resolved.conf.d"
-# sudo mkdir -p $RESOLVED_DIR
-# sudo tee "$RESOLVED_DIR/adguardhome.conf" > /dev/null << EOF
-# [Resolve]
-# DNS=127.0.0.1
-# DNSStubListener=no
-# EOF
+RESOLVED_DIR="/etc/systemd/resolved.conf.d"
+sudo mkdir -p $RESOLVED_DIR
+sudo tee "$RESOLVED_DIR/adguardhome.conf" > /dev/null << EOF
+[Resolve]
+DNS=127.0.0.1
+DNSStubListener=no
+EOF
 
-# sudo mv /etc/resolv.conf /etc/resolv.conf.backup
-# sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+sudo mv /etc/resolv.conf /etc/resolv.conf.backup
+sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
 # systemctl stop systemd-resolved.service
-# systemctl disable systemd-resolved.service  
-# systemctl reload-or-restart systemd-resolved
+# systemctl disable systemd-resolved.service
+systemctl reload-or-restart systemd-resolved
 
 echo "\n<<< Docker Services Setup Complete >>>\n"

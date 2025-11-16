@@ -42,7 +42,11 @@ echo "\n2) Setting up Zsh4humans...\n"
 
 echo "\n3) Setting up Tailscale...\n"
 
-# curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=tskey-auth-kJsAAcgVds11CNTRL-hii1FD7PXcLkuKhxSgfadLgr6Debkxd1 --advertise-exit-node
+curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=tskey-auth-kJsAAcgVds11CNTRL-hii1FD7PXcLkuKhxSgfadLgr6Debkxd1 --advertise-exit-node
+
+#----------------------------------------------------------------------
+# Rust Setup
+#----------------------------------------------------------------------
 
 echo "\n4) Installing Rust toolchain via rustup...\n"
 
