@@ -52,7 +52,7 @@ sudo chmod -R 755 /data
 echo "\n4) Git Clone Homelab Repo...\n"
 
 TARGET_DIR="/docker"
-REPO_URL="https://github.com/abdullahau/homelab.git"
+REPO_URL="git@github.com:abdullahau/homelab.git"
 
 if [ ! -d "$TARGET_DIR/.git" ]; then
     echo "No Git repository found in $TARGET_DIR. Cloning $REPO_URL..."
