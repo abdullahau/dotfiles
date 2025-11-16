@@ -32,6 +32,24 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 
+echo "\n2) Enable IPv6 in Docker Daemon...\n"
+
+sudo tee /etc/docker/daemon.json > /dev/null << EOF
+{
+  "ipv6": true,
+  "fixed-cidr-v6": "fd00::/80",
+  "experimental": true,
+  "ip6tables": true
+}
+EOF
+
+echo "\n3) Enable IPv6 on Host System...\n"
+
+cat << EOF | sudo tee -a /etc/sysctl.conf > /dev/null
+
+net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+EOF
 
 echo "\n2) Creating Docker Container Directory and Volume Directories...\n"
 
@@ -64,9 +82,7 @@ fi
 
 echo "\n5) Starting Docker Containers with Docker Compose...\n"
 
-docker compose -f /docker/adguard-docker-compose.yml up -d
-docker compose -f /docker/media-docker-compose.yml up -d
-docker compose -f /docker/glance-docker-compose.yml up -d
+/docker/docker-manager.sh up
 
 echo "\n6) Setting up Port 53 Bind for AdGuard Home...\n"
 
