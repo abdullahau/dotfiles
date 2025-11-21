@@ -137,39 +137,57 @@
     {
       "host": "130.0.0.104",
       "username": "root",
-      "args": ["-A"],
+      "args": [
+        "-A"
+      ],
       "projects": [
         {
-          "paths": ["/home/noco/HR"]
+          "paths": [
+            "/home/noco/HR"
+          ]
         },
         {
-          "paths": ["/home/noco/Qubes"]
+          "paths": [
+            "/home/noco/Qubes"
+          ]
         },
         {
-          "paths": ["/home/noco/RealEstate"]
+          "paths": [
+            "/home/noco/RealEstate"
+          ]
         },
         {
-          "paths": ["/home/noco/nocoflow"]
+          "paths": [
+            "/home/noco/nocoflow"
+          ]
         }
       ],
       "nickname": "Noco-Linux"
     },
     {
-      "host": "100.105.211.56",
+      "host": "100.125.140.11",
       "username": "abdullah",
-      "args": ["-A"],
+      "args": [
+        "-A"
+      ],
       "projects": [
         {
-          "paths": ["/docker"]
+          "paths": [
+            "/docker"
+          ]
         },
         {
-          "paths": ["/home/abdullah"]
+          "paths": [
+            "/home/abdullah"
+          ]
         },
         {
-          "paths": ["/home/abdullah/Developer/dotfiles"]
+          "paths": [
+            "/home/abdullah/Developer/dotfiles"
+          ]
         }
       ],
-      "nickname": "Omarchy"
+      "nickname": "Ubuntu"
     }
   ],
 

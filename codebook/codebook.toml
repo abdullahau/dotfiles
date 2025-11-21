@@ -17,7 +17,7 @@ dictionaries = ["en_us", "en_gb"]
 words = [
 	"abdullah","mahmood",
 	"codebook",
-	"homebrew", "vscode", "rustc", "omarchy",
+	"homebrew", "vscode", "rustc", "omarchy", "tailscale",
 	"jupyter", "jupyterlab", "jupytext", "conda",
 	"ipykernel",
 	"scipy",
@@ -50,7 +50,8 @@ words = [
 	"oop",
 	"hackathon",
 	"zstyle", "eza", "yazi", "fzf", "starship", "ghostty", "autoload", "tmux", "direnv", "envrc", "zoxide",
-	"powerlevel", "colormap", "powerline"
+	"powerlevel", "colormap", "powerline",
+	"mkdir", "systemctl"
 ]
 
 # Words that should always be flagged as incorrect
