@@ -18,8 +18,8 @@
   "buffer_font_fallbacks": ["JetBrainsMono Nerd Font"],
   "theme": {
     "mode": "system",
-    "light": "JetBrains Light",
-    "dark": "Tokyo Night Storm"
+    "light": "Catppuccin Latte (Blur)",
+    "dark": "Tokyo Night"
   },
   "icon_theme": "Material Icon Theme",
   "indent_guides": {
@@ -137,29 +137,19 @@
     {
       "host": "130.0.0.104",
       "username": "root",
-      "args": [
-        "-A"
-      ],
+      "args": ["-A"],
       "projects": [
         {
-          "paths": [
-            "/home/noco/HR"
-          ]
+          "paths": ["/home/noco/HR"]
         },
         {
-          "paths": [
-            "/home/noco/Qubes"
-          ]
+          "paths": ["/home/noco/Qubes"]
         },
         {
-          "paths": [
-            "/home/noco/RealEstate"
-          ]
+          "paths": ["/home/noco/RealEstate"]
         },
         {
-          "paths": [
-            "/home/noco/nocoflow"
-          ]
+          "paths": ["/home/noco/nocoflow"]
         }
       ],
       "nickname": "Noco-Linux"
@@ -167,24 +157,22 @@
     {
       "host": "100.125.140.11",
       "username": "abdullah",
-      "args": [
-        "-A"
-      ],
+      "args": ["-A"],
       "projects": [
         {
-          "paths": [
-            "/docker"
-          ]
+          "paths": ["/docker"]
         },
         {
-          "paths": [
-            "/home/abdullah"
-          ]
+          "paths": ["/home/abdullah"]
         },
         {
-          "paths": [
-            "/home/abdullah/Developer/dotfiles"
-          ]
+          "paths": ["/home/abdullah/Developer"]
+        },
+        {
+          "paths": ["/home/abdullah/Developer/dotfiles"]
+        },
+        {
+          "paths": ["/home/abdullah/Developer/zig-tutorial"]
         }
       ],
       "nickname": "Ubuntu"
@@ -231,7 +219,8 @@
     "toml": true,
     "typst": true,
     "vscode-great-icons": true,
-    "vscode-icons": true
+    "vscode-icons": true,
+    "zig": true
   },
 
   // Zed Misc. Settings
@@ -241,6 +230,9 @@
   },
   "edit_predictions": {
     "mode": "subtle"
+  },
+  "collaboration_panel": {
+    "button": false
   },
   "telemetry": {
     "diagnostics": false,
