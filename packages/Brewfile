@@ -42,8 +42,6 @@ brew "resvg"
 brew "ripgrep"
 # Utility that provides fast incremental file transfer
 brew "rsync"
-# SMB/CIFS file, print, and login server for UNIX
-brew "samba"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
