@@ -4,6 +4,8 @@ tap "philocalyst/tap"
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
 brew "bat-extras"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
 # Modern, maintained replacement for ls
 brew "eza"
 # Like neofetch, but much faster because written mostly in C
@@ -16,14 +18,20 @@ brew "gcc"
 brew "ffmpeg"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Distributed revision control system
+brew "git"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
+# Update of iperf: measures TCP, UDP, and SCTP bandwidth
+brew "iperf3"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Lazier way to manage everything docker
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Modern and intuitive terminal-based text editor
+brew "micro"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Rsync for cloud storage
@@ -32,16 +40,30 @@ brew "rclone"
 brew "resvg"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Utility that provides fast incremental file transfer
+brew "rsync"
+# SMB/CIFS file, print, and login server for UNIX
+brew "samba"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
 # Simplified and community-driven man pages
 brew "tldr"
+# Terminal multiplexer
+brew "tmux"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
+# Terminal spreadsheet multitool for discovering and arranging data
+brew "visidata"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
+# Programming language designed for robustness, optimality, and clarity
+brew "zig"
+# Language Server for Zig
+brew "zls"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # User-friendly, lightweight TUI for disk imaging
