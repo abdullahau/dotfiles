@@ -44,6 +44,16 @@ echo "\n3) Setting up Tailscale...\n"
 
 curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=tskey-auth-kJsAAcgVds11CNTRL-hii1FD7PXcLkuKhxSgfadLgr6Debkxd1 --advertise-exit-node
 
+echo "\n3.a) Part 1: Setting up IP Forwarding...\n"
+
+echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+
+echo "\n3.a) Part 2: Setting Up Subnet Router...\n"
+
+sudo tailscale set --advertise-routes=192.168.0.0/24
+
 #----------------------------------------------------------------------
 # Rust Setup
 #----------------------------------------------------------------------
