@@ -1,1 +1,6 @@
 build-essential
+# curl
+# tailscale
+# docker
+# snap
+# zsh
