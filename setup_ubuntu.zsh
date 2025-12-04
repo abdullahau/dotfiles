@@ -12,6 +12,15 @@ echo "\n1) Installing Packages...\n"
 
 
 #----------------------------------------------------------------------
+# Add Homebrew Bin to secure_path
+#----------------------------------------------------------------------
+
+echo "\n2) Add brew bin to secure_path...\n"
+
+echo 'Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/linuxbrew/.linuxbrew/bin"' | sudo tee /etc/sudoers.d/homebrew-path >/dev/null
+sudo visudo -c
+
+#----------------------------------------------------------------------
 # zsh4humans Setup
 #----------------------------------------------------------------------
 
