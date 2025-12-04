@@ -49,6 +49,7 @@ words = [
 	"pydantic", "pydantic's",
 	"oop",
 	"hackathon",
+	"cheatsheet",
 	"zstyle", "eza", "yazi", "fzf", "starship", "ghostty", "autoload", "tmux", "direnv", "envrc", "zoxide",
 	"powerlevel", "colormap", "powerline",
 	"mkdir", "systemctl"
