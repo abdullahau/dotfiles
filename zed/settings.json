@@ -75,6 +75,9 @@
         }
       ],
       "debuggers": ["Debugpy"]
+    },
+    "YAML": {
+      "formatter": "language_server"
     }
   },
   "lsp": {
@@ -128,6 +131,15 @@
       "settings": {
         "exportPdf": "onSave",
         "outputPath": "$root/$name"
+      }
+    },
+    "yaml-language-server": {
+      "settings": {
+        "yaml": {
+          "editor": {
+            "tabSize": 2
+          }
+        }
       }
     }
   },
