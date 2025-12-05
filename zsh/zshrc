@@ -137,7 +137,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # eval "$(starship init zsh)" 								# Starship
 # eval "$(oh-my-posh init zsh)" 							# Oh My Posh
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"		# Homebrew
+# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"		# Homebrew
 
 . "$HOME/.cargo/env"										# Rust
 
@@ -155,7 +155,7 @@ alias lta='lt -a'
 alias ff="fzf --preview 'bat --style=numbers --color=always {}'"	   # fzf
 alias cd="z"                                                    	   # use zoxide wrapper
 alias man=batman                                                 	   # `man` page colorizer using `bat`
-alias tree='tree -a -I .git'
+alias tree='tree -a -I ".git|.venv|__pycache__"'
 alias trail='print -l $path'										   # $path array to multi-line string
 alias "ip-local"="ip -4 addr show enxc8a362d8c536 | awk '/inet / {print \$2}' | cut -d/ -f1"  # Local network IP address
 alias "ip-public"="curl checkip.amazonaws.com"									    		  # Public IP address
