@@ -18,7 +18,7 @@ words = [
 	"abdullah","mahmood",
 	"codebook",
 	"homebrew", "vscode", "rustc", "omarchy", "tailscale",
-	"jupyter", "jupyterlab", "jupytext", "conda",
+	"jupyter", "jupyterlab", "jupytext", "conda", "venv",
 	"ipykernel",
 	"scipy",
 	"yfinance",
