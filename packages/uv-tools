@@ -4,5 +4,6 @@ jupyterlab
 jupytext
 pyrefly
 python-lsp-server
+quarto-cli
 ruff
 ty

@@ -58,6 +58,8 @@ brew "uv"
 brew "visidata"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
+# Pluggable terminal workspace, with terminal multiplexer as the base feature
+brew "zellij"
 # Programming language designed for robustness, optimality, and clarity
 brew "zig"
 # Language Server for Zig

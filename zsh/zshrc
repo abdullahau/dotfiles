@@ -124,6 +124,7 @@ eval "$(zoxide init zsh)"                      # zoxide
 eval "$(uv generate-shell-completion zsh)"     # uv
 eval "$(uvx --generate-shell-completion zsh)"  # uvx
 eval "$(brew shellenv)"						   # homebrew
+# eval "$(_MARIMO_COMPLETE=zsh_source marimo)"   # marimo
 
 # Initialize Zsh’s completion system
 autoload -Uz compinit && compinit
@@ -183,3 +184,10 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt glob_dots              # show dotfiles in globs
 setopt no_auto_menu           # require second TAB to open menu
+
+# bun completions
+[ -s "/home/abdullah/.local/share/reflex/bun/_bun" ] && source "/home/abdullah/.local/share/reflex/bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.local/share/reflex/bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
