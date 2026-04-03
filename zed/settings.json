@@ -10,7 +10,7 @@
   // Visual
   "show_edit_predictions": true,
   "inlay_hints": {
-    "enabled": true
+    "enabled": true,
   },
   "ui_font_size": 13,
   "buffer_font_size": 11,
@@ -19,7 +19,7 @@
   "theme": {
     "mode": "system",
     "light": "Catppuccin Latte (Blur)",
-    "dark": "Catppuccin Mocha (Blur)"
+    "dark": "Catppuccin Mocha (Blur)",
   },
   "icon_theme": "Material Icon Theme",
   "indent_guides": {
@@ -27,13 +27,13 @@
     "line_width": 1,
     "active_line_width": 1,
     "coloring": "indent_aware",
-    "background_coloring": "disabled"
+    "background_coloring": "disabled",
   },
   "repl": {
     // Clamped with [20, 512] range.
     "max_columns": 500,
     // Clamped with [4, 256] range.
-    "max_lines": 40
+    "max_lines": 40,
   },
 
   // Python
@@ -42,17 +42,17 @@
     "detect_venv": {
       "on": {
         "directories": [".env", "env", ".venv", "venv", "../.venv"],
-        "activate_script": "default"
-      }
-    }
+        "activate_script": "default",
+      },
+    },
   },
 
   // Python - Jupyter IPython Kernel
   "jupyter": {
     "kernel_selections": {
       "python": "python3",
-      "r": "ark"
-    }
+      "r": "ark",
+    },
   },
 
   // Python - LSP
@@ -64,35 +64,40 @@
         "!pylsp",
         "!ty",
         "!basedpyright",
-        "..."
+        "...",
       ],
       "format_on_save": "on",
       "formatter": [
         { "code_action": "source.organizeImports.ruff" },
         { "code_action": "source.fixAll.ruff" },
         {
-          "language_server": { "name": "ruff" }
-        }
+          "language_server": { "name": "ruff" },
+        },
       ],
-      "debuggers": ["Debugpy"]
+      "debuggers": ["Debugpy"],
     },
     "YAML": {
-      "formatter": "language_server"
-    }
+      "tab_size": 2,
+      "formatter": "language_server",
+    },
   },
   "lsp": {
     "pyrefly": {
+      // "binary": {
+      //   "path": "/home/abdullah/.local/bin/pyrefly",
+      //   "arguments": ["lsp"],
+      // },
       "settings": {
         "python": {
-          "pythonPath": ".venv/bin/python"
+          "pythonPath": ".venv/bin/python",
         },
         "pyrefly": {
           "project_includes": ["src/**/*.py", "tests/**/*.py"],
           "project_excludes": ["**/.[!/.]*", "**/*venv/**"],
           "search_path": ["src"],
-          "ignore_errors_in_generated_code": true
-        }
-      }
+          "ignore_errors_in_generated_code": true,
+        },
+      },
     },
     "ruff": {
       "initialization_options": {
@@ -102,46 +107,46 @@
             "unsafe-fixes": false,
             "format": {
               "quote-style": "double",
-              "skip-magic-trailing-comma": false
-            }
+              "skip-magic-trailing-comma": false,
+            },
           },
           "codeAction": {
             "disableRuleComment": { "enable": false },
-            "fixViolation": { "enable": true }
+            "fixViolation": { "enable": true },
           },
           "lint": {
             "select": ["ALL"],
             // "extendSelect": ["PTH", "I"],
             "ignore": ["F401", "CPY", "D", "T20", "I", "ERA001", "COM812"],
             "enable": true,
-            "preview": true
+            "preview": true,
           },
           "format": {
             "preview": true,
-            "backend": "uv"
+            "backend": "uv",
           },
           "fixAll": true,
           "organizeImports": false,
           "showSyntaxErrors": true,
-          "lineLength": 90
-        }
-      }
+          "lineLength": 90,
+        },
+      },
     },
     "tinymist": {
       "settings": {
         "exportPdf": "onSave",
-        "outputPath": "$root/$name"
-      }
+        "outputPath": "$root/$name",
+      },
     },
     "yaml-language-server": {
       "settings": {
         "yaml": {
           "editor": {
-            "tabSize": 2
-          }
-        }
-      }
-    }
+            "tabSize": 2,
+          },
+        },
+      },
+    },
   },
 
   // SSH
@@ -149,83 +154,60 @@
     {
       "host": "130.0.0.104",
       "username": "root",
-      "args": [
-        "-A"
-      ],
+      "args": ["-A"],
       "projects": [
         {
-          "paths": [
-            "/home/noco/HR"
-          ]
+          "paths": ["/home/noco/HR"],
         },
         {
-          "paths": [
-            "/home/noco/Qubes"
-          ]
+          "paths": ["/home/noco/Qubes"],
         },
         {
-          "paths": [
-            "/home/noco/RealEstate"
-          ]
+          "paths": ["/home/noco/RealEstate"],
         },
         {
-          "paths": [
-            "/home/noco/nocoflow"
-          ]
-        }
+          "paths": ["/home/noco/nocoflow"],
+        },
       ],
-      "nickname": "Noco-Linux"
+      "nickname": "Noco-Linux",
     },
     {
       "host": "100.125.140.11",
       "username": "abdullah",
-      "args": [
-        "-A"
-      ],
+      "args": ["-A"],
       "projects": [
         {
-          "paths": [
-            "/docker"
-          ]
+          "paths": ["/docker"],
         },
         {
-          "paths": [
-            "/home/abdullah"
-          ]
+          "paths": ["/home/abdullah"],
         },
         {
-          "paths": [
-            "/home/abdullah/Developer"
-          ]
+          "paths": ["/home/abdullah/Developer"],
         },
         {
-          "paths": [
-            "/home/abdullah/Developer/dotfiles"
-          ]
+          "paths": ["/home/abdullah/Developer/dotfiles"],
         },
         {
-          "paths": [
-            "/home/abdullah/Developer/koromi"
-          ]
+          "paths": ["/home/abdullah/Developer/koromi"],
         },
         {
-          "paths": [
-            "/home/abdullah/Developer/maven-analytics/./"
-          ]
+          "paths": ["/home/abdullah/Developer/maven-analytics/./"],
         },
         {
-          "paths": [
-            "/home/abdullah/Developer/zig-tutorial"
-          ]
-        }
+          "paths": ["/home/abdullah/Developer/vocabulary"],
+        },
+        {
+          "paths": ["/home/abdullah/Developer/zig-tutorial"],
+        },
       ],
-      "nickname": "Ubuntu"
-    }
+      "nickname": "Ubuntu",
+    },
   ],
 
   // Quarto & Markdown
   "file_types": {
-    "Markdown": ["md", "qmd", "rmd"]
+    "Markdown": ["md", "qmd", "rmd"],
   },
 
   // Extensions
@@ -264,22 +246,19 @@
     "typst": true,
     "vscode-great-icons": true,
     "vscode-icons": true,
-    "zig": true
+    "zig": true,
   },
 
   // Zed Misc. Settings
   "disable_ai": true, // Disable AI and Agents
-  "features": {
-    "edit_prediction_provider": "none" // Turn off Zed predictions
-  },
   "edit_predictions": {
-    "mode": "subtle"
+    "mode": "subtle",
   },
   "collaboration_panel": {
-    "button": false
+    "button": false,
   },
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
-  }
+    "metrics": false,
+  },
 }

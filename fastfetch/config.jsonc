@@ -200,7 +200,7 @@
       "type": "command",
       "key": "󰩠 Public IP",
       "keyColor": "red",
-      "text": "curl checkip.amazonaws.com",
+      "text": "curl icanhazip.com",
     },
     {
       "type": "custom",
