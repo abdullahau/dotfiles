@@ -8,6 +8,20 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   // Visual
+  "project_panel": {
+    "dock": "left",
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "agent": {
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": [],
+  },
+  "git_panel": {
+    "dock": "left",
+  },
   "show_edit_predictions": true,
   "inlay_hints": {
     "enabled": true,
@@ -17,11 +31,15 @@
   "buffer_font_family": "JetBrainsMono Nerd Font",
   "buffer_font_fallbacks": ["JetBrainsMono Nerd Font"],
   "theme": {
-    "mode": "system",
+    "mode": "light",
     "light": "Catppuccin Latte (Blur)",
     "dark": "Catppuccin Mocha (Blur)",
   },
-  "icon_theme": "Material Icon Theme",
+  "icon_theme": {
+    "mode": "dark",
+    "light": "Material Icon Theme",
+    "dark": "Material Icon Theme",
+  },
   "indent_guides": {
     "enabled": true,
     "line_width": 1,
@@ -61,6 +79,7 @@
       "language_servers": [
         "pyrefly",
         "ruff",
+        "!pyright",
         "!pylsp",
         "!ty",
         "!basedpyright",
@@ -255,6 +274,7 @@
     "mode": "subtle",
   },
   "collaboration_panel": {
+    "dock": "left",
     "button": false,
   },
   "telemetry": {
