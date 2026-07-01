@@ -179,7 +179,7 @@ setopt APPEND_HISTORY         # append rather than overwrite
 setopt HIST_REDUCE_BLANKS     # clean up extra spaces
 setopt HIST_IGNORE_SPACE      # ignore commands starting with space
 setopt HIST_EXPIRE_DUPS_FIRST # expire duplicates first
-setopt HIST_IGNORE_DUPS		  # ignore duplicates
+setopt HIST_IGNORE_ALL_DUPS   # ignore duplicates
 setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt glob_dots              # show dotfiles in globs
@@ -188,6 +188,6 @@ setopt no_auto_menu           # require second TAB to open menu
 # bun completions
 [ -s "/home/abdullah/.local/share/reflex/bun/_bun" ] && source "/home/abdullah/.local/share/reflex/bun/_bun"
 
-# bun
+# npm & bun
 export BUN_INSTALL="$HOME/.local/share/reflex/bun"
 export PATH="$BUN_INSTALL/bin:$PATH"

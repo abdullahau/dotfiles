@@ -4,6 +4,8 @@ tap "philocalyst/tap"
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
 brew "bat-extras"
+# GNU compiler collection
+brew "gcc"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
 # Modern, maintained replacement for ls
@@ -12,15 +14,15 @@ brew "eza"
 brew "fastfetch"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
-# GNU compiler collection
-brew "gcc"
-# Play, record, convert, and stream audio and video
+# Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # Distributed revision control system
 brew "git"
-# Tools and libraries to manipulate images in many formats
+# Quickly rewrite git repository history
+brew "git-filter-repo"
+# Tools and libraries to manipulate images in select formats
 brew "imagemagick"
 # Update of iperf: measures TCP, UDP, and SCTP bandwidth
 brew "iperf3"
@@ -68,3 +70,12 @@ brew "zls"
 brew "zoxide"
 # User-friendly, lightweight TUI for disk imaging
 brew "philocalyst/tap/caligula"
+uv "basedpyright"
+uv "jupyter-core"
+uv "jupyterlab"
+uv "jupytext"
+uv "pyrefly"
+uv "python-lsp-server"
+uv "quarto-cli"
+uv "ruff"
+uv "ty"

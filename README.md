@@ -64,6 +64,12 @@ Rclone is a command line program to manage files on cloud storage.
 nohup rclone sync onedrive: /path/to/local/folder > rclone.log -filter-from /path/to/rclone-filter.txt 2>&1 &
 ```
 
+Use this rclone command to sync /mnt/hdd/onedrive with OneDrive (while ignoring listed files)
+
+```bash
+rclone sync onedrive: /mnt/hdd/onedrive --filter-from ~/.config/rclone/rclone-filters.txt --progress --stats 5s --stats-one-line -v
+```
+
 ### Using `tmux` 
 
 **Create and run the tmux session:**
