@@ -160,7 +160,7 @@ alias tree='tree -a -I ".git|.venv|__pycache__"'
 alias trail='print -l $path'										   # $path array to multi-line string
 alias "ip-local"="ip -4 addr show enxc8a362d8c536 | awk '/inet / {print \$2}' | cut -d/ -f1"  # Local network IP address
 alias "ip-public"="curl checkip.amazonaws.com"									    		  # Public IP address
-alias bbd='brew bundle dump --describe --force --file=~/Developer/dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
+alias bbd='brew bundle dump --global --force --file=~/Developer/dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
 alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all' 	     		  # brew update, upgrade, and cleanup cache
 alias disks='lsblk'													   # List information about block devices (Int./Ext. HDD & SSD) 
 alias ports='sudo lsof -i -P -n'									   # List all open ports

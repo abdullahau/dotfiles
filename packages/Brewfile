@@ -1,5 +1,4 @@
-tap "jesseduffield/lazydocker"
-tap "philocalyst/tap"
+tap "philocalyst/tap", trusted: true
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
@@ -8,6 +7,8 @@ brew "bat-extras"
 brew "gcc"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
+# Command-line interface for SQLite
+brew "sqlite"
 # Modern, maintained replacement for ls
 brew "eza"
 # Like neofetch, but much faster because written mostly in C
@@ -34,6 +35,8 @@ brew "lazydocker"
 brew "lazygit"
 # Modern and intuitive terminal-based text editor
 brew "micro"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Rsync for cloud storage
@@ -48,6 +51,8 @@ brew "rsync"
 brew "sevenzip"
 # Command-line interface for https://speedtest.net bandwidth tests
 brew "speedtest-cli"
+# Analyze how space is allocated inside an SQLite file
+brew "sqlite-analyzer"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
@@ -69,7 +74,7 @@ brew "zls"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # User-friendly, lightweight TUI for disk imaging
-brew "philocalyst/tap/caligula"
+brew "philocalyst/tap/caligula", trusted: true
 uv "basedpyright"
 uv "jupyter-core"
 uv "jupyterlab"
@@ -79,3 +84,4 @@ uv "python-lsp-server"
 uv "quarto-cli"
 uv "ruff"
 uv "ty"
+npm "@sanity/cli"
