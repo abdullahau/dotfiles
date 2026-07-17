@@ -151,6 +151,12 @@
         },
       },
     },
+    "codebook": {
+      "initialization_options": {
+        "globalConfigPath": "/Users/rehabnaeem/.config/codebook/codebook.toml",
+        "logLevel": "debug",
+      },
+    },
     "tinymist": {
       "settings": {
         "exportPdf": "onSave",

@@ -13,6 +13,10 @@ defaults write com.apple.finder "FXPreferredViewStyle" -string "clmv"
 defaults write com.apple.finder "FXEnableExtensionChangeWarning" -bool "false"
 # Save to disk location (not iCloud)
 defaults write NSGlobalDomain "NSDocumentSaveNewDocumentsToCloud" -bool "false"
+# Disable .DS_Store artifacts on network shares and USB drives
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
 
 # Dock Settings
 # Dock Icon Size

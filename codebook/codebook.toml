@@ -15,7 +15,7 @@ dictionaries = ["en_us", "en_gb"]
 # Codebook will add words here when you select "Add to dictionary"
 # Default: []
 words = [
-	"abdullah","mahmood",
+	"abdullah","mahmood","naeem",
 	"codebook",
 	"homebrew", "vscode", "rustc", "omarchy", "tailscale",
 	"jupyter", "jupyterlab", "jupytext", "conda", "venv",
@@ -32,8 +32,9 @@ words = [
 	"xaxes","yaxes",
 	"xaxis","yaxis",
 	"vline",
+	"matmul",
 	"tickformat","dashdot",
-	"etf","ETF's",
+	"etf","ETF's","capex",
 	"cagr",
 	"iloc",
 	"dataframe",
@@ -44,13 +45,13 @@ words = [
 	"qmd",
 	"endsnippet",
 	"pyrefly",
-	"uv", "uvx", "ruff", "noqa",
+	"uv","uvx","ruff","noqa",
 	"markdown","quarto","markdownlint",
 	"pydantic", "pydantic's",
 	"oop",
 	"hackathon",
 	"cheatsheet",
-	"zstyle", "eza", "yazi", "fzf", "starship", "ghostty", "autoload", "tmux", "direnv", "envrc", "zoxide",
+	"zstyle","eza","yazi","fzf","starship","ghostty","autoload","tmux","direnv","envrc","zoxide",
 	"powerlevel", "colormap", "powerline",
 	"mkdir", "systemctl"
 ]
