@@ -1,6 +1,6 @@
-basedpyright
-jupyter-core
-jupyterlab
+# basedpyright
+# jupyter-core
+# jupyterlab
 jupytext
 pyrefly
 python-lsp-server
