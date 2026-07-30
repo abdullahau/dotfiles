@@ -74,33 +74,49 @@ echo "\n4) Git Clone Homelab Repo...\n"
 TARGET_DIR="/docker"
 REPO_URL="git@github.com:abdullahau/homelab.git"
 
-if [ ! -d "$TARGET_DIR/.git" ]; then
-    echo "No Git repository found in $TARGET_DIR. Cloning $REPO_URL..."
-    git clone "$REPO_URL" "$TARGET_DIR"
+# The homelab repo is private and cloned over SSH, so this only works once your
+# SSH key is uploaded to GitHub. On a brand-new server that hasn't happened yet;
+# in that case we skip the homelab-dependent steps instead of hard-failing.
+homelab_ready=false
+
+if [ -d "$TARGET_DIR/.git" ]; then
+    echo "Git repository already exists in $TARGET_DIR. Pulling latest..."
+    git -C "$TARGET_DIR" pull && homelab_ready=true
 else
-    echo "Git repository already exists in $TARGET_DIR. Skipping clone."
-    git -C "$TARGET_DIR" pull
+    echo "No Git repository found in $TARGET_DIR. Cloning $REPO_URL..."
+    if git clone "$REPO_URL" "$TARGET_DIR"; then
+        homelab_ready=true
+    else
+        echo "WARNING: Could not clone $REPO_URL (SSH key not set up on GitHub yet?)."
+        echo "         Skipping container start + AdGuard DNS bind. Re-run this"
+        echo "         script after adding your SSH key to finish homelab setup."
+    fi
 fi
 
-echo "\n5) Starting Docker Containers with Docker Compose...\n"
+if [ "$homelab_ready" = true ] && [ -x "$TARGET_DIR/docker-manager.sh" ]; then
+    echo "\n5) Starting Docker Containers with Docker Compose...\n"
+    "$TARGET_DIR/docker-manager.sh" up
 
-/docker/docker-manager.sh up
+    echo "\n6) Setting up Port 53 Bind for AdGuard Home...\n"
 
-echo "\n6) Setting up Port 53 Bind for AdGuard Home...\n"
-
-RESOLVED_DIR="/etc/systemd/resolved.conf.d"
-sudo mkdir -p $RESOLVED_DIR
-sudo tee "$RESOLVED_DIR/adguardhome.conf" > /dev/null << EOF
+    RESOLVED_DIR="/etc/systemd/resolved.conf.d"
+    sudo mkdir -p $RESOLVED_DIR
+    sudo tee "$RESOLVED_DIR/adguardhome.conf" > /dev/null << EOF
 [Resolve]
 DNS=127.0.0.1
 DNSStubListener=no
 EOF
 
-sudo mv /etc/resolv.conf /etc/resolv.conf.backup
-sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+    # Point resolv.conf at systemd-resolved's stub-less resolver. Only back up
+    # the original once so a re-run doesn't overwrite the real backup.
+    if [ ! -L /etc/resolv.conf ]; then
+        sudo mv /etc/resolv.conf /etc/resolv.conf.backup
+        sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+    fi
 
-# systemctl stop systemd-resolved.service
-# systemctl disable systemd-resolved.service
-systemctl reload-or-restart systemd-resolved
+    systemctl reload-or-restart systemd-resolved
+else
+    echo "\nSkipping container start and AdGuard DNS bind (homelab repo not ready)."
+fi
 
 echo "\n<<< Docker Services Setup Complete >>>\n"

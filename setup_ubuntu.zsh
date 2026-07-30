@@ -2,10 +2,13 @@
 
 setopt nounset  # Treat unset variables as an error
 
+# Absolute path to this repo, regardless of where it was cloned or the cwd.
+DOTFILES_DIR="${0:A:h}"
+
 # Load local secrets (e.g. TAILSCALE_AUTH_KEY) from an untracked .env file.
-if [[ -f .env ]]; then
+if [[ -f "$DOTFILES_DIR/.env" ]]; then
     set -a
-    source .env
+    source "$DOTFILES_DIR/.env"
     set +a
 fi
 
@@ -17,7 +20,7 @@ echo "\n<<< Starting Ubuntu Setup >>>\n"
 
 echo "\n1) Installing Packages...\n"
 
-APT_PACKAGE_LIST="packages/apt-packages"
+APT_PACKAGE_LIST="$DOTFILES_DIR/packages/apt-packages"
 
 # Homebrew on Linux needs these build dependencies present before it can install.
 BREW_DEPS=(build-essential procps curl file git)
@@ -53,30 +56,8 @@ echo "\n2) Add brew bin to secure_path...\n"
 echo 'Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/linuxbrew/.linuxbrew/bin"' | sudo tee /etc/sudoers.d/homebrew-path >/dev/null
 sudo visudo -c
 
-#----------------------------------------------------------------------
-# zsh4humans Setup
-#----------------------------------------------------------------------
-
-echo "\n2) Setting up Zsh4humans...\n"
-
-# Z4H_DIR="$HOME/.cache/zsh4humans"
-
-# if [ -d "$Z4H_DIR" ]; then
-#     echo "zsh4humans is already installed (directory found at $Z4H_DIR). Skipping installation."
-# else
-#     echo "zsh4humans not found. Starting installation."
-#     if command -v curl >/dev/null 2>&1; then
-#         sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-#     elif command -v wget >/dev/null 2>&1; then
-#         sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-#     else
-#         echo "Error: Neither 'curl' nor 'wget' is available for zsh4humans installation."
-#     fi
-# fi
-
-# if [ -d "$Z4H_DIR" ]; then
-#     echo "You may need to run 'z4h update' manually after logging into zsh for the first time."
-# fi
+# Note: zsh4humans bootstraps itself from ~/.zshenv on your first interactive
+# zsh login (after `chsh`), so there is no install step needed here.
 
 #----------------------------------------------------------------------
 # Tailscale Setup
@@ -94,8 +75,11 @@ fi
 
 echo "\n3.a) Part 1: Setting up IP Forwarding...\n"
 
-echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+# Write the file fresh (not append) so re-running setup stays idempotent.
+sudo tee /etc/sysctl.d/99-tailscale.conf > /dev/null << 'EOF'
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
+EOF
 sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 
 echo "\n3.a) Part 2: Setting Up Subnet Router...\n"
@@ -124,18 +108,17 @@ rustup update
 
 echo "\n5) Configuring Logind for Lid Switch behavior...\n"
 
-LOGIND_CONF="/etc/systemd/logind.conf"
+# Use a drop-in file (idempotent) instead of appending to logind.conf.
+LOGIND_DROPIN="/etc/systemd/logind.conf.d/99-lid-switch.conf"
 
-echo "Appending lid switch settings to $LOGIND_CONF..."
+echo "Writing lid switch settings to $LOGIND_DROPIN..."
 
-cat << EOF | sudo tee -a "$LOGIND_CONF" > /dev/null
-
-
-# --- Custom Lid Switch Settings ---
+sudo mkdir -p /etc/systemd/logind.conf.d
+sudo tee "$LOGIND_DROPIN" > /dev/null << 'EOF'
+[Login]
 HandleSuspendKey=ignore
 HandleLidSwitch=ignore
 HandleLidSwitchDocked=ignore
-# ------------------------------------------
 EOF
 
 echo "Reloading systemd-logind service to apply changes..."
@@ -145,12 +128,12 @@ sudo systemctl reload systemd-logind.service || echo "WARNING: Failed to reload 
 # Samba Setup
 #----------------------------------------------------------------------
 
-echo "\n5) Setting Up Samba SMB...\n"
+echo "\n6) Setting Up Samba SMB...\n"
 
 # https://chriskalos.notion.site/The-0-Home-Server-Written-Guide-5d5ff30f9bdd4dfbb9ce68f0d914f1f6#ad77305c83424605b859168b243ff81d
-sudo ln -s ~/Developer/dotfiles/samba/smb.conf /etc/samba/smb.conf
+sudo ln -sf "$DOTFILES_DIR/samba/smb.conf" /etc/samba/smb.conf
 
-sudo smbpasswd -a abdullah
+sudo smbpasswd -a "$USER"
 sudo systemctl restart smbd
 
 echo "\n<<< Ubuntu Setup Complete >>>\n"

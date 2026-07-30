@@ -1,17 +1,21 @@
+# Tailscale host
 Host 100.105.211.56
   HostName 100.105.211.56
-  ForwardAgent yes
   User abdullah
-
-Host 130.0.0.104
-  HostName 130.0.0.104
   ForwardAgent yes
+
+# 130.0.0.104 is reachable as two users. Each needs its own alias — SSH applies
+# the first matching block per option, so the old duplicate `Host 130.0.0.104`
+# (User noco) never took effect. `ssh 130.0.0.104` and `ssh server-root` -> root.
+Host server-root 130.0.0.104
+  HostName 130.0.0.104
   User root
-
-Host 130.0.0.104
-  HostName 130.0.0.104
   ForwardAgent yes
+
+Host server-noco
+  HostName 130.0.0.104
   User noco
+  ForwardAgent yes
 
 Host github.com
   AddKeysToAgent yes
