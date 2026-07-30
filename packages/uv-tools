@@ -1,6 +1,7 @@
 # basedpyright
-jupyter-core
-jupyterlab
+# jupyter-core
+# jupyterlab
+notebook
 jupytext
 pyrefly
 python-lsp-server

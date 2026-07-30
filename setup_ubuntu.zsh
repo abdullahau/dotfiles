@@ -2,6 +2,13 @@
 
 setopt nounset  # Treat unset variables as an error
 
+# Load local secrets (e.g. TAILSCALE_AUTH_KEY) from an untracked .env file.
+if [[ -f .env ]]; then
+    set -a
+    source .env
+    set +a
+fi
+
 echo "\n<<< Starting Ubuntu Setup >>>\n"
 
 #----------------------------------------------------------------------
@@ -10,6 +17,32 @@ echo "\n<<< Starting Ubuntu Setup >>>\n"
 
 echo "\n1) Installing Packages...\n"
 
+APT_PACKAGE_LIST="packages/apt-packages"
+
+# Homebrew on Linux needs these build dependencies present before it can install.
+BREW_DEPS=(build-essential procps curl file git)
+
+sudo apt-get update
+sudo apt-get install -y "${BREW_DEPS[@]}"
+
+# Install packages listed in packages/apt-packages (skip blank lines and comments)
+if [[ -f "$APT_PACKAGE_LIST" ]]; then
+    apt_packages=()
+    while IFS= read -r line; do
+        line="${line%%#*}"            # strip inline/whole-line comments
+        line="${line//[[:space:]]/}"  # strip surrounding whitespace
+        [[ -n "$line" ]] && apt_packages+=("$line")
+    done < "$APT_PACKAGE_LIST"
+
+    if (( ${#apt_packages[@]} > 0 )); then
+        echo "Installing apt packages: ${apt_packages[*]}"
+        sudo apt-get install -y "${apt_packages[@]}"
+    else
+        echo "No apt packages listed in $APT_PACKAGE_LIST."
+    fi
+else
+    echo "WARNING: $APT_PACKAGE_LIST not found; skipping apt package list."
+fi
 
 #----------------------------------------------------------------------
 # Add Homebrew Bin to secure_path
@@ -51,7 +84,13 @@ echo "\n2) Setting up Zsh4humans...\n"
 
 echo "\n3) Setting up Tailscale...\n"
 
-curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up --auth-key=tskey-auth-kJsAAcgVds11CNTRL-hii1FD7PXcLkuKhxSgfadLgr6Debkxd1 --advertise-exit-node
+curl -fsSL https://tailscale.com/install.sh | sh
+if [[ -n "${TAILSCALE_AUTH_KEY:-}" ]]; then
+    sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}" --advertise-exit-node
+else
+    echo "WARNING: TAILSCALE_AUTH_KEY not set (missing .env?); skipping automatic 'tailscale up'."
+    echo "         Run manually: sudo tailscale up --advertise-exit-node"
+fi
 
 echo "\n3.a) Part 1: Setting up IP Forwarding...\n"
 

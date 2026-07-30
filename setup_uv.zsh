@@ -1,5 +1,18 @@
 #!/usr/bin/env zsh
 
+# uv is installed via Homebrew; ensure brew (and uv) are on PATH for this
+# non-login script session.
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+elif [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+if ! command -v uv >/dev/null 2>&1; then
+    echo "ERROR: 'uv' not found on PATH. Run setup_homebrew.zsh (which installs uv) first."
+    exit 1
+fi
+
 PACKAGE_LIST_PATH="packages/uv-tools"
 
 cat "$PACKAGE_LIST_PATH" | while read -r tool_package; do
