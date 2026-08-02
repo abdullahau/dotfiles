@@ -27,15 +27,29 @@ of setup scripts.
 # 1. Install git (everything else is handled by the setup scripts)
 sudo apt-get update && sudo apt-get install -y git
 
-# 2. Clone the repo (path is not important — scripts resolve their own location)
-git clone https://github.com/abdullahau/dotfiles.git ~/Developer/dotfiles
+# 2. Generate an SSH key and add the public key to GitHub
+#    (Settings → SSH and GPG keys → New SSH key)
+ssh-keygen -t ed25519 -C "abdullah.au@outlook.com"  # accept defaults / set a passphrase
+cat ~/.ssh/id_ed25519.pub                           # copy this into GitHub
+
+# 3. Verify the SSH connection to GitHub (expect a "successfully authenticated"
+#    greeting; answer "yes" to trust the host key on first connect)
+ssh -T git@github.com
+
+# 4. Clone the repo over SSH (path is not important — scripts resolve their own
+#    location)
+git clone git@github.com:abdullahau/dotfiles.git ~/Developer/dotfiles
 cd ~/Developer/dotfiles
 
-# 3. Provide local secrets (Tailscale auth key, etc.)
+# 5. Switch to the ubuntu branch (default branch is `main`; the Ubuntu server
+#    config lives on `ubuntu`)
+git checkout ubuntu
+
+# 6. Provide local secrets (Tailscale auth key, etc.)
 cp .env.example .env
 $EDITOR .env          # fill in TAILSCALE_AUTH_KEY (leave blank to skip auto-up)
 
-# 4. Run the installer (pulls the dotbot submodule, symlinks, runs setup scripts)
+# 7. Run the installer (pulls the dotbot submodule, symlinks, runs setup scripts)
 ./install
 ```
 
@@ -44,8 +58,9 @@ Notes:
 - `./install` is safe to re-run; symlinking and the system-file writes are
   idempotent.
 - The **homelab** container stack (`setup_docker.zsh`) clones a **private** repo
-  over SSH. On a brand-new server, add your SSH key to GitHub first, or that
-  step is skipped with a warning and can be finished by re-running `./install`.
+  over SSH, so it reuses the GitHub SSH key set up in steps 2–3. If that key
+  isn't in place, the step is skipped with a warning and can be finished by
+  re-running `./install`.
 - Switching to zsh takes effect on your next login; zsh4humans bootstraps itself
   on first interactive shell.
 
