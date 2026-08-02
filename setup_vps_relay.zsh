@@ -13,6 +13,14 @@
 #
 # Safe to re-run: every iptables rule is checked with `-C` before it's added,
 # and the sysctl drop-in is written fresh each time.
+#
+# Reboot persistence uses TWO independent mechanisms so the relay always
+# comes back (see section 3.a):
+#   1. iptables-persistent  — restores the saved ruleset snapshot at boot.
+#   2. vps-relay.service    — a systemd oneshot that RE-APPLIES the rules on
+#                             every boot (after tailscaled/docker), so the
+#                             relay survives even if the snapshot is empty,
+#                             stale, or flushed by Docker/Tailscale.
 
 setopt nounset
 
@@ -74,25 +82,31 @@ echo "\n3) Forwarding public :$PUBLIC_PORT -> $TARGET_IP:$TARGET_PORT over the t
 PUB_IF=$(ip route get 1.1.1.1 | grep -oP 'dev \K\S+')
 echo "Detected public interface: $PUB_IF"
 
-# Add an iptables rule only if an equivalent one isn't already present, so
-# re-running this script doesn't pile up duplicate DNAT/MASQUERADE/FORWARD
-# rules.
-add_nat_rule_if_missing() {
-    local chain=$1; shift
-    if sudo iptables -t nat -C "$chain" "$@" 2>/dev/null; then
-        echo "  (nat/$chain rule already present, skipping)"
-    else
-        sudo iptables -t nat -A "$chain" "$@"
-    fi
-}
+# The rule logic lives in a standalone apply script installed to
+# /usr/local/sbin. Keeping it in one place means the "set up now" path and
+# the "restore on every boot" path (systemd service, 3.a) run the EXACT same
+# idempotent logic — no drift. It reads TARGET_IP/TARGET_PORT/PUBLIC_PORT from
+# the environment and detects the public interface itself, so it needs no
+# arguments at boot.
+sudo tee /usr/local/sbin/vps-relay-apply.sh > /dev/null << 'APPLY_EOF'
+#!/usr/bin/env bash
+# Managed by setup_vps_relay.zsh — do not edit by hand.
+# Idempotently (re-)applies the tailnet relay iptables rules. Run once at
+# setup and again on every boot via vps-relay.service.
+set -euo pipefail
 
-insert_forward_rule_if_missing() {
-    if sudo iptables -C FORWARD "$@" 2>/dev/null; then
-        echo "  (FORWARD rule already present, skipping)"
-    else
-        # Insert at position 1 so it's evaluated before any default REJECT.
-        sudo iptables -I FORWARD 1 "$@"
-    fi
+: "${TARGET_IP:?TARGET_IP not set}"
+: "${TARGET_PORT:=32400}"
+: "${PUBLIC_PORT:=$TARGET_PORT}"
+
+PUB_IF="$(ip route get 1.1.1.1 | grep -oP 'dev \K\S+')"
+
+# Forwarding must be on for DNAT to route packets out over the tailnet.
+sysctl -w net.ipv4.ip_forward=1 > /dev/null
+
+add_nat_rule_if_missing() {
+    local chain="$1"; shift
+    iptables -t nat -C "$chain" "$@" 2>/dev/null || iptables -t nat -A "$chain" "$@"
 }
 
 add_nat_rule_if_missing PREROUTING -i "$PUB_IF" -p tcp --dport "$PUBLIC_PORT" \
@@ -101,16 +115,50 @@ add_nat_rule_if_missing PREROUTING -i "$PUB_IF" -p tcp --dport "$PUBLIC_PORT" \
 add_nat_rule_if_missing POSTROUTING -d "$TARGET_IP" -p tcp --dport "$TARGET_PORT" \
     -j MASQUERADE
 
-insert_forward_rule_if_missing -p tcp -d "$TARGET_IP" --dport "$TARGET_PORT" -j ACCEPT
+# Insert at position 1 so it beats any default REJECT further down FORWARD.
+iptables -C FORWARD -p tcp -d "$TARGET_IP" --dport "$TARGET_PORT" -j ACCEPT 2>/dev/null \
+    || iptables -I FORWARD 1 -p tcp -d "$TARGET_IP" --dport "$TARGET_PORT" -j ACCEPT
+APPLY_EOF
+sudo chmod +x /usr/local/sbin/vps-relay-apply.sh
 
-echo "\n3.a) Persisting iptables rules across reboots...\n"
+# Apply the rules right now.
+sudo TARGET_IP="$TARGET_IP" TARGET_PORT="$TARGET_PORT" PUBLIC_PORT="$PUBLIC_PORT" \
+    /usr/local/sbin/vps-relay-apply.sh
 
-# iptables-persistent's postinst asks an interactive "save current rules?"
-# debconf question; preseed it so apt install doesn't hang non-interactively.
+echo "\n3.a) Persisting across reboots (two independent mechanisms)...\n"
+
+# Mechanism 1 — iptables-persistent: saves the current ruleset and restores
+# the snapshot early at boot. Fast, but a snapshot can end up empty or get
+# clobbered when Docker/Tailscale rebuild the tables, which is how the relay
+# silently died once before. So it's a fast path, not the guarantee.
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y iptables-persistent
 sudo netfilter-persistent save
+
+# Mechanism 2 — vps-relay.service: the actual guarantee. A oneshot systemd
+# unit that RE-APPLIES the rules on every boot, ordered after the tailnet and
+# Docker are up. Idempotent (-C checks), so it never stacks duplicates even
+# when mechanism 1 already restored the same rules.
+sudo tee /etc/systemd/system/vps-relay.service > /dev/null << EOF
+[Unit]
+Description=VPS tailnet relay (public :$PUBLIC_PORT -> $TARGET_IP:$TARGET_PORT)
+After=network-online.target tailscaled.service docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=TARGET_IP=$TARGET_IP
+Environment=TARGET_PORT=$TARGET_PORT
+Environment=PUBLIC_PORT=$PUBLIC_PORT
+ExecStart=/usr/local/sbin/vps-relay-apply.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable vps-relay.service
 
 #----------------------------------------------------------------------
 # 4) ufw check
