@@ -17,6 +17,18 @@ Host server-noco
   User noco
   ForwardAgent yes
 
+# Oracle VPS (public reverse-proxy for Plex over tailnet).
+# `oracle` -> public IP; `oracle-ts` -> tailnet IP / MagicDNS name.
+Host oracle oracle-vps 129.146.179.208
+  HostName 129.146.179.208
+  User ubuntu
+  ForwardAgent yes
+
+Host oracle-ts
+  HostName 100.127.58.81
+  User ubuntu
+  ForwardAgent yes
+
 Host github.com
   AddKeysToAgent yes
   IdentityFile ~/.ssh/id_ed25519
