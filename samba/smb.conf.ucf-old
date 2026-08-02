@@ -22,6 +22,9 @@
 #======================= Global Settings =======================
 
 [global]
+	unix extention = no
+	# or, to keep unix extensions:
+	# allow insecure wide links = yes
 
 ## Browsing/Identification ###
 
@@ -97,7 +100,7 @@
 
 # This option controls how unsuccessful authentication attempts are mapped
 # to anonymous connections
-   map to guest = bad user
+   map to guest = never
 
 ########## Domains ###########
 
@@ -240,3 +243,26 @@
 # to the drivers directory for these users to have write rights in it
 ;   write list = root, @lpadmin
 
+[Ubuntu]
+  comment = Data stored on Ubuntu server 
+  path = /data
+  writeable = yes
+  public = no
+  follow symlinks = yes
+  wide links = yes
+
+[HDD]
+  comment = Data stored on external hard drive
+  path = /mnt/hdd
+  writeable = yes
+  public = no
+  follow symlinks = yes
+  wide links = yes
+
+[Developer]
+  comment = Folder of development repos
+  path = /home/abdullah/Developer
+  writeable = yes
+  public = no
+  follow symlinks = yes
+  wide links = yes
