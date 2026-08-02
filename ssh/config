@@ -1,24 +1,5 @@
-# Tailscale host
-Host 100.105.211.56
-  HostName 100.105.211.56
-  User abdullah
-  ForwardAgent yes
-
-# 130.0.0.104 is reachable as two users. Each needs its own alias — SSH applies
-# the first matching block per option, so the old duplicate `Host 130.0.0.104`
-# (User noco) never took effect. `ssh 130.0.0.104` and `ssh server-root` -> root.
-Host server-root 130.0.0.104
-  HostName 130.0.0.104
-  User root
-  ForwardAgent yes
-
-Host server-noco
-  HostName 130.0.0.104
-  User noco
-  ForwardAgent yes
-
-# Oracle VPS (public reverse-proxy for Plex over tailnet).
-# `oracle` -> public IP; `oracle-ts` -> tailnet IP / MagicDNS name.
+# Oracle VPS relays
+# Phoenix (us-phoenix-1): `oracle`     -> public IP, `oracle-ts`     -> tailnet IP.
 Host oracle oracle-vps 129.146.179.208
   HostName 129.146.179.208
   User ubuntu
@@ -29,6 +10,29 @@ Host oracle-ts
   User ubuntu
   ForwardAgent yes
 
+# Dubai   (me-dubai-1):   `oracle-dxb` -> public IP, `oracle-dxb-ts` -> tailnet IP.
+Host oracle-dxb 141.145.152.160
+  HostName 141.145.152.160
+  User ubuntu
+  ForwardAgent yes
+
+Host oracle-dxb-ts
+  HostName 100.121.95.21
+  User ubuntu
+  ForwardAgent yes
+
+# GitHub
 Host github.com
   AddKeysToAgent yes
   IdentityFile ~/.ssh/id_ed25519
+
+# Qubes (Work)
+Host server-root 130.0.0.104
+  HostName 130.0.0.104
+  User root
+  ForwardAgent yes
+
+Host server-noco
+  HostName 130.0.0.104
+  User noco
+  ForwardAgent yes

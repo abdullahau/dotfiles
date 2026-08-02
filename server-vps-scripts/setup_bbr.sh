@@ -69,6 +69,16 @@ printf '4) Applying sysctl settings...\n\n'
 
 sudo sysctl --system > /dev/null
 
+# `net.core.default_qdisc = fq` only affects interfaces brought up AFTER it's
+# set, so a machine that's already running keeps its old root qdisc (pfifo_fast
+# / fq_codel) until the next reboot — meaning BBR wouldn't get fq pacing yet.
+# Attach fq to the current default-route interface now so it takes effect
+# immediately; the sysctl above still guarantees fq on every future boot.
+IFACE="$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \K\S+' || true)"
+if [[ -n "${IFACE:-}" ]] && command -v tc >/dev/null 2>&1; then
+    sudo tc qdisc replace dev "$IFACE" root fq && echo "  attached fq to $IFACE (live, no reboot needed)"
+fi
+
 #----------------------------------------------------------------------
 # 5) Verify
 #----------------------------------------------------------------------
@@ -80,6 +90,9 @@ printf '\n<<< Result >>>\n'
 echo "  congestion control : $cc"
 echo "  default qdisc      : $qd"
 echo "  wmem_max           : $(sysctl -n net.core.wmem_max)"
+if [[ -n "${IFACE:-}" ]] && command -v tc >/dev/null 2>&1; then
+    echo "  live NIC qdisc     : $(tc qdisc show dev "$IFACE" 2>/dev/null | grep -oE 'qdisc [a-z_]+' | head -1 | awk '{print $2}') (on $IFACE)"
+fi
 
 if [[ "$cc" == "bbr" && "$qd" == "fq" ]]; then
     printf '\nBBR is active. Persists across reboots via /etc/sysctl.d/99-bbr.conf and /etc/modules-load.d/bbr.conf.\n'
