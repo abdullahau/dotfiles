@@ -1,23 +1,44 @@
+# Home Server (Ubuntu)
 Host ubuntu
   HostName 100.125.140.11
   User abdullah
   ForwardAgent yes
 
-Host 100.125.140.11
-  HostName 100.125.140.11
-  User abdullah
+# Oracle VPS relays
+# Phoenix (us-phoenix-1): `oracle`     -> public IP, `oracle-ts`     -> tailnet IP.
+Host oracle oracle-vps 129.146.179.208
+  HostName 129.146.179.208
+  User ubuntu
   ForwardAgent yes
 
-Host 130.0.0.104
-  HostName 130.0.0.104
+Host oracle-ts
+  HostName 100.127.58.81
+  User ubuntu
   ForwardAgent yes
-  User root
 
-Host 130.0.0.104
-  HostName 130.0.0.104
+# Dubai   (me-dubai-1):   `oracle-dxb` -> public IP, `oracle-dxb-ts` -> tailnet IP.
+Host oracle-dxb 141.145.152.160
+  HostName 141.145.152.160
+  User ubuntu
   ForwardAgent yes
-  User noco
 
+Host oracle-dxb-ts
+  HostName 100.121.95.21
+  User ubuntu
+  ForwardAgent yes
+
+# GitHub
 Host github.com
   AddKeysToAgent yes
   IdentityFile ~/.ssh/id_ed25519
+
+# Qubes (Work)
+Host server-root 130.0.0.104
+  HostName 130.0.0.104
+  User root
+  ForwardAgent yes
+
+Host server-noco
+  HostName 130.0.0.104
+  User noco
+  ForwardAgent yes
