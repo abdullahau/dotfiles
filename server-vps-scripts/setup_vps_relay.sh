@@ -5,8 +5,9 @@
 #
 # Turns a public VPS into a tailnet relay: DNATs one public TCP port through to
 # a service on another tailnet node (e.g. Plex on the home server, reached over
-# Tailscale instead of exposing the home connection). Assumes the VPS is
-# ALREADY joined to the tailnet (it does NOT install or 'tailscale up' for you).
+# Tailscale instead of exposing the home connection). Installs Tailscale if it's
+# missing and joins the tailnet using TAILSCALE_AUTH_KEY from a .env beside this
+# script (see section 1).
 #
 # Usage:
 #   ./setup_vps_relay.sh <target-tailnet-ip> [port] [public-port]
@@ -50,15 +51,58 @@ printf '\n<<< Starting VPS Relay Setup (public:%s -> %s:%s) >>>\n\n' \
     "$PUBLIC_PORT" "$TARGET_IP" "$TARGET_PORT"
 
 #----------------------------------------------------------------------
-# 1) Require the tailnet (self-sufficient: we do NOT install or join for you)
+# 1) Ensure Tailscale is installed, running, and joined to the tailnet
 #----------------------------------------------------------------------
 
 printf '\n1) Ensuring Tailscale is installed and up...\n\n'
+
+# Wait (up to ~2 min) for any apt/dpkg lock to release before touching packages.
+# On a fresh cloud VM, unattended-upgrades usually runs at first boot and holds
+# the lock; racing it is what leaves dpkg half-configured in the first place.
+# fuser only CHECKS the lock (it never takes it), so this is non-intrusive.
+if command -v fuser >/dev/null 2>&1; then
+    printed=0
+    for _ in $(seq 1 60); do
+        if ! sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock \
+                        /var/cache/apt/archives/lock /var/lib/apt/lists/lock \
+                        >/dev/null 2>&1; then
+            break
+        fi
+        if [[ $printed -eq 0 ]]; then
+            echo "  waiting for apt/dpkg lock to release (unattended-upgrades?)..."
+            printed=1
+        fi
+        sleep 2
+    done
+fi
+
+# A fresh cloud VM can still have a half-finished dpkg state (e.g. a prior
+# install was interrupted before the lock cleared), which makes the Tailscale
+# apt install fail with "dpkg was interrupted, you must manually run 'sudo dpkg
+# --configure -a'". Repair it up front so the install can proceed. Harmless
+# no-op on an already-clean system.
+if command -v dpkg >/dev/null 2>&1; then
+    sudo dpkg --configure -a || true
+fi
 
 if ! command -v tailscale >/dev/null 2>&1; then
     echo "tailscale not found — installing via the official script..."
     curl -fsSL https://tailscale.com/install.sh | sh
 fi
+
+# Right after a fresh install (or a reboot) the tailscaled daemon may not be
+# running yet, which makes `tailscale up` fail with "failed to connect to local
+# tailscaled". Make sure it's enabled + started, then wait for its local API to
+# respond (regardless of login state) before we try to join.
+if command -v systemctl >/dev/null 2>&1; then
+    sudo systemctl enable --now tailscaled || true
+fi
+for _ in $(seq 1 20); do
+    if ! tailscale status 2>&1 | grep -qi 'failed to connect to local tailscaled'; then
+        break
+    fi
+    sleep 1
+done
 
 if ! tailscale status >/dev/null 2>&1; then
     # A relay must NOT advertise itself as an exit node or subnet router; it
