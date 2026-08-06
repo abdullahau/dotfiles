@@ -58,8 +58,8 @@ export MICRO_TRUECOLOR=1                 			# Micro editor theming
 export GPG_TTY=$TTY                      			# For GPG TTY binding
 export CMDSTAN="$HOME/cmdstan"			 			# Stan
 export BRIDGESTAN="$HOME/cmdstan/bridgestan"		# Bridgestan
-export BUN_INSTALL="$HOME/.local/share/reflex/bun"	# Bun & npm
-export PATH="$BUN_INSTALL/bin:$PATH"				# Bun & npm
+export BUN_INSTALL="$HOME/.bun"						# Bun & npm
+[ -d "$BUN_INSTALL/bin" ] && path=("$BUN_INSTALL/bin" $path)	# Bun & npm
 
 # --------------------------------------------------------------
 # LOCAL ENVIRONMENT OVERRIDES
@@ -205,4 +205,6 @@ setopt glob_dots              # show dotfiles in globs
 setopt no_auto_menu           # require second TAB to open menu
 
 # bun completions
-[ -s "/home/abdullah/.local/share/reflex/bun/_bun" ] && source "/home/abdullah/.local/share/reflex/bun/_bun"
+if [ -s "$BUN_INSTALL/_bun" ]; then
+  source "$BUN_INSTALL/_bun"
+fi
