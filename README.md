@@ -9,7 +9,8 @@ of setup scripts.
 `./install` runs Dotbot with [`install.conf.yaml`](install.conf.yaml), which:
 
 1. **Symlinks** configs into `$HOME` and `~/.config` (zsh, git, ssh, micro,
-   yazi, bat, btop, rclone, zellij, superfile, …).
+   yazi, bat, btop, zellij, superfile, …). rclone is the one exception — see
+   [Setting up rclone](#setting-up-rclone).
 2. **Installs zsh** and makes it the default shell (`chsh`).
 3. Runs the setup scripts in order:
    - [`setup_ubuntu.zsh`](setup_ubuntu.zsh) — apt packages, Tailscale (exit node
@@ -20,6 +21,8 @@ of setup scripts.
    - [`setup_docker.zsh`](setup_docker.zsh) — Docker Engine, IPv6, and (if the
      private homelab repo is reachable over SSH) the container stack + AdGuard
      DNS bind.
+   - [`setup_rclone.zsh`](setup_rclone.zsh) — renders `~/.config/rclone/rclone.conf`
+     from a committed template plus the gitignored secret in the repo-root `.env`.
 
 ## Bootstrap a fresh Ubuntu server
 
@@ -71,6 +74,51 @@ Notes:
   --force --file=./packages/Brewfile`.
 - [`packages/apt-packages`](packages/apt-packages) — apt packages (one per line,
   `#` comments allowed).
+
+## Setting up rclone
+
+`rclone.conf` holds a live OneDrive OAuth token, so it is **not tracked** and
+`~/.config/rclone` is **not symlinked** into this repo. Two reasons:
+
+1. It is a credential, and this repo is public on GitHub.
+2. rclone *rewrites* `rclone.conf` in place every time it refreshes the access
+   token (roughly hourly during a sync). Symlinking the directory meant every
+   refresh dirtied the working tree and re-staged the secret.
+
+So the layout is:
+
+| File | Tracked? | Where it ends up |
+| --- | --- | --- |
+| `rclone/rclone-filters.txt` | yes | symlinked to `~/.config/rclone/` |
+| `rclone/rclone.conf.template` | yes (no secrets) | rendered |
+| `.env` (repo root) | **no**, gitignored | substituted into the template |
+| `~/.config/rclone/rclone.conf` | n/a | real file, owned by rclone |
+
+The secret lives in the same repo-root `.env` that already holds
+`TAILSCALE_AUTH_KEY` — one file to fill in on a fresh machine. Seed it and
+render:
+
+```bash
+cp .env.example .env
+$EDITOR .env                 # paste the token, or re-auth with `rclone config`
+./setup_rclone.zsh           # renders ~/.config/rclone/rclone.conf (0600)
+rclone lsd onedrive:         # verify
+```
+
+`.env` is a **bootstrap seed, not the source of truth**. After the first
+render rclone rotates the token in the live file and `.env` goes stale — that is
+expected. It only has to be fresh enough to authenticate once. `setup_rclone.zsh`
+therefore never overwrites an existing `rclone.conf` unless you pass `--force`.
+
+To re-seed `.env` from the current live token (e.g. before setting up another
+machine), then replace the two `ONEDRIVE_*` lines in `.env` with the output:
+
+```bash
+./setup_rclone.zsh --export
+```
+
+If the seed ever goes too stale to refresh, re-authenticate with
+`rclone config reconnect onedrive:` and export again.
 
 ## Running rclone in the background
 

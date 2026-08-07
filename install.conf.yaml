@@ -27,7 +27,6 @@
     ~/.config/bat: bat
     ~/.config/fastfetch: fastfetch
     ~/.config/btop: btop
-    ~/.config/rclone: rclone
     ~/.config/zellij: zellij
     ~/.config/superfile: superfile/superfile-config
     ~/.local/share/superfile: superfile/superfile-local
@@ -55,6 +54,10 @@
     stdout: true
     stderr: true
   - command: ./setup_docker.zsh
+    stdin: true
+    stdout: true
+    stderr: true
+  - command: ./setup_rclone.zsh
     stdin: true
     stdout: true
     stderr: true

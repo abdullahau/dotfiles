@@ -1,0 +1,13 @@
+# Template for ~/.config/rclone/rclone.conf — safe to commit, contains no secrets.
+#
+# `setup_rclone.zsh` renders this into `~/.config/rclone/rclone.conf`, substituting
+# `${ONEDRIVE_TOKEN}` and `${ONEDRIVE_DRIVE_ID}` from the repo-root `.env`. After
+# the first render, rclone OWNS the rendered file and rewrites it every time it
+# refreshes the OAuth token, so the script never overwrites an existing config
+# unless you pass --force.
+
+[onedrive]
+type = onedrive
+token = ${ONEDRIVE_TOKEN}
+drive_id = ${ONEDRIVE_DRIVE_ID}
+drive_type = personal
