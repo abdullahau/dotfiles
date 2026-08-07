@@ -25,12 +25,9 @@
     ~/.config/micro: micro
     ~/.config/yazi: yazi
     ~/.config/bat: bat
-    ~/.config/fastfetch: fastfetch
     ~/.config/btop: btop
     ~/.config/rclone: rclone
     ~/.config/zellij: zellij
-    ~/.config/superfile: superfile/superfile-config
-    ~/.local/share/superfile: superfile/superfile-local
     # SSH
     ~/.ssh/config: ssh/config
     # Linters

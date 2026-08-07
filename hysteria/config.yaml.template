@@ -1,0 +1,18 @@
+# Rendered from this template by ./render.sh -- do not edit config.yaml directly.
+listen: :443
+
+tls:
+  cert: /certs/cert.pem
+  key: /certs/key.pem
+
+auth:
+  type: password
+  password: ${HYSTERIA_PASSWORD}
+
+# Anything probing this port over HTTP/3 gets a reverse-proxied real site
+# instead of an error, so the endpoint doesn't look like a proxy.
+masquerade:
+  type: proxy
+  proxy:
+    url: https://www.bing.com/
+    rewriteHost: true

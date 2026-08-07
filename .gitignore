@@ -16,3 +16,8 @@ __pycache__/
 
 # Editor Settings
 .vscode
+
+# Hysteria
+hysteria/.env
+hysteria/config.yaml
+hysteria/certs/

@@ -1,4 +1,3 @@
-tap "philocalyst/tap", trusted: true
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
@@ -81,8 +80,6 @@ brew "zig"
 brew "zls"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-# User-friendly, lightweight TUI for disk imaging
-brew "philocalyst/tap/caligula", trusted: true
 # Terminal-based AI coding assistant
 cask "claude-code"
 uv "jupytext"
@@ -92,4 +89,3 @@ uv "python-lsp-server"
 uv "quarto-cli"
 uv "ruff"
 uv "ty"
-npm "@sanity/cli"

@@ -17,11 +17,6 @@ elif [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Trust non-core taps/formulae so 'brew bundle' below doesn't hang on an
-# interactive confirmation prompt on a fresh machine.
-brew trust --tap philocalyst/tap
-brew trust --formula philocalyst/tap/caligula
-
 # Brewfile update method:
 # `brew bundle dump --describe --force --file=./packages/Brewfile`
 brew bundle --verbose --file=./packages/Brewfile
