@@ -15,18 +15,14 @@
     ~/.p10k.zsh: zsh/p10k.zsh
     ~/.inputrc: zsh/inputrc
     ~/.zfunc: zsh/zfunc
-    # Update APT
-    ~/update_os.sh: update_os.sh
     # Git
     ~/.gitconfig: git/gitconfig
     ~/.gitignore_global: git/gitignore_global
-    # Configurations
-    # Terminal Packages & Apps
+    # Terminal Packages & App Configs
     ~/.config/micro: micro
     ~/.config/yazi: yazi
     ~/.config/bat: bat
     ~/.config/btop: btop
-    ~/.config/rclone: rclone
     ~/.config/zellij: zellij
     # SSH
     ~/.ssh/config: ssh/config

@@ -247,7 +247,8 @@ auth error, so the port does not advertise itself as a proxy.
 
 ## Gotchas
 
-- **IPv6 on this VPS is half-open — ICMPv6 passes, TCP does not.** Symptom: the
+- **[RESOLVED 2026-08-07]** ~~IPv6 on this VPS is half-open — ICMPv6 passes, TCP does not.~~ Fixed by adding an OCI Security List **egress rule: Destination `::/0`, All Protocols**. Kept below because the diagnostic path is reusable.
+- **IPv6 on this VPS was half-open — ICMPv6 passed, TCP did not.** Symptom: the
   log fills with `TCP error ... dial tcp6 [...]: i/o timeout` and every
   dual-stack site stalls behind a Happy-Eyeballs fallback. Diagnosis (verified
   2026-08-06):
@@ -275,6 +276,26 @@ auth error, so the port does not advertise itself as a proxy.
   `ipv4_only`**. A server-side `direct` outbound with `mode: 4` does **not**
   work here, because TUN-mode clients hand the proxy *literal* v6 addresses —
   there is no hostname left to re-resolve.
+- **DNS must be resolved at the VPS, not inherited from the host.** The single
+  highest-impact setting in this config. `/etc/resolv.conf` on the VPS points at
+  Tailscale MagicDNS (`100.100.100.100`), whose resolver is `100.125.140.11` —
+  **AdGuard Home on the homelab, in Dubai**. Without an explicit `resolver:`
+  block, Hysteria inherits that, and three things go wrong at once:
+
+  1. every lookup makes a **~256 ms round trip to Dubai** before the connection
+     even starts;
+  2. ad/tracker domains come back as `0.0.0.0` / `::` from AdGuard, so Hysteria
+     dials `0.0.0.0:443` and logs `connection refused` — **benign, but it was
+     168 of 251 errors in a 10-minute window**;
+  3. CDNs and geo-checks resolve from **Dubai**, handing back UAE/EU edge nodes
+     while you egress from Phoenix — quietly defeating the point of a US VPS.
+
+  The `resolver:` block in `config.yaml.template` pins lookups to `1.1.1.1`
+  (anycast, hits a US PoP from Phoenix). Result: 251 errors/10 min → **0**.
+  Tradeoff: ads are no longer blocked through the tunnel. To keep blocking,
+  point `resolver.udp.addr` at AdGuard's *public* anycast resolver
+  (`94.140.14.14:53`) instead — latency stays fixed, but the benign
+  `connection refused` lines come back.
 - **UDP-hostile networks.** Some hotel/corporate/captive networks block UDP or
   throttle QUIC. There is no TCP fallback configured. If you hit this often, add
   a VLESS/Trojan TCP inbound alongside — different tool (sing-box/Xray), same box.
