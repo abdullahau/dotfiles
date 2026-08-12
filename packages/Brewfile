@@ -1,3 +1,5 @@
+tap "anomalyco/tap", trusted: true
+tap "librespeed/tap", trusted: true
 tap "philocalyst/tap", trusted: true
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
@@ -55,14 +57,12 @@ brew "rsync"
 brew "rv-r"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
-# Command-line interface for https://speedtest.net bandwidth tests
-brew "speedtest-cli"
 # Analyze how space is allocated inside an SQLite file
 brew "sqlite-analyzer"
 # Modern and pretty fancy file manager for the terminal
 brew "superfile"
-# Simplified and community-driven man pages
-brew "tldr"
+# Official tldr client written in Rust
+brew "tlrc"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
@@ -81,6 +81,10 @@ brew "zig"
 brew "zls"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode", trusted: true
+# Command-line client for LibreSpeed
+brew "librespeed/tap/librespeed-cli"
 # User-friendly, lightweight TUI for disk imaging
 brew "philocalyst/tap/caligula", trusted: true
 # Terminal-based AI coding assistant
