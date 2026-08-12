@@ -1,5 +1,10 @@
-# Home Server (Ubuntu)
-Host ubuntu
+# Homelab Sever
+Host homelab
+  HostName 192.168.0.100
+  User abdullah
+  ForwardAgent yes
+
+Host homelab-ts
   HostName 100.125.140.11
   User abdullah
   ForwardAgent yes

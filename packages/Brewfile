@@ -1,8 +1,4 @@
-tap "beeftornado/rmtree"
-tap "felixkratz/formulae"
-tap "jandedobbeleer/oh-my-posh"
-tap "jesseduffield/lazydocker"
-tap "nikitabobko/tap"
+tap "teamookla/speedtest", trusted: true
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -67,10 +63,6 @@ brew "resvg"
 brew "ripgrep"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
-# Command-line interface for https://speedtest.net bandwidth tests
-brew "speedtest-cli"
-# Cross-shell prompt for astronauts
-brew "starship"
 # Official tldr client written in Rust
 brew "tlrc"
 # Display directories as trees (with optional color/HTML output)
@@ -97,22 +89,20 @@ brew "zsh-autosuggestions"
 brew "zsh-history-substring-search"
 # Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
-# Prompt theme engine for any shell
-brew "jandedobbeleer/oh-my-posh/oh-my-posh"
-# A simple terminal UI for docker, written in Go
-brew "jesseduffield/lazydocker/lazydocker"
+# Ookla Speedtest
+brew "teamookla/speedtest/speedtest"
 # Menu bar tool to limit maximum charging percentage
 cask "aldente"
 # Transfer files from and to an Android smartphone
 cask "android-file-transfer"
+# Android SDK component
+cask "android-platform-tools"
 # Memory training application
 cask "anki"
 # Compact TeX distribution as alternative to the full TeX Live / MacTeX
 cask "basictex"
 # Display management tool
 cask "betterdisplay"
-# App to build and share containerised applications and microservices
-cask "docker-desktop"
 # File transfer over ad-hoc wifi
 cask "flying-carpet"
 cask "font-bitstream-vera-sans-mono-nerd-font"
@@ -133,12 +123,12 @@ cask "keka"
 cask "localsend"
 # Privacy-first, open-source platform for knowledge sharing and management
 cask "logseq"
+# Open-source download manager
+cask "motrix"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Verify system files structure, run miscellaneous maintenance and more
 cask "onyx"
-# Data science IDE
-cask "positron"
 # Scientific and technical publishing system built on Pandoc
 cask "quarto"
 # Environment for statistical computing and graphics
@@ -147,8 +137,6 @@ cask "r-app"
 cask "raindropio"
 # Control your tools with a few keystrokes
 cask "raycast"
-# Data science software focusing on R and Python
-cask "rstudio"
 # Music streaming service
 cask "spotify"
 # Mesh VPN based on WireGuard
@@ -173,7 +161,6 @@ mas "uBlock Origin Lite", id: 6745342698
 mas "Xcode", id: 497799835
 vscode "aaron-bond.better-comments"
 vscode "adpyke.codesnap"
-vscode "arcticicestudio.nord-visual-studio-code"
 vscode "astral-sh.ty"
 vscode "batisteo.vscode-django"
 vscode "bierner.markdown-mermaid"
@@ -183,22 +170,14 @@ vscode "christian-kohler.path-intellisense"
 vscode "codezombiech.gitignore"
 vscode "davidanson.vscode-markdownlint"
 vscode "docker.docker"
-vscode "donjayamanne.githistory"
-vscode "eamodio.gitlens"
-vscode "enkia.tokyo-night"
-vscode "github.copilot-chat"
 vscode "github.remotehub"
 vscode "goessner.mdmath"
-vscode "google.gemini-cli-vscode-ide-companion"
-vscode "google.geminicodeassist"
 vscode "hbenl.vscode-test-explorer"
 vscode "hediet.debug-visualizer"
 vscode "ivan-bocharov.stan-vscode"
 vscode "james-yu.latex-workshop"
-vscode "jdinhlife.gruvbox"
-vscode "jovejonovski.ocean-green"
-vscode "juliacomputing.pluto-vscode"
 vscode "julialang.language-julia"
+vscode "juliapluto-pankgeorg.advanced-vscode-extension"
 vscode "kevinrose.vsc-python-indent"
 vscode "littlefoxteam.vscode-python-test-adapter"
 vscode "marimo-team.vscode-marimo"
@@ -206,7 +185,6 @@ vscode "mathematic.vscode-latex"
 vscode "mechatroner.rainbow-csv"
 vscode "meta.pyrefly"
 vscode "modular-mojotools.vscode-mojo"
-vscode "monokai.theme-monokai-pro-vscode"
 vscode "ms-azuretools.vscode-containers"
 vscode "ms-python.debugpy"
 vscode "ms-python.isort"
@@ -231,17 +209,15 @@ vscode "ms-vscode.remote-server"
 vscode "ms-vscode.test-adapter-converter"
 vscode "mtxr.sqltools"
 vscode "mtxr.sqltools-driver-pg"
-vscode "mvllow.rose-pine"
 vscode "myriad-dreamin.tinymist"
 vscode "njpwerner.autodocstring"
 vscode "posit.shiny"
 vscode "quarto.quarto"
-vscode "qufiwefefwoyn.kanagawa"
+vscode "qwtel.sqlite-viewer"
 vscode "rdebugger.r-debugger"
 vscode "reditorsupport.r"
 vscode "reditorsupport.r-syntax"
-vscode "sainnhe.everforest"
-vscode "shadesofbuntu.flexoki-light"
+vscode "ritwickdey.liveserver"
 vscode "shd101wyy.markdown-preview-enhanced"
 vscode "stkb.rewrap"
 vscode "streetsidesoftware.code-spell-checker"
@@ -260,9 +236,6 @@ vscode "wardbrian.vscode-stan-extension"
 vscode "wholroyd.jinja"
 vscode "xelad0m.jupyter-toc"
 vscode "yzhang.markdown-all-in-one"
-uv "basedpyright"
-uv "jupyter-core"
-uv "jupyterlab"
 uv "jupytext"
 uv "pyrefly"
 uv "python-lsp-server"

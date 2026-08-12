@@ -171,7 +171,7 @@ alias tree='tree -a -I .git'
 alias trail='print -l $path'                                     # $path array to multi-line string. Alternative: alias trail='<<<${(F)path}'
 alias 'ip-local'='ipconfig getifaddr en0'                        # Local network IP address
 alias 'ip-public'='curl checkip.amazonaws.com'                   # Public IP Address
-alias bbd='brew bundle dump --describe --force --file=~/.dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
+alias bbd='brew bundle dump --file=~/.dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
 alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all' 	     # brew update, upgrade, and cleanup cache
 
 # Add flags to existing aliases
