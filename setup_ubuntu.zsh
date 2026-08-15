@@ -66,11 +66,24 @@ sudo visudo -c
 echo "\n3) Setting up Tailscale...\n"
 
 curl -fsSL https://tailscale.com/install.sh | sh
+
+# --accept-dns=false: a VPS must NOT adopt the tailnet's global nameserver.
+# The tailnet overrides DNS to AdGuard Home on the HOME server, so without this
+# every lookup on this box round-trips to the house: measured 25ms/query from
+# Dubai and 259ms/query from Phoenix, versus 0-1ms via the cloud resolver.
+# It also breaks things in non-obvious ways -- ad domains resolve to 0.0.0.0
+# (surfacing as bogus "connection refused") and CDNs geo-resolve to the HOME
+# country while this VPS egresses somewhere else entirely.
+# The box keeps FULL tailnet membership; it just stops using tailnet DNS.
+# Trade-off: MagicDNS names stop resolving here -- use 100.x addresses.
+#
+# No --advertise-exit-node either: a VPS relay only needs plain membership.
+# Advertising an exit node it doesn't need makes it a route it must service.
 if [[ -n "${TAILSCALE_AUTH_KEY:-}" ]]; then
-    sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}" --advertise-exit-node
+    sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}" --accept-dns=false
 else
     echo "WARNING: TAILSCALE_AUTH_KEY not set (missing .env?); skipping automatic 'tailscale up'."
-    echo "         Run manually: sudo tailscale up --advertise-exit-node"
+    echo "         Run manually: sudo tailscale up --accept-dns=false"
 fi
 
 echo "\n3.a) Part 1: Setting up IP Forwarding...\n"
@@ -82,11 +95,16 @@ net.ipv6.conf.all.forwarding = 1
 EOF
 sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 
-echo "\n3.a) Part 2: Setting Up Subnet Router...\n"
+# NOTE: deliberately NO subnet router here.
+# The home-branch version advertises `--advertise-routes=192.168.0.0/24`, which
+# is the HOME LAN and belongs only on the machine actually sitting on that LAN.
+# A VPS advertising it is actively harmful: with --accept-routes on, the home
+# server then routes its OWN LAN into tailscale0 and blackholes it. That is
+# exactly what took the NVR camera (192.168.0.101) offline once already, via a
+# stale 192.168.0.0/24 advertisement left on the Phoenix VPS.
+# Verify a VPS advertises nothing with:  tailscale status --json | grep -i AdvertiseRoutes
 
-sudo tailscale set --advertise-routes=192.168.0.0/24
-
-echo "\n3.b) Linux optimizations for subnet routers and exit nodes...\n"
+echo "\n3.a) Part 2: Linux optimizations for tailnet forwarding...\n"
 printf '#!/bin/sh\n\nethtool -K %s rx-udp-gro-forwarding on rx-gro-list off \n' "$(ip -o route get 8.8.8.8 | cut -f 5 -d " ")" | sudo tee /etc/networkd-dispatcher/routable.d/50-tailscale
 sudo chmod 755 /etc/networkd-dispatcher/routable.d/50-tailscale
 

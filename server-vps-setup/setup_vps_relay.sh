@@ -18,6 +18,11 @@
 # Safe to re-run: every iptables rule is checked with `-C` before it's added,
 # and the sysctl drop-in is written fresh each time.
 #
+# DNS: this script deliberately sets `--accept-dns=false` so the VPS resolves
+# via its own cloud resolver instead of the tailnet's global nameserver (a home
+# AdGuard/Pi-hole). Full rationale + the stale-drop-in landmine are in step 1.a.
+# Override with VPS_ACCEPT_DNS=true if a VPS really should use tailnet DNS.
+#
 # Reboot persistence uses TWO independent mechanisms (see section 3.a):
 #   1. iptables-persistent  — restores the saved ruleset snapshot at boot.
 #   2. vps-relay.service    — a systemd oneshot that RE-APPLIES the rules on
@@ -107,9 +112,11 @@ done
 if ! tailscale status >/dev/null 2>&1; then
     # A relay must NOT advertise itself as an exit node or subnet router; it
     # only needs plain tailnet membership so the DNAT target is reachable.
+    # --accept-dns=false at JOIN time so the box never even briefly adopts the
+    # tailnet's global nameserver (see 1.a for the full rationale).
     if [[ -n "${TAILSCALE_AUTH_KEY:-}" ]]; then
         echo "Joining the tailnet with TAILSCALE_AUTH_KEY from .env..."
-        sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}"
+        sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}" --accept-dns=false
     else
         echo "ERROR: tailscale is not up and TAILSCALE_AUTH_KEY is unset (missing .env?)."
         echo "       Put TAILSCALE_AUTH_KEY=... in a .env next to this script, or run:"
@@ -120,6 +127,78 @@ fi
 
 echo "This VPS's tailnet IP (for reference, not used below):"
 tailscale ip -4 2>/dev/null || echo "  (unavailable)"
+
+#----------------------------------------------------------------------
+# 1.a) Keep DNS resolution LOCAL to this VPS (do not use the tailnet's DNS)
+#----------------------------------------------------------------------
+
+printf '\n1.a) Pointing DNS at the local/cloud resolver instead of the tailnet...\n\n'
+
+# A VPS must NOT inherit the tailnet's global nameserver. If the tailnet sets
+# "Override DNS servers" to a home AdGuard/Pi-hole, then EVERY lookup on this
+# box round-trips to that home server. Measured on these relays:
+#   Dubai VPS  -> home AdGuard :  25 ms/query  vs   1 ms via the cloud resolver
+#   Phoenix VPS-> home AdGuard : 259 ms/query  vs 0-1 ms via the cloud resolver
+# Three separate problems, not just latency:
+#   1. every apt/curl/docker pull pays that round trip;
+#   2. ad domains resolve to 0.0.0.0, which surfaces as confusing "connection
+#      refused" errors instead of a clean block;
+#   3. CDNs geo-resolve to the HOME country while this VPS egresses elsewhere,
+#      so you get a far-away edge node -- the opposite of what you want.
+# The VPS keeps FULL tailnet membership; it only stops using the tailnet for
+# DNS. Trade-off: MagicDNS names (foo.your-tailnet.ts.net) stop resolving here,
+# so refer to peers by their 100.x address -- this script already takes an IP.
+# Opt out with:  VPS_ACCEPT_DNS=true ./setup_vps_relay.sh ...
+if [[ "${VPS_ACCEPT_DNS:-false}" == "true" ]]; then
+    echo "  VPS_ACCEPT_DNS=true — leaving Tailscale DNS enabled (not recommended for a VPS)."
+else
+    sudo tailscale set --accept-dns=false || true
+    echo "  tailscale --accept-dns=false (persists across reboots)"
+fi
+
+# LANDMINE (hit on the Phoenix VPS 2026-08-15): AdGuard Home's installer drops
+# this file to free up port 53. If AdGuard was later removed, the drop-in is
+# left behind pointing at a resolver that no longer exists. While Tailscale owns
+# /etc/resolv.conf the breakage stays MASKED -- it appears only the moment
+# accept-dns goes false, as "connection refused to 127.0.0.1#53". Disable it
+# only when nothing is genuinely listening on :53 (ignoring resolved's own stub).
+DROPIN=/etc/systemd/resolved.conf.d/adguardhome.conf
+if [[ -f "$DROPIN" ]]; then
+    if ! command -v ss >/dev/null 2>&1; then
+        # Can't tell whether a resolver is live — fail SAFE and keep the file.
+        echo "  $DROPIN kept — 'ss' unavailable, cannot verify; check by hand."
+    else
+        # Strip any '%iface' scope suffix (resolved binds '127.0.0.53%lo:53'),
+        # then ignore systemd-resolved's OWN stub listeners (127.0.0.53 and
+        # 127.0.0.54) — those are always present and are NOT a real resolver.
+        LOCAL53="$(sudo ss -lntuH 2>/dev/null | awk '{print $5}' \
+                   | sed 's/%[^:]*//' \
+                   | grep -E ':53$' \
+                   | grep -vE '^127\.0\.0\.5[34]:53$' || true)"
+        if [[ -n "$LOCAL53" ]]; then
+            echo "  $DROPIN kept — a real resolver IS listening on :53:"
+            echo "$LOCAL53" | sort -u | sed 's/^/      /'
+        else
+            echo "  $DROPIN points at a resolver that is NOT running — disabling it."
+            sudo mv "$DROPIN" "$DROPIN.disabled"
+        fi
+    fi
+fi
+
+if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet systemd-resolved; then
+    sudo systemctl restart systemd-resolved
+    sleep 2
+fi
+
+# Prove DNS still works before continuing; a broken resolver here would make
+# every later apt/curl step fail in a confusing, hard-to-diagnose way.
+if getent hosts example.com >/dev/null 2>&1; then
+    echo "  DNS OK — resolving without the tailnet nameserver."
+else
+    echo "  WARNING: DNS is NOT resolving after this change!"
+    echo "           Inspect: resolvectl status ; cat /etc/resolv.conf"
+    echo "           Revert with: sudo tailscale set --accept-dns=true"
+fi
 
 #----------------------------------------------------------------------
 # 2) Enable IPv4 forwarding
