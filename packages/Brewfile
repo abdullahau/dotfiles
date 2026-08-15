@@ -69,8 +69,6 @@ brew "tmux"
 brew "tree"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
-# Terminal spreadsheet multitool for discovering and arranging data
-brew "visidata"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
 # Pluggable terminal workspace, with terminal multiplexer as the base feature
