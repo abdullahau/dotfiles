@@ -51,3 +51,11 @@
     stdin: true
     stdout: true
     stderr: true
+  - command: setup_vps_relay.sh
+    stdin: true
+    stdout: true
+    stderr: true
+  - command: setup_bbr.sh
+    stdin: true
+    stdout: true
+    stderr: true
