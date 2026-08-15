@@ -42,8 +42,6 @@ brew "pandoc"
 brew "poppler"
 # Software environment for statistical computing
 brew "r"
-# Rsync for cloud storage
-brew "rclone"
 # SVG rendering tool and library
 brew "resvg"
 # Search tool like grep and The Silver Searcher
@@ -60,8 +58,6 @@ brew "sqlite-analyzer"
 brew "superfile"
 # Simplified and community-driven man pages
 brew "tldr"
-# Terminal multiplexer
-brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
 # Extremely fast Python package installer and resolver, written in Rust
@@ -76,8 +72,6 @@ brew "zig"
 brew "zls"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-# Terminal-based AI coding assistant
-cask "claude-code"
 uv "jupytext"
 uv "notebook", with: ["catppuccin-jupyterlab"]
 uv "pyrefly"
