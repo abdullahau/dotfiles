@@ -41,12 +41,29 @@ if [[ -f "$SCRIPT_DIR/.env" ]]; then
     set +a
 fi
 
-TARGET_IP="${1:-}"
+# Positional arg wins; otherwise fall back to TARGET_IP from the .env sourced
+# above. The fallback is what lets `./install` (dotbot) call this with NO args.
+# Do NOT put ${TARGET_IP} in install.conf.yaml instead: dotbot expands that in
+# its OWN shell, which never sourced .env, so it collapses to an empty string
+# and the NEXT argument silently slides into $1 (e.g. `... ${TARGET_IP} 32400`
+# becomes `... 32400`, making the port the target IP).
+TARGET_IP="${1:-${TARGET_IP:-}}"
 TARGET_PORT="${2:-32400}"
 PUBLIC_PORT="${3:-$TARGET_PORT}"
 
+# Reject anything that isn't a dotted-quad before it reaches iptables. Without
+# this a bad value fails only at the very end, AFTER apt/tailscale/sysctl have
+# already made changes.
+if [[ -n "$TARGET_IP" && ! "$TARGET_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+    echo "ERROR: TARGET_IP '$TARGET_IP' is not a valid IPv4 address."
+    echo "       Expected the tailnet IP of the node running the service (e.g. 100.125.140.11)."
+    echo "       Set it in .env as TARGET_IP=..., or pass it as the first argument."
+    exit 1
+fi
+
 if [[ -z "$TARGET_IP" ]]; then
-    echo "Usage: $0 <target-tailnet-ip> [port=32400] [public-port=<port>]"
+    echo "Usage: $0 [target-tailnet-ip] [port=32400] [public-port=<port>]"
+    echo "  (target-tailnet-ip may instead be set as TARGET_IP=... in .env)"
     echo "  target-tailnet-ip  Tailscale IP of the node actually running the service"
     echo "                     (e.g. the home server's 'tailscale ip -4', NOT this VPS's)."
     exit 1
@@ -156,35 +173,6 @@ else
     echo "  tailscale --accept-dns=false (persists across reboots)"
 fi
 
-# LANDMINE (hit on the Phoenix VPS 2026-08-15): AdGuard Home's installer drops
-# this file to free up port 53. If AdGuard was later removed, the drop-in is
-# left behind pointing at a resolver that no longer exists. While Tailscale owns
-# /etc/resolv.conf the breakage stays MASKED -- it appears only the moment
-# accept-dns goes false, as "connection refused to 127.0.0.1#53". Disable it
-# only when nothing is genuinely listening on :53 (ignoring resolved's own stub).
-DROPIN=/etc/systemd/resolved.conf.d/adguardhome.conf
-if [[ -f "$DROPIN" ]]; then
-    if ! command -v ss >/dev/null 2>&1; then
-        # Can't tell whether a resolver is live — fail SAFE and keep the file.
-        echo "  $DROPIN kept — 'ss' unavailable, cannot verify; check by hand."
-    else
-        # Strip any '%iface' scope suffix (resolved binds '127.0.0.53%lo:53'),
-        # then ignore systemd-resolved's OWN stub listeners (127.0.0.53 and
-        # 127.0.0.54) — those are always present and are NOT a real resolver.
-        LOCAL53="$(sudo ss -lntuH 2>/dev/null | awk '{print $5}' \
-                   | sed 's/%[^:]*//' \
-                   | grep -E ':53$' \
-                   | grep -vE '^127\.0\.0\.5[34]:53$' || true)"
-        if [[ -n "$LOCAL53" ]]; then
-            echo "  $DROPIN kept — a real resolver IS listening on :53:"
-            echo "$LOCAL53" | sort -u | sed 's/^/      /'
-        else
-            echo "  $DROPIN points at a resolver that is NOT running — disabling it."
-            sudo mv "$DROPIN" "$DROPIN.disabled"
-        fi
-    fi
-fi
-
 if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet systemd-resolved; then
     sudo systemctl restart systemd-resolved
     sleep 2
@@ -197,6 +185,8 @@ if getent hosts example.com >/dev/null 2>&1; then
 else
     echo "  WARNING: DNS is NOT resolving after this change!"
     echo "           Inspect: resolvectl status ; cat /etc/resolv.conf"
+    echo "           Check /etc/systemd/resolved.conf.d/ for a stale drop-in"
+    echo "           (e.g. adguardhome.conf) pointing at a resolver that is gone."
     echo "           Revert with: sudo tailscale set --accept-dns=true"
 fi
 
