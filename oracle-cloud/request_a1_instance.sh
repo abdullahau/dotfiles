@@ -10,8 +10,11 @@
 # and already lives in the same Oracle account/tenancy that will own the new A1.
 #
 # ── One-time prep on oracle-dxb ──────────────────────────────────────────────
-#   1) Install OCI CLI:
-#        bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
+#   1) Install OCI CLI — ALWAYS via brew, never Oracle's curl|bash installer
+#      (that script self-manages a venv under ~/lib and rewrites ~/.bashrc;
+#      brew keeps it inside the same package-managed, dotfiles-tracked toolchain
+#      as everything else on this box):
+#        brew install oci-cli
 #   2) Create an API key (Console → Profile → API Keys → Add), then configure
 #      (paste tenancy/user OCID + fingerprint + key; region = me-dubai-1):
 #        oci setup config
@@ -23,7 +26,7 @@
 #      100GB boot volume is within Always Free (200GB total), so a *successful*
 #      launch is $0 too.
 #      The alert only ever matters if the account was upgraded to Pay-As-You-Go.
-#   4) Fill the OCIDs in the CONFIG block below (helper commands are in comments).
+#   4) cp .env.example .env and fill in the OCIDs (helper commands are inside it).
 #
 # ── Run it under tmux (so it survives SSH disconnects) ───────────────────────
 #        tmux new -s a1                 # start a named session
@@ -51,16 +54,21 @@
 
 set -uo pipefail   # deliberately NOT -e: launch failures are expected and handled
 
-### ── CONFIG — fill these in ──────────────────────────────────────────────────
-# Compartment (root tenancy OCID is fine):        oci iam compartment list --query 'data[].{name:name,id:id}' --output table
-COMPARTMENT_OCID="ocid1.tenancy.oc1..aaaaaaaasvluh5nx5hlkysoknn2vvkjswfsvhuy7vnholttpys2obtkrlcza"
-# Reuse oracle-dxb's existing subnet:              oci network subnet list -c "$COMPARTMENT_OCID" --query 'data[].{name:"display-name",id:id}' --output table
-SUBNET_OCID="ocid1.subnet.oc1.me-dubai-1.aaaaaaaafvknrh22ubfvr6pli7vrv7ef3wy7m5llev3lcsdo2344gdzexg6a"
-# Ubuntu ARM (aarch64) image for A1:
-#   oci compute image list -c "$COMPARTMENT_OCID" --operating-system "Canonical Ubuntu" \
-#       --operating-system-version "22.04" --shape VM.Standard.A1.Flex \
-#       --query 'data[0].id' --raw-output
-IMAGE_OCID="ocid1.image.oc1.me-dubai-1.aaaaaaaadw6c22i47hgflxqqd7yle7hxrtl4bh34z6jglirfvrsys55z2b2a"  # Canonical-Ubuntu-24.04-aarch64 (ARM — required for A1.Flex)
+# Reads COMPARTMENT_OCID / SUBNET_OCID / IMAGE_OCID (and the rest of the OCI
+# identity) from a .env sitting next to this script — see .env.example and
+# README.md. Shared by every script in this directory.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$SCRIPT_DIR/.env" ]]; then
+    set -a
+    # shellcheck disable=SC1091
+    source "$SCRIPT_DIR/.env"
+    set +a
+else
+    echo "ERROR: missing .env (cp .env.example .env and fill in — see README.md)."
+    exit 1
+fi
+
+### ── CONFIG — launch parameters for THIS script ─────────────────────────────
 SSH_PUBKEY_FILE="$HOME/.ssh/a1_authorized.pub"  # SSH public key(s) to log into the new VM — NOT the OCI API key. One key per line.
 DISPLAY_NAME="dxb-a1-relay"
 OCPUS=4
@@ -81,7 +89,9 @@ NOTIFY_CMD='curl -s -d "A1 landed in me-dubai-1" ntfy.sh/abdullah-a1-9f3k2x'   #
 
 command -v oci >/dev/null 2>&1 || { echo "ERROR: OCI CLI not installed (see prep in header)."; exit 1; }
 [[ -f "$SSH_PUBKEY_FILE" ]] || { echo "ERROR: SSH public key not found: $SSH_PUBKEY_FILE"; exit 1; }
-[[ "$COMPARTMENT_OCID" == *CHANGE_ME* ]] && { echo "ERROR: fill in the CONFIG block first."; exit 1; }
+for var in COMPARTMENT_OCID SUBNET_OCID IMAGE_OCID; do
+    [[ -n "${!var:-}" ]] || { echo "ERROR: $var is not set — fill in .env (see .env.example)."; exit 1; }
+done
 
 echo "Hunting for VM.Standard.A1.Flex ($OCPUS OCPU / ${MEM_GB}GB) — Ctrl-C to stop."
 attempt=0

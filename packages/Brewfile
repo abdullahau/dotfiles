@@ -1,3 +1,4 @@
+tap "anomalyco/tap", trusted: true
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
@@ -36,6 +37,8 @@ brew "lazygit"
 brew "micro"
 # Open-source, cross-platform JavaScript runtime environment
 brew "node"
+# Oracle Cloud Infrastructure CLI
+brew "oci-cli"
 # Swiss-army knife of markup format conversion
 brew "pandoc"
 # PDF rendering library (based on the xpdf-3.0 code base)
@@ -72,6 +75,10 @@ brew "zig"
 brew "zls"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode", trusted: true
+# Terminal-based AI coding assistant
+cask "claude-code"
 uv "jupytext"
 uv "notebook", with: ["catppuccin-jupyterlab"]
 uv "pyrefly"
