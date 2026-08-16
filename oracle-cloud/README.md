@@ -50,6 +50,20 @@ subnet/image `request_a1_instance.sh` launches into. Fill it in once after
 `oci setup config`; scripts fail fast with a clear error if a value is
 missing.
 
+Scripts source `.env` on their own — nothing to do there. For running the
+ad-hoc `oci` commands below by hand in your shell, export the same variables
+first:
+
+```
+cd oracle-cloud
+set -a; source .env; set +a
+```
+
+`set -a` marks every variable sourced afterward for export, so `$TENANCY_OCID`,
+`$COMPARTMENT_OCID`, etc. are visible to `oci` without prefixing each command.
+`set +a` turns that back off so it doesn't leak into unrelated exports for the
+rest of the shell session.
+
 ## Scripts
 
 - **`request_a1_instance.sh`** — loops `oci compute instance launch` for a
@@ -72,7 +86,7 @@ a launch will even succeed:
 oci limits resource-availability get \
   --compartment-id "$COMPARTMENT_OCID" --service-name compute \
   --limit-name standard-a1-core-count \
-  --availability-domain "<AD-name>"   # oci iam availability-domain list --query 'data[].name' --raw-output
+  --availability-domain "$(oci iam availability-domain list --query 'data[0].name' --raw-output)"
 ```
 
 Or Console → Governance & Administration → Tenancy Management → **Limits,
