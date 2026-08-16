@@ -51,10 +51,13 @@
     stdin: true
     stdout: true
     stderr: true
-  # No ${TARGET_IP} here on purpose: dotbot expands that in its own shell, which
-  # never sourced .env, so it collapses to "" and the port slides into $1.
-  # The script sources .env itself and reads TARGET_IP from there.
+  # No args here on purpose: setup_vps_relay.sh takes none — it sources .env
+  # itself and reads TARGET_IP/RELAY_PORTS from there.
   - command: ./setup_vps_relay.sh
+    stdin: true
+    stdout: true
+    stderr: true
+  - command: ./setup_vps_local_ports.sh
     stdin: true
     stdout: true
     stderr: true

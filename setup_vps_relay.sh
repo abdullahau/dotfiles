@@ -3,20 +3,43 @@
 # Self-contained port of setup_vps_relay.zsh — pure bash, no zsh, no .env, no
 # brew, no dotfiles bootstrap. Copy this ONE file to a VPS and run it.
 #
-# Turns a public VPS into a tailnet relay: DNATs one public TCP port through to
-# a service on another tailnet node (e.g. Plex on the home server, reached over
-# Tailscale instead of exposing the home connection). Installs Tailscale if it's
-# missing and joins the tailnet using TAILSCALE_AUTH_KEY from a .env beside this
-# script (see section 1).
+# Turns a public VPS into a tailnet relay: DNATs public TCP/UDP ports through
+# to a service on ANOTHER tailnet node (e.g. Plex on the home server, reached
+# over Tailscale instead of exposing the home connection). Installs Tailscale
+# if it's missing and joins the tailnet using TAILSCALE_AUTH_KEY from a .env
+# beside this script (see section 1).
+#
+# For a service running ON THIS VPS ITSELF (not relayed to another host), use
+# setup_vps_local_ports.sh instead — this script is DNAT-to-a-remote-host only.
 #
 # Usage:
-#   ./setup_vps_relay.sh <target-tailnet-ip> [port] [public-port]
+#   ./setup_vps_relay.sh
 #
-# Example (Plex, same port in and out):
-#   ./setup_vps_relay.sh 100.125.140.11 32400
+# No positional args — both TARGET_IP and RELAY_PORTS come from .env next to
+# this script (same convention as TAILSCALE_AUTH_KEY). This keeps `./install`
+# (dotbot) able to call this with no args, and avoids a footgun where dotbot's
+# own shell expands an unset ${TARGET_IP} to "" and the NEXT token silently
+# slides into what would have been $1.
 #
-# Safe to re-run: every iptables rule is checked with `-C` before it's added,
-# and the sysctl drop-in is written fresh each time.
+#   TARGET_IP=100.125.140.11        # required — tailnet IP of the node running the service
+#   RELAY_PORTS=32400               # optional — defaults to "32400" (today's Plex-only behavior)
+#
+# RELAY_PORTS is a comma-separated list of entries:
+#   PORT                    same public and target port, TCP
+#   PUBLIC:TARGET           different public vs. target port, TCP
+#   PORT/udp                UDP instead of TCP
+#   PORT/tcp+udp            both protocols
+#   PUBLIC:TARGET/tcp+udp   combine both
+#
+# Example .env:
+#   TARGET_IP=100.125.140.11
+#   RELAY_PORTS=32400,8080:9090,51820/udp
+#
+# Closing a port later is just editing RELAY_PORTS and re-running: any port
+# that was relayed before but is no longer listed gets its rules removed.
+#
+# Safe to re-run: every iptables rule is checked with `-C` before it's added
+# or removed, and the sysctl drop-in is written fresh each time.
 #
 # DNS: this script deliberately sets `--accept-dns=false` so the VPS resolves
 # via its own cloud resolver instead of the tailnet's global nameserver (a home
@@ -31,8 +54,9 @@
 
 set -euo pipefail
 
-# Self-contained, but reads TAILSCALE_AUTH_KEY from a .env sitting next to this
-# script (same convention as setup_ubuntu.zsh) if present.
+# Self-contained, but reads TAILSCALE_AUTH_KEY/TARGET_IP/RELAY_PORTS from a
+# .env sitting next to this script (same convention as setup_ubuntu.zsh) if
+# present.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "$SCRIPT_DIR/.env" ]]; then
     set -a
@@ -41,36 +65,77 @@ if [[ -f "$SCRIPT_DIR/.env" ]]; then
     set +a
 fi
 
-# Positional arg wins; otherwise fall back to TARGET_IP from the .env sourced
-# above. The fallback is what lets `./install` (dotbot) call this with NO args.
-# Do NOT put ${TARGET_IP} in install.conf.yaml instead: dotbot expands that in
-# its OWN shell, which never sourced .env, so it collapses to an empty string
-# and the NEXT argument silently slides into $1 (e.g. `... ${TARGET_IP} 32400`
-# becomes `... 32400`, making the port the target IP).
-TARGET_IP="${1:-${TARGET_IP:-}}"
-TARGET_PORT="${2:-32400}"
-PUBLIC_PORT="${3:-$TARGET_PORT}"
+RELAY_PORTS="${RELAY_PORTS:-32400}"
+
+if [[ -z "${TARGET_IP:-}" ]]; then
+    echo "ERROR: TARGET_IP is not set."
+    echo "       Put TARGET_IP=... in a .env next to this script — the tailnet IP of"
+    echo "       the node actually running the service (e.g. the home server's"
+    echo "       'tailscale ip -4', NOT this VPS's)."
+    echo ""
+    echo "       Optionally also set RELAY_PORTS=... in .env — comma list of PORT /"
+    echo "       PUBLIC:TARGET, each optionally suffixed /tcp, /udp, or /tcp+udp."
+    echo "       Defaults to 32400."
+    exit 1
+fi
 
 # Reject anything that isn't a dotted-quad before it reaches iptables. Without
 # this a bad value fails only at the very end, AFTER apt/tailscale/sysctl have
 # already made changes.
-if [[ -n "$TARGET_IP" && ! "$TARGET_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+if [[ ! "$TARGET_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
     echo "ERROR: TARGET_IP '$TARGET_IP' is not a valid IPv4 address."
     echo "       Expected the tailnet IP of the node running the service (e.g. 100.125.140.11)."
-    echo "       Set it in .env as TARGET_IP=..., or pass it as the first argument."
+    echo "       Set it in .env as TARGET_IP=..."
     exit 1
 fi
 
-if [[ -z "$TARGET_IP" ]]; then
-    echo "Usage: $0 [target-tailnet-ip] [port=32400] [public-port=<port>]"
-    echo "  (target-tailnet-ip may instead be set as TARGET_IP=... in .env)"
-    echo "  target-tailnet-ip  Tailscale IP of the node actually running the service"
-    echo "                     (e.g. the home server's 'tailscale ip -4', NOT this VPS's)."
+# Turns a RELAY_PORTS string into normalized "PUBLIC TARGET PROTO" lines (one
+# per protocol), validating as it goes. Duplicated (not sourced) inside the
+# generated apply script below so that script stays a single self-contained
+# file that works identically at setup time and on every future boot.
+normalize_relay_ports() {
+    local raw="$1" entry portspec proto pub tgt
+    IFS=',' read -ra _entries <<< "$raw"
+    for entry in "${_entries[@]}"; do
+        entry="$(echo -n "$entry" | tr -d '[:space:]')"
+        [[ -z "$entry" ]] && continue
+        proto="tcp"
+        portspec="$entry"
+        if [[ "$entry" == */* ]]; then
+            portspec="${entry%%/*}"
+            proto="${entry##*/}"
+        fi
+        pub="$portspec"; tgt="$portspec"
+        if [[ "$portspec" == *:* ]]; then
+            pub="${portspec%%:*}"
+            tgt="${portspec##*:}"
+        fi
+        if ! [[ "$pub" =~ ^[0-9]{1,5}$ && "$tgt" =~ ^[0-9]{1,5}$ ]]; then
+            echo "ERROR: invalid port in RELAY_PORTS entry '$entry' (expected NUMBER or NUMBER:NUMBER)" >&2
+            return 1
+        fi
+        if (( pub < 1 || pub > 65535 || tgt < 1 || tgt > 65535 )); then
+            echo "ERROR: port out of range (1-65535) in RELAY_PORTS entry '$entry'" >&2
+            return 1
+        fi
+        case "$proto" in
+            tcp) echo "$pub $tgt tcp" ;;
+            udp) echo "$pub $tgt udp" ;;
+            tcp+udp|both) echo "$pub $tgt tcp"; echo "$pub $tgt udp" ;;
+            *)
+                echo "ERROR: invalid protocol '$proto' in RELAY_PORTS entry '$entry' (expected tcp, udp, or tcp+udp)" >&2
+                return 1
+                ;;
+        esac
+    done
+}
+
+# Fail fast on a bad RELAY_PORTS BEFORE any package installs / tailscale changes.
+if ! normalize_relay_ports "$RELAY_PORTS" > /dev/null; then
     exit 1
 fi
 
-printf '\n<<< Starting VPS Relay Setup (public:%s -> %s:%s) >>>\n\n' \
-    "$PUBLIC_PORT" "$TARGET_IP" "$TARGET_PORT"
+printf '\n<<< Starting VPS Relay Setup (RELAY_PORTS=%s -> %s) >>>\n\n' "$RELAY_PORTS" "$TARGET_IP"
 
 #----------------------------------------------------------------------
 # 1) Ensure Tailscale is installed, running, and joined to the tailnet
@@ -208,57 +273,139 @@ EOF
 sudo sysctl -p /etc/sysctl.d/99-vps-relay.conf > /dev/null
 
 #----------------------------------------------------------------------
-# 3) Forward public port -> target over the tailnet
+# 3) Forward public ports -> target over the tailnet
 #----------------------------------------------------------------------
 
-printf '\n3) Forwarding public :%s -> %s:%s over the tailnet...\n\n' \
-    "$PUBLIC_PORT" "$TARGET_IP" "$TARGET_PORT"
-
-PUB_IF="$(ip route get 1.1.1.1 | grep -oP 'dev \K\S+')"
-echo "Detected public interface: $PUB_IF"
+printf '\n3) Reconciling relayed ports (RELAY_PORTS=%s -> %s)...\n\n' "$RELAY_PORTS" "$TARGET_IP"
 
 # The rule logic lives in a standalone apply script installed to
 # /usr/local/sbin so the "set up now" path and the "restore on every boot"
 # path (systemd service, 3.a) run the EXACT same idempotent logic — no drift.
-# It reads TARGET_IP/TARGET_PORT/PUBLIC_PORT from the environment and detects
-# the public interface itself, so it needs no arguments at boot.
+# It reads TARGET_IP/RELAY_PORTS from the environment and detects the public
+# interface itself, so it needs no arguments at boot.
 sudo tee /usr/local/sbin/vps-relay-apply.sh > /dev/null << 'APPLY_EOF'
 #!/usr/bin/env bash
 # Managed by setup_vps_relay.sh — do not edit by hand.
-# Idempotently (re-)applies the tailnet relay iptables rules. Run once at
-# setup and again on every boot via vps-relay.service.
+# Idempotently (re-)applies the tailnet relay iptables rules for every entry
+# in RELAY_PORTS, and CLOSES (removes) rules for any port that was relayed
+# before but has since been dropped from RELAY_PORTS. State (what's currently
+# relayed) lives in STATE_FILE so this script knows what to close. Run once
+# at setup and again on every boot via vps-relay.service.
 set -euo pipefail
 
 : "${TARGET_IP:?TARGET_IP not set}"
-: "${TARGET_PORT:=32400}"
-: "${PUBLIC_PORT:=$TARGET_PORT}"
+: "${RELAY_PORTS:=32400}"
+
+STATE_FILE=/etc/vps-relay/ports.conf
+mkdir -p "$(dirname "$STATE_FILE")"
+touch "$STATE_FILE"
 
 PUB_IF="$(ip route get 1.1.1.1 | grep -oP 'dev \K\S+')"
 
-# Forwarding must be on for DNAT to route packets out over the tailnet.
-# IPv6 too, so the Tailscale health check stays happy if any v6 route is advertised.
 sysctl -w net.ipv4.ip_forward=1 > /dev/null
 sysctl -w net.ipv6.conf.all.forwarding=1 > /dev/null
+
+normalize_relay_ports() {
+    local raw="$1" entry portspec proto pub tgt
+    IFS=',' read -ra _entries <<< "$raw"
+    for entry in "${_entries[@]}"; do
+        entry="$(echo -n "$entry" | tr -d '[:space:]')"
+        [[ -z "$entry" ]] && continue
+        proto="tcp"
+        portspec="$entry"
+        if [[ "$entry" == */* ]]; then
+            portspec="${entry%%/*}"
+            proto="${entry##*/}"
+        fi
+        pub="$portspec"; tgt="$portspec"
+        if [[ "$portspec" == *:* ]]; then
+            pub="${portspec%%:*}"
+            tgt="${portspec##*:}"
+        fi
+        if ! [[ "$pub" =~ ^[0-9]{1,5}$ && "$tgt" =~ ^[0-9]{1,5}$ ]]; then
+            echo "ERROR: invalid port in RELAY_PORTS entry '$entry'" >&2
+            return 1
+        fi
+        case "$proto" in
+            tcp) echo "$pub $tgt tcp" ;;
+            udp) echo "$pub $tgt udp" ;;
+            tcp+udp|both) echo "$pub $tgt tcp"; echo "$pub $tgt udp" ;;
+            *) echo "ERROR: invalid protocol '$proto' in RELAY_PORTS entry '$entry'" >&2; return 1 ;;
+        esac
+    done
+}
 
 add_nat_rule_if_missing() {
     local chain="$1"; shift
     iptables -t nat -C "$chain" "$@" 2>/dev/null || iptables -t nat -A "$chain" "$@"
 }
+remove_nat_rule_if_present() {
+    local chain="$1"; shift
+    iptables -t nat -C "$chain" "$@" 2>/dev/null && iptables -t nat -D "$chain" "$@" || true
+}
+add_forward_rule_if_missing() {
+    # Insert at position 1 so it beats any default REJECT further down FORWARD.
+    iptables -C FORWARD "$@" -j ACCEPT 2>/dev/null || iptables -I FORWARD 1 "$@" -j ACCEPT
+}
+remove_forward_rule_if_present() {
+    iptables -C FORWARD "$@" -j ACCEPT 2>/dev/null && iptables -D FORWARD "$@" -j ACCEPT || true
+}
+ufw_active() {
+    command -v ufw >/dev/null 2>&1 && ufw status | grep -q "Status: active"
+}
 
-add_nat_rule_if_missing PREROUTING -i "$PUB_IF" -p tcp --dport "$PUBLIC_PORT" \
-    -j DNAT --to-destination "${TARGET_IP}:${TARGET_PORT}"
+open_port() {
+    local pub="$1" tgt="$2" proto="$3"
+    add_nat_rule_if_missing PREROUTING -i "$PUB_IF" -p "$proto" --dport "$pub" \
+        -j DNAT --to-destination "${TARGET_IP}:${tgt}"
+    add_nat_rule_if_missing POSTROUTING -d "$TARGET_IP" -p "$proto" --dport "$tgt" \
+        -j MASQUERADE
+    add_forward_rule_if_missing -p "$proto" -d "$TARGET_IP" --dport "$tgt"
+    if ufw_active; then
+        ufw allow "${pub}/${proto}" comment "vps-relay" >/dev/null 2>&1 || true
+        ufw route allow proto "$proto" to "$TARGET_IP" port "$tgt" >/dev/null 2>&1 || true
+    fi
+    echo "  open:  public ${pub}/${proto} -> ${TARGET_IP}:${tgt}"
+}
 
-add_nat_rule_if_missing POSTROUTING -d "$TARGET_IP" -p tcp --dport "$TARGET_PORT" \
-    -j MASQUERADE
+close_port() {
+    local pub="$1" tgt="$2" proto="$3"
+    remove_nat_rule_if_present PREROUTING -i "$PUB_IF" -p "$proto" --dport "$pub" \
+        -j DNAT --to-destination "${TARGET_IP}:${tgt}"
+    remove_nat_rule_if_present POSTROUTING -d "$TARGET_IP" -p "$proto" --dport "$tgt" \
+        -j MASQUERADE
+    remove_forward_rule_if_present -p "$proto" -d "$TARGET_IP" --dport "$tgt"
+    if ufw_active; then
+        ufw delete allow "${pub}/${proto}" >/dev/null 2>&1 || true
+        ufw route delete allow proto "$proto" to "$TARGET_IP" port "$tgt" >/dev/null 2>&1 || true
+    fi
+    echo "  close: public ${pub}/${proto} -x-> ${TARGET_IP}:${tgt}  (removed from RELAY_PORTS — also remove its OCI ingress rule)"
+}
 
-# Insert at position 1 so it beats any default REJECT further down FORWARD.
-iptables -C FORWARD -p tcp -d "$TARGET_IP" --dport "$TARGET_PORT" -j ACCEPT 2>/dev/null \
-    || iptables -I FORWARD 1 -p tcp -d "$TARGET_IP" --dport "$TARGET_PORT" -j ACCEPT
+DESIRED_FILE="$(mktemp)"
+trap 'rm -f "$DESIRED_FILE"' EXIT
+normalize_relay_ports "$RELAY_PORTS" > "$DESIRED_FILE"
+
+# Close ports that were relayed before but are no longer in RELAY_PORTS.
+while read -r pub tgt proto; do
+    [[ -z "${pub:-}" ]] && continue
+    if ! grep -qxF "$pub $tgt $proto" "$DESIRED_FILE"; then
+        close_port "$pub" "$tgt" "$proto"
+    fi
+done < "$STATE_FILE"
+
+# Open everything currently desired (idempotent no-op for what's already open).
+while read -r pub tgt proto; do
+    [[ -z "${pub:-}" ]] && continue
+    open_port "$pub" "$tgt" "$proto"
+done < "$DESIRED_FILE"
+
+cp "$DESIRED_FILE" "$STATE_FILE"
 APPLY_EOF
 sudo chmod +x /usr/local/sbin/vps-relay-apply.sh
 
 # Apply the rules right now.
-sudo TARGET_IP="$TARGET_IP" TARGET_PORT="$TARGET_PORT" PUBLIC_PORT="$PUBLIC_PORT" \
+sudo TARGET_IP="$TARGET_IP" RELAY_PORTS="$RELAY_PORTS" \
     /usr/local/sbin/vps-relay-apply.sh
 
 printf '\n3.a) Persisting across reboots (two independent mechanisms)...\n\n'
@@ -271,12 +418,13 @@ echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo deb
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y iptables-persistent
 sudo netfilter-persistent save
 
-# Mechanism 2 — vps-relay.service: the actual guarantee. A oneshot systemd unit
-# that RE-APPLIES the rules on every boot, ordered after the tailnet is up.
-# Idempotent (-C checks), so it never stacks duplicates.
+# Mechanism 2 — vps-relay.service: the actual guarantee. A oneshot systemd
+# unit that RE-APPLIES the rules on every boot, ordered after the tailnet is
+# up. Idempotent (-C checks + state-file reconcile), so it never stacks
+# duplicates and closes anything dropped from RELAY_PORTS since the last run.
 sudo tee /etc/systemd/system/vps-relay.service > /dev/null << EOF
 [Unit]
-Description=VPS tailnet relay (public :$PUBLIC_PORT -> $TARGET_IP:$TARGET_PORT)
+Description=VPS tailnet relay (RELAY_PORTS=$RELAY_PORTS -> $TARGET_IP)
 After=network-online.target tailscaled.service
 Wants=network-online.target
 
@@ -284,8 +432,7 @@ Wants=network-online.target
 Type=oneshot
 RemainAfterExit=yes
 Environment=TARGET_IP=$TARGET_IP
-Environment=TARGET_PORT=$TARGET_PORT
-Environment=PUBLIC_PORT=$PUBLIC_PORT
+Environment=RELAY_PORTS=$RELAY_PORTS
 ExecStart=/usr/local/sbin/vps-relay-apply.sh
 
 [Install]
@@ -295,24 +442,22 @@ sudo systemctl daemon-reload
 sudo systemctl enable vps-relay.service
 
 #----------------------------------------------------------------------
-# 4) ufw check
-#----------------------------------------------------------------------
-
-if command -v ufw >/dev/null && sudo ufw status | grep -q "Status: active"; then
-    printf '\nWARNING: ufw is active. Raw iptables FORWARD/NAT rules can be\n'
-    echo "         overridden or ignored by ufw. You likely also need:"
-    echo "           sudo ufw allow ${PUBLIC_PORT}/tcp"
-    echo "           sudo ufw route allow proto tcp to ${TARGET_IP} port ${TARGET_PORT}"
-    echo "         and DEFAULT_FORWARD_POLICY=\"ACCEPT\" in /etc/default/ufw"
-    echo "         (then: sudo ufw reload)."
-fi
-
-#----------------------------------------------------------------------
-# 5) Manual step reminder — cannot be scripted without OCI credentials
+# 4) Manual step reminder — cannot be scripted without OCI credentials
 #----------------------------------------------------------------------
 
 printf '\n<<< VPS Relay Setup Complete >>>\n\n'
-echo "ACTION REQUIRED: open TCP $PUBLIC_PORT from 0.0.0.0/0 in the Oracle Cloud"
-echo "console (instance's Security List / NSG ingress rules). This is a"
-echo "second, separate firewall from the iptables rules above — both must"
-echo "allow the port or the relay won't work."
+echo "ACTION REQUIRED: Oracle blocks traffic at the cloud level regardless of"
+echo "iptables/ufw. This is a SECOND, separate firewall — both must allow a"
+echo "port or the relay won't work. One-time per port, in the OCI console:"
+echo "  Console -> Compute -> Instances -> (this instance) -> attached VNIC"
+echo "  -> Subnet -> Default Security List -> Ingress Rules -> Add Ingress Rule"
+echo "  (Source CIDR 0.0.0.0/0, IP Protocol TCP or UDP, Destination Port <port>)."
+echo ""
+echo "Ports that must be OPEN in OCI right now:"
+normalize_relay_ports "$RELAY_PORTS" | while read -r pub _tgt proto; do
+    echo "  - ${pub}/${proto}"
+done
+echo ""
+echo "If you just removed a port from RELAY_PORTS, its rules were closed on"
+echo "this VPS above — also DELETE its OCI ingress rule the same way; this"
+echo "script cannot reach OCI's API."
