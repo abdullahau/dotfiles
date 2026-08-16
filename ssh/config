@@ -1,3 +1,9 @@
+# Homelab Sever
+Host homelab-ts
+  HostName 100.125.140.11
+  User abdullah
+  ForwardAgent yes
+
 # Oracle VPS relays
 # Phoenix (us-phoenix-1): `oracle`     -> public IP, `oracle-ts`     -> tailnet IP.
 Host oracle oracle-vps 129.146.179.208
