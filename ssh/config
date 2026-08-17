@@ -5,25 +5,25 @@ Host homelab-ts
   ForwardAgent yes
 
 # Oracle VPS relays
-# Phoenix (us-phoenix-1): `oracle`     -> public IP, `oracle-ts`     -> tailnet IP.
-Host oracle 129.146.179.208
-  HostName 129.146.179.208
-  User ubuntu
-  ForwardAgent yes
-
-Host oracle-ts
-  HostName 100.127.58.81
-  User ubuntu
-  ForwardAgent yes
-
 # Dubai   (me-dubai-1):   `oracle-dxb` -> public IP, `oracle-dxb-ts` -> tailnet IP.
-Host oracle-dxb 145.241.121.9
+Host oracle 145.241.121.9
   HostName 145.241.121.9
   User ubuntu
   ForwardAgent yes
 
-Host oracle-dxb-ts
+Host oracle-ts
   HostName 100.107.165.88
+  User ubuntu
+  ForwardAgent yes
+
+# Phoenix (us-phoenix-1): `oracle`     -> public IP, `oracle-ts`     -> tailnet IP.
+Host oracle-us 129.146.179.208
+  HostName 129.146.179.208
+  User ubuntu
+  ForwardAgent yes
+
+Host oracle-us-ts
+  HostName 100.127.58.81
   User ubuntu
   ForwardAgent yes
 
