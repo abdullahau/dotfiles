@@ -1,6 +1,6 @@
 # Oracle VPS relays
 # Phoenix (us-phoenix-1): `oracle`     -> public IP, `oracle-ts`     -> tailnet IP.
-Host oracle oracle-vps 129.146.179.208
+Host oracle 129.146.179.208
   HostName 129.146.179.208
   User ubuntu
   ForwardAgent yes
@@ -25,14 +25,3 @@ Host oracle-dxb-ts
 Host github.com
   AddKeysToAgent yes
   IdentityFile ~/.ssh/id_ed25519
-
-# Qubes (Work)
-Host server-root 130.0.0.104
-  HostName 130.0.0.104
-  User root
-  ForwardAgent yes
-
-Host server-noco
-  HostName 130.0.0.104
-  User noco
-  ForwardAgent yes
