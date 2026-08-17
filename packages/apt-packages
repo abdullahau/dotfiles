@@ -1,5 +1,9 @@
 samba
 build-essential
+ffmpeg
+i965-va-driver-shaders
+vainfo
+
 # curl
 # tailscale
 # docker
