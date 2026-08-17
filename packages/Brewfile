@@ -17,8 +17,6 @@ brew "eza"
 brew "fastfetch"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
-# Play, record, convert, and stream select audio and video codecs
-brew "ffmpeg"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # Distributed revision control system
@@ -59,8 +57,6 @@ brew "rv-r"
 brew "sevenzip"
 # Analyze how space is allocated inside an SQLite file
 brew "sqlite-analyzer"
-# Modern and pretty fancy file manager for the terminal
-brew "superfile"
 # Official tldr client written in Rust
 brew "tlrc"
 # Terminal multiplexer
