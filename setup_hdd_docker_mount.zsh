@@ -57,6 +57,13 @@ if [[ $EUID -ne 0 ]]; then
     echo "ERROR: run with sudo (it writes /etc/fstab and a systemd unit)."
     exit 1
 fi
+# Step 2 rewrites the fstab line whose mount point is $MOUNT_POINT. For "/" that
+# would strip the root filesystem entry and leave the box unbootable.
+MOUNT_POINT="${MOUNT_POINT%/}"; : "${MOUNT_POINT:=/}"
+if [[ "$MOUNT_POINT" == "/" ]]; then
+    echo "ERROR: refusing to manage '/' — pass a dedicated mount point (e.g. /mnt/hdd)."
+    exit 1
+fi
 
 echo "\n<<< HDD auto-mount + Docker restart guard ($SPEC -> $MOUNT_POINT) >>>\n"
 
@@ -129,8 +136,20 @@ echo "   $FSTAB_LINE"
 systemctl daemon-reload
 # Activate now (no-op if already mounted). mount -a respects nofail.
 mount "$MOUNT_POINT" 2>/dev/null || mount -a 2>/dev/null || true
+
+# `mount` silently no-ops when ANYTHING is already mounted here, and mountpoint(1)
+# only proves the path is occupied — not that the right disk is behind it. So
+# compare identities: a stale or hand-mounted device must not pass as success.
 if mountpoint -q "$MOUNT_POINT"; then
-    echo "   $MOUNT_POINT is mounted."
+    ACTUAL_DEV="$(findmnt -no SOURCE "$MOUNT_POINT" 2>/dev/null || true)"
+    ACTUAL_UUID="$(blkid -s UUID -o value "$ACTUAL_DEV" 2>/dev/null || true)"
+    if [[ -n "$UUID" && "$ACTUAL_UUID" != "$UUID" ]]; then
+        echo "ERROR: $MOUNT_POINT holds $ACTUAL_DEV (UUID=${ACTUAL_UUID:-none}),"
+        echo "       but $FSTAB_ID is UUID=$UUID. Unmount the wrong disk first:"
+        echo "         sudo umount $MOUNT_POINT && sudo mount $MOUNT_POINT"
+        exit 1
+    fi
+    echo "   $MOUNT_POINT is mounted ($ACTUAL_DEV)."
 else
     echo "   WARNING: $MOUNT_POINT not mounted (disk absent?)."
 fi
@@ -164,10 +183,26 @@ mapfile -t TARGETS < <(
 )
 if [[ ${#TARGETS[@]} -eq 0 ]]; then
     echo "restart-hdd-containers: no running container binds $MP"
-    exit 0
+else
+    echo "restart-hdd-containers: restarting -> ${TARGETS[*]}"
+    docker restart "${TARGETS[@]}"
 fi
-echo "restart-hdd-containers: restarting -> ${TARGETS[*]}"
-docker restart "${TARGETS[@]}"
+
+# Only RUNNING containers are restarted above — starting an exited one could
+# resurrect a container that was deliberately stopped. But a container that is
+# down at boot is invisible to that loop, so its failure goes unnoticed until
+# someone opens the dashboard. Log it instead: the journal is where you will be
+# looking. NOTE this still cannot see a `devices:` break (a missing /dev/sdX
+# node) — those are not .Mounts, and a container that fails device setup never
+# starts, so the fix belongs in compose (address disks by /dev/disk/by-id).
+for id in $(docker ps -aq --filter status=exited --filter status=created); do
+    if docker inspect "$id" --format '{{range .Mounts}}{{println .Source}}{{end}}' 2>/dev/null \
+         | grep -qE "^${MP}(/|$)"; then
+        name="$(docker inspect -f '{{.Name}}' "$id" | sed 's#^/##')"
+        echo "restart-hdd-containers: WARNING $name binds $MP but is not running" \
+             "(exit $(docker inspect -f '{{.State.ExitCode}}' "$id"): $(docker inspect -f '{{.State.Error}}' "$id"))"
+    fi
+done
 HELPER
 chmod 0755 /usr/local/sbin/restart-hdd-containers.sh
 echo "   installed."
