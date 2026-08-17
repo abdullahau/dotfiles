@@ -135,6 +135,9 @@ if [[ "$OSTYPE" == "darwin"* && -x "$(command -v brew)" && -z "$Z4H_SSH" ]]; the
   eval "$(brew shellenv)"
 fi
 
+# Atuin shell plugin
+eval "$(atuin init zsh)"
+
 # Initialize tool-specific completions
 eval "$(zoxide init zsh)"                      # zoxide
 eval "$(uv generate-shell-completion zsh)"     # uv
