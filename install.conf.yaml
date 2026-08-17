@@ -27,6 +27,7 @@
     ~/.config/bat: bat
     ~/.config/fastfetch: fastfetch
     ~/.config/btop: btop
+    ~/.config/atuin: atuin
     ~/.config/zellij: zellij
     # SSH
     ~/.ssh/config: ssh/config

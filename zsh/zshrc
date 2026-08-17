@@ -141,6 +141,9 @@ elif [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# Atuin shell plugin
+eval "$(atuin init zsh)"
+
 # Initialize tool-specific completions
 eval "$(zoxide init zsh)"                      # zoxide
 eval "$(uv generate-shell-completion zsh)"     # uv
