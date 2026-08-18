@@ -305,12 +305,6 @@ auth error, so the port does not advertise itself as a proxy.
   if playback is blocked, Smart DNS is the different tool for that job.
 - **Do not point this at the tailnet.** Egress uses the VPS default route. Both
   paths to Phoenix can coexist; A/B them freely.
-- **Samba was removed from this VPS** (2026-08-06). `/etc/samba/smb.conf` is
-  still a symlink to `~/Developer/dotfiles/samba/smb.conf`, which shares
-  `/data`, `/mnt/hdd` and `~/Developer`. None of those paths exist here, but
-  `smbd` was listening on `0.0.0.0:445`. If a dotfiles bootstrap ever reinstalls
-  `samba` on a VPS, those shares come back facing the internet. Guard the
-  install step so it only runs on the homelab.
 - **`rpcbind` is still listening on `0.0.0.0:111`.** Pulled in by `nfs-common`;
   there are zero NFS mounts on this box. Remove with
   `sudo apt-get purge -y nfs-common rpcbind` if NFS is never needed here.
