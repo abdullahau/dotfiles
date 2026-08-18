@@ -29,6 +29,7 @@
     ~/.config/btop: btop
     ~/.config/atuin: atuin
     ~/.config/zellij: zellij
+    ~/.claude/CLAUDE.md: claude/CLAUDE.md
     # SSH
     ~/.ssh/config: ssh/config
     # Linters
