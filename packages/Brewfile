@@ -1,6 +1,8 @@
 tap "anomalyco/tap", trusted: true
 tap "librespeed/tap", trusted: true
 tap "philocalyst/tap", trusted: true
+# Improved shell history for zsh, bash, fish and nushell
+brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
@@ -19,6 +21,8 @@ brew "fastfetch"
 brew "fd"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# GitHub command-line tool
+brew "gh"
 # Distributed revision control system
 brew "git"
 # Quickly rewrite git repository history
