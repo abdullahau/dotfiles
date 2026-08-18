@@ -58,6 +58,13 @@ I use Homebrew (`brew`) as my main package manager. Use `apt` only when `brew` c
 
 Keep comments short and clear. A comment should explain why the code does something, not what it does. Skip comments that just restate the code. Do not write long comment blocks.
 
-## 5. Priority
+## 5. GitHub CLI (gh)
+
+I have `gh` installed through Homebrew. Use it for repo work: pull requests, issues, releases, and other GitHub tasks.
+
+- Always ask me first before you run a `gh` command that changes a repo. This includes pushes, pull requests, merges, issue edits, and releases.
+- Read-only commands, like status checks or listing issues, do not need my permission first.
+
+## 6. Priority
 
 If a task pulls the writing standard in rule 1 against speed or brevity elsewhere in these instructions, rule 1 wins. Clear, correct STE output matters more than short output.
