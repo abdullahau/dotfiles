@@ -137,6 +137,7 @@ fi
 
 # Atuin shell plugin
 eval "$(atuin init zsh)"
+eval "$(atuin hex init)"
 
 # Initialize tool-specific completions
 eval "$(zoxide init zsh)"                      # zoxide
