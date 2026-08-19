@@ -117,17 +117,6 @@ function zd() {
   fi
 }
 
-# superfile theme picker: fzf-select a theme, write it to config.toml, then
-# relaunch superfile (theme is only read at startup). Note: config.toml is
-# symlinked into the dotfiles repo, so the change shows up in `git status`.
-function sptheme() {
-  local dir="$HOME/.config/superfile/theme" cfg="$HOME/.config/superfile/config.toml" pick
-  pick=$(command ls "$dir" | sed 's/\.toml$//' | \
-    fzf --prompt='spf theme> ' --preview "bat --color=always $dir/{}.toml") || return
-  sed -i "s/^theme = .*/theme = \"$pick\"/" "$cfg"
-  echo "superfile theme -> $pick"
-}
-
 # --- Completions ---
 
 # Add custom completion directories
@@ -143,6 +132,7 @@ fi
 
 # Atuin shell plugin
 eval "$(atuin init zsh)"
+eval "$(atuin hex init)"
 
 # Initialize tool-specific completions
 eval "$(zoxide init zsh)"                      # zoxide
