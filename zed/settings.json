@@ -8,6 +8,9 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   // Visual
+  "scrollbar": {
+    "show": "never"
+  },
   "project_panel": {
     "dock": "left",
   },
@@ -31,7 +34,7 @@
   "buffer_font_family": "JetBrainsMono Nerd Font",
   "buffer_font_fallbacks": ["JetBrainsMono Nerd Font"],
   "theme": {
-    "mode": "light",
+    "mode": "system",
     "light": "Catppuccin Latte (Blur)",
     "dark": "Catppuccin Mocha (Blur)",
   },
@@ -177,57 +180,38 @@
   // SSH
   "ssh_connections": [
     {
-      "host": "130.0.0.104",
-      "username": "root",
-      "args": ["-A"],
-      "projects": [
-        {
-          "paths": ["/home/noco/HR"],
-        },
-        {
-          "paths": ["/home/noco/Qubes"],
-        },
-        {
-          "paths": ["/home/noco/RealEstate"],
-        },
-        {
-          "paths": ["/home/noco/nocoflow"],
-        },
-      ],
-      "nickname": "Noco-Linux",
-    },
-    {
       "host": "100.125.140.11",
       "username": "abdullah",
-      "args": ["-A"],
+      "args": [
+        "-A"
+      ],
+      "projects": [],
+      "nickname": "Homelab"
+    },
+    {
+      "host": "145.241.121.9",
+      "username": "ubuntu",
+      "args": [
+        "-A"
+      ],
       "projects": [
         {
-          "paths": ["/docker"],
-        },
-        {
-          "paths": ["/home/abdullah"],
-        },
-        {
-          "paths": ["/home/abdullah/Developer"],
-        },
-        {
-          "paths": ["/home/abdullah/Developer/dotfiles"],
-        },
-        {
-          "paths": ["/home/abdullah/Developer/koromi"],
-        },
-        {
-          "paths": ["/home/abdullah/Developer/maven-analytics/./"],
-        },
-        {
-          "paths": ["/home/abdullah/Developer/vocabulary"],
-        },
-        {
-          "paths": ["/home/abdullah/Developer/zig-tutorial"],
-        },
+          "paths": [
+            "/home/ubuntu/Developer/home/./"
+          ]
+        }
       ],
-      "nickname": "Ubuntu",
+      "nickname": "Oracle"
     },
+    {
+      "host": "130.0.0.104",
+      "username": "root",
+      "args": [
+        "-A"
+      ],
+      "projects": [],
+      "nickname": "Qubes-Root"
+    }
   ],
 
   // Quarto & Markdown
