@@ -40,7 +40,9 @@
 # ── When it SUCCEEDS: migrate make-before-break (no downtime, no charges) ─────
 #   The old E2.1.Micro and the new A1 are SEPARATE free quotas, so running both
 #   at once is fine and free. Do NOT kill the micro until the A1 is proven:
-#     1) SSH to the new A1 and run:   ./setup_vps_relay.sh 100.125.140.11 32400
+#     1) SSH to the new A1, clone dotfiles, cp vps/.env.example vps/.env and
+#        fill in TARGET_IP/RELAY_PORTS, then run:
+#                                     ./vps/relay.sh
 #                                     ./setup_bbr.sh
 #     2) Open TCP 32400 (0.0.0.0/0) in the A1's VCN Security List / NSG.
 #     3) From home:  curl http://<NEW_A1_PUBLIC_IP>:32400/identity   → expect 200

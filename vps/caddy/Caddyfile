@@ -1,0 +1,59 @@
+abdullah.run, abdullah.diy {
+	root * /srv
+	file_server
+	encode gzip
+
+	# HTML always revalidates; assets get a short cache window (no
+	# cache-busting filenames here, so not longer). Matches ellie.wtf.
+	@static path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
+	@html not path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
+	header @static Cache-Control "public, max-age=14400, must-revalidate"
+	header @html Cache-Control "public, max-age=0, must-revalidate"
+
+	# Images/etc that live only on the VPS, outside the git repo — see
+	# CLAUDE.md. /media/travel/some-trip/photo.jpg -> media/travel/some-trip/photo.jpg
+	handle_path /media/* {
+		root * /media
+		file_server
+	}
+
+	# Serve the styled 404 page while keeping the real status code.
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
+}
+
+# Plex alias — raw relay on 32400 (vps/relay.sh) for Plex apps direct use
+# Plex server settings (Settings > Network):
+#   Custom server access URLs: https://plex.abdullah.run:443
+#   Secure connections: Preferred (not Required — blocks Caddy's cert)
+plex.abdullah.run {
+	reverse_proxy 100.125.140.11:32400
+}
+
+navidrome.abdullah.run {
+	reverse_proxy 100.125.140.11:4533
+}
+
+# Fallback bare-IP block — uncomment if the domains ever break.
+# :80 {
+# 	root * /srv
+# 	file_server
+# 	encode gzip
+#
+# 	@static path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
+# 	@html not path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
+# 	header @static Cache-Control "public, max-age=14400, must-revalidate"
+# 	header @html Cache-Control "public, max-age=0, must-revalidate"
+#
+# 	handle_path /media/* {
+# 		root * /media
+# 		file_server
+# 	}
+#
+# 	handle_errors {
+# 		rewrite * /404.html
+# 		file_server
+# 	}
+# }

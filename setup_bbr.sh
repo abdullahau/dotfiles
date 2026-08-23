@@ -1,18 +1,10 @@
 #!/usr/bin/env bash
 #
-# Self-contained port of setup_bbr_server.zsh / setup_bbr_vps.zsh — pure bash,
-# no zsh, no .env, no brew, no dotfiles bootstrap. Copy this ONE file anywhere
-# and run it. The tuning is identical on the home server and the VPS, so this
-# single script serves both ends of the relay.
-#
 # Enables TCP BBR congestion control + fq pacing + high bandwidth-delay-product
-# socket buffers. Big win for single TCP streams over long-RTT paths, where the
-# stock `cubic` + small buffers cap a flow well below the link's real capacity.
+# socket buffers. Speeds up single TCP streams over long-RTT paths. Run on
+# both the VPS and the home server — not relay-specific.
 #
-# Safe to re-run: the sysctl drop-in and modules-load file are rewritten fresh
-# and the module load is idempotent.
-#
-# Usage:  ./setup_bbr.sh          (run on the target machine; will sudo)
+# Usage: ./setup_bbr.sh   (run on the target machine; will sudo). Safe to re-run.
 
 set -euo pipefail
 
@@ -51,9 +43,8 @@ EOF
 #----------------------------------------------------------------------
 # 3) Load the module now AND on every boot
 #
-#    ORDER MATTERS: the module must be loaded BEFORE `sysctl --system`
-#    runs, otherwise setting tcp_congestion_control=bbr is rejected as
-#    "invalid argument" (bbr isn't in tcp_available_congestion_control yet).
+#    Order matters: the module must load before `sysctl --system` runs, or
+#    setting tcp_congestion_control=bbr fails with "invalid argument".
 #----------------------------------------------------------------------
 
 printf '3) Loading tcp_bbr now and on every boot...\n\n'
@@ -69,11 +60,8 @@ printf '4) Applying sysctl settings...\n\n'
 
 sudo sysctl --system > /dev/null
 
-# `net.core.default_qdisc = fq` only affects interfaces brought up AFTER it's
-# set, so a machine that's already running keeps its old root qdisc (pfifo_fast
-# / fq_codel) until the next reboot — meaning BBR wouldn't get fq pacing yet.
-# Attach fq to the current default-route interface now so it takes effect
-# immediately; the sysctl above still guarantees fq on every future boot.
+# fq only applies to interfaces brought up after the sysctl is set — attach
+# it to the live interface now so it's active without a reboot.
 IFACE="$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \K\S+' || true)"
 if [[ -n "${IFACE:-}" ]] && command -v tc >/dev/null 2>&1; then
     sudo tc qdisc replace dev "$IFACE" root fq && echo "  attached fq to $IFACE (live, no reboot needed)"

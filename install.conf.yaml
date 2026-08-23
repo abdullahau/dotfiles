@@ -53,13 +53,11 @@
     stdin: true
     stdout: true
     stderr: true
-  # No args here on purpose: setup_vps_relay.sh takes none — it sources .env
-  # itself and reads TARGET_IP/RELAY_PORTS from there.
-  - command: ./setup_vps_relay.sh
+  - command: ./vps/relay.sh
     stdin: true
     stdout: true
     stderr: true
-  - command: ./setup_vps_local_ports.sh
+  - command: ./vps/local-ports.sh
     stdin: true
     stdout: true
     stderr: true
