@@ -1,37 +1,32 @@
 #!/usr/bin/env zsh
 #
-# setup_rclone.zsh — render ~/.config/rclone/rclone.conf from a committed
-# template plus the gitignored secret in the repo-root .env.
+# setup_rclone.zsh — render ~/.config/rclone/rclone.conf from a tracked template
+# plus the gitignored secret in the repo-root .env.
 #
-# WHY this exists instead of symlinking rclone/ into ~/.config:
+# ~/.config/rclone is NOT symlinked into this repo, for two reasons:
+#   1. rclone.conf holds a live OneDrive OAuth token. This repo is public.
+#   2. rclone rewrites rclone.conf in place on every token refresh (about
+#      hourly during a sync), which would dirty the working tree each time.
 #
-#   1. rclone.conf holds a live OneDrive OAuth token (access + refresh). That is
-#      a credential, and this repo is pushed to GitHub. It must never be tracked.
-#
-#   2. rclone REWRITES rclone.conf in place every time it refreshes the access
-#      token (roughly hourly during a sync). If ~/.config/rclone is a symlink to
-#      the repo, every refresh dirties the working tree and re-stages the secret.
-#      So the live config has to be a real file OUTSIDE the repo that rclone owns.
-#
-# The split is therefore:
-#
-#   rclone/rclone-filters.txt    tracked, symlinked  -> ~/.config/rclone/
+# The layout is:
+#   rclone/rclone-filters.txt    tracked, symlinked -> ~/.config/rclone/
 #   rclone/rclone.conf.template  tracked, no secrets -> rendered
-#   .env (repo root)             gitignored secret   -> substituted in
-#   ~/.config/rclone/rclone.conf real file, rclone-owned, never touched again
+#   .env (repo root)             gitignored secret  -> substituted in
+#   ~/.config/rclone/rclone.conf real file, owned by rclone
 #
-# .env is a BOOTSTRAP SEED, not the source of truth. Once rendered, rclone rotates
-# the token in the live file and .env goes stale — that is expected and fine. It
-# only has to be fresh enough to authenticate once on a new machine. If the seed
-# ever goes too stale to refresh, re-run `rclone config reconnect onedrive:` and
-# re-seed with `./setup_rclone.zsh --export`.
+# .env is a bootstrap seed, not the source of truth. It only has to be fresh
+# enough to authenticate once on a new machine. If it goes too stale, run
+# `rclone config reconnect onedrive:` then `./setup_rclone.zsh --export`.
 #
 # Idempotent and safe to re-run.
+#
+# Inputs:
+#   .env at the repo root, with ONEDRIVE_TOKEN and ONEDRIVE_DRIVE_ID.
 #
 # Usage:
 #   ./setup_rclone.zsh            # link filters; render conf only if missing
 #   ./setup_rclone.zsh --force    # re-render conf from .env, clobbering the live one
-#   ./setup_rclone.zsh --export   # print current live token as .env lines (re-seed)
+#   ./setup_rclone.zsh --export   # print the live token as .env lines (re-seed)
 
 setopt errexit nounset pipefail
 
@@ -71,7 +66,7 @@ if [[ -L "$DEST" ]]; then
     LEGACY_CONF="${DEST:A}/rclone.conf"
     rm "$DEST"
     mkdir -p "$DEST"
-    # Rescue the already-authenticated config out of the repo working tree.
+    # Rescue the authenticated config out of the repo working tree.
     if [[ -f "$LEGACY_CONF" ]]; then
         mv "$LEGACY_CONF" "$CONF"
         echo "   moved $LEGACY_CONF -> $CONF (out of the repo)"
@@ -119,7 +114,7 @@ fi
 umask 077
 {
     while IFS= read -r line || [[ -n "$line" ]]; do
-        [[ "$line" == '#'* ]] && continue          # drop template-only docs
+        [[ "$line" == '#'* ]] && continue          # drop template docs
         line="${line//\$\{ONEDRIVE_TOKEN\}/$ONEDRIVE_TOKEN}"
         line="${line//\$\{ONEDRIVE_DRIVE_ID\}/$ONEDRIVE_DRIVE_ID}"
         print -r -- "$line"

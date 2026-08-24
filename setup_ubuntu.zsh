@@ -1,11 +1,20 @@
 #!/usr/bin/env zsh
+#
+# setup_ubuntu.zsh — apt packages, Tailscale (exit node + subnet router), Rust,
+# logind lid-switch behaviour, and Samba.
+#
+# Inputs:
+#   packages/apt-packages   one package per line, `#` comments allowed
+#   .env at the repo root   TAILSCALE_AUTH_KEY (optional; skips `tailscale up`)
+#
+# Idempotent and safe to re-run.
 
 setopt nounset  # Treat unset variables as an error
 
-# Absolute path to this repo, regardless of where it was cloned or the cwd.
+# Absolute path to this repo, whatever the cwd.
 DOTFILES_DIR="${0:A:h}"
 
-# Load local secrets (e.g. TAILSCALE_AUTH_KEY) from an untracked .env file.
+# Load local secrets from the untracked .env file.
 if [[ -f "$DOTFILES_DIR/.env" ]]; then
     set -a
     source "$DOTFILES_DIR/.env"
@@ -22,13 +31,13 @@ echo "\n1) Installing Packages...\n"
 
 APT_PACKAGE_LIST="$DOTFILES_DIR/packages/apt-packages"
 
-# Homebrew on Linux needs these build dependencies present before it can install.
+# Homebrew on Linux needs these build dependencies first.
 BREW_DEPS=(build-essential procps curl file git)
 
 sudo apt-get update
 sudo apt-get install -y "${BREW_DEPS[@]}"
 
-# Install packages listed in packages/apt-packages (skip blank lines and comments)
+# Install the listed apt packages, skipping blank lines and comments.
 if [[ -f "$APT_PACKAGE_LIST" ]]; then
     apt_packages=()
     while IFS= read -r line; do
@@ -56,8 +65,7 @@ echo "\n2) Add brew bin to secure_path...\n"
 echo 'Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/linuxbrew/.linuxbrew/bin"' | sudo tee /etc/sudoers.d/homebrew-path >/dev/null
 sudo visudo -c
 
-# Note: zsh4humans bootstraps itself from ~/.zshenv on your first interactive
-# zsh login (after `chsh`), so there is no install step needed here.
+# zsh4humans bootstraps itself from ~/.zshenv on your first zsh login.
 
 #----------------------------------------------------------------------
 # Tailscale Setup
@@ -75,7 +83,7 @@ fi
 
 echo "\n3.a) Part 1: Setting up IP Forwarding...\n"
 
-# Write the file fresh (not append) so re-running setup stays idempotent.
+# Write the file fresh, not append, so a re-run stays idempotent.
 sudo tee /etc/sysctl.d/99-tailscale.conf > /dev/null << 'EOF'
 net.ipv4.ip_forward = 1
 net.ipv6.conf.all.forwarding = 1
@@ -108,7 +116,7 @@ rustup update
 
 echo "\n5) Configuring Logind for Lid Switch behavior...\n"
 
-# Use a drop-in file (idempotent) instead of appending to logind.conf.
+# Use a drop-in file instead of appending to logind.conf.
 LOGIND_DROPIN="/etc/systemd/logind.conf.d/99-lid-switch.conf"
 
 echo "Writing lid switch settings to $LOGIND_DROPIN..."

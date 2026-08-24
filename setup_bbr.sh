@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# Enables TCP BBR congestion control + fq pacing + high bandwidth-delay-product
-# socket buffers. Speeds up single TCP streams over long-RTT paths. Run on
-# both the VPS and the home server — not relay-specific.
+# setup_bbr.sh — enable TCP BBR congestion control, fq pacing, and large socket
+# buffers. Speeds up single TCP streams over long-RTT paths. Takes no inputs.
+# Run it on both the VPS and the home server.
 #
-# Usage: ./setup_bbr.sh   (run on the target machine; will sudo). Safe to re-run.
+# Usage: ./setup_bbr.sh   (calls sudo itself). Idempotent and safe to re-run.
 
 set -euo pipefail
 
@@ -41,10 +41,10 @@ net.ipv4.tcp_mtu_probing = 1
 EOF
 
 #----------------------------------------------------------------------
-# 3) Load the module now AND on every boot
+# 3) Load the module now and on every boot
 #
-#    Order matters: the module must load before `sysctl --system` runs, or
-#    setting tcp_congestion_control=bbr fails with "invalid argument".
+#    Order matters: load the module before `sysctl --system` runs, or setting
+#    tcp_congestion_control=bbr fails with "invalid argument".
 #----------------------------------------------------------------------
 
 printf '3) Loading tcp_bbr now and on every boot...\n\n'
@@ -60,8 +60,8 @@ printf '4) Applying sysctl settings...\n\n'
 
 sudo sysctl --system > /dev/null
 
-# fq only applies to interfaces brought up after the sysctl is set — attach
-# it to the live interface now so it's active without a reboot.
+# fq only applies to interfaces brought up after the sysctl is set. Attach it to
+# the live interface now, so no reboot is needed.
 IFACE="$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \K\S+' || true)"
 if [[ -n "${IFACE:-}" ]] && command -v tc >/dev/null 2>&1; then
     sudo tc qdisc replace dev "$IFACE" root fq && echo "  attached fq to $IFACE (live, no reboot needed)"

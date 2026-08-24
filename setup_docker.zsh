@@ -1,4 +1,13 @@
 #!/usr/bin/env zsh
+#
+# setup_docker.zsh — install Docker Engine, enable IPv6, create the media and
+# container directories, then clone and start the private homelab stack.
+#
+# Inputs:
+#   A GitHub SSH key that can read git@github.com:abdullahau/homelab.git. Without
+#   it the clone, the container start, and the AdGuard DNS bind are skipped.
+#
+# Idempotent and safe to re-run.
 
 echo "\n<<< Starting Docker Services Setup >>>\n"
 
@@ -30,9 +39,8 @@ echo "\n1a) Granting root-level Docker privilege to a non-root user"
 # https://docs.docker.com/engine/install/linux-postinstall
 sudo groupadd -f docker
 sudo usermod -aG docker $USER
-# NOTE: do NOT run `newgrp docker` here — it replaces the current shell and would
-# abort the rest of this script. The new group membership takes effect on your
-# next login (or run `newgrp docker` manually in a separate shell if needed now).
+# Do not run `newgrp docker` here: it replaces the shell and aborts this script.
+# The new group takes effect on your next login.
 
 echo "\n2) Enable IPv6 in Docker Daemon...\n"
 
@@ -53,13 +61,13 @@ net.ipv6.conf.all.disable_ipv6 = 0
 net.ipv6.conf.default.disable_ipv6 = 0
 EOF
 
-echo "\n2) Creating Docker Container Directory and Volume Directories...\n"
+echo "\n4) Creating Docker Container Directory and Volume Directories...\n"
 
 sudo mkdir -p /docker
 sudo mkdir -p /data/{books,documents,downloads,movies,music,shows,videos}
 sudo mkdir -p /data/downloads/{complete,incomplete,torrents}
 
-echo "\n3) Changing Ownership and Permissions to $USER...\n"
+echo "\n5) Changing Ownership and Permissions to $USER...\n"
 
 # Change ownership
 sudo chown -R "$USER":"$USER" /docker
@@ -69,14 +77,13 @@ sudo chown -R "$USER":"$USER" /data
 sudo chmod -R 755 /docker
 sudo chmod -R 755 /data
 
-echo "\n4) Git Clone Homelab Repo...\n"
+echo "\n6) Git Clone Homelab Repo...\n"
 
 TARGET_DIR="/docker"
 REPO_URL="git@github.com:abdullahau/homelab.git"
 
-# The homelab repo is private and cloned over SSH, so this only works once your
-# SSH key is uploaded to GitHub. On a brand-new server that hasn't happened yet;
-# in that case we skip the homelab-dependent steps instead of hard-failing.
+# The homelab repo is private, so the clone needs an SSH key on GitHub. Skip the
+# dependent steps instead of failing when the key is not there yet.
 homelab_ready=false
 
 if [ -d "$TARGET_DIR/.git" ]; then
@@ -94,10 +101,10 @@ else
 fi
 
 if [ "$homelab_ready" = true ] && [ -x "$TARGET_DIR/docker-manager.sh" ]; then
-    echo "\n5) Starting Docker Containers with Docker Compose...\n"
+    echo "\n7) Starting Docker Containers with Docker Compose...\n"
     "$TARGET_DIR/docker-manager.sh" up
 
-    echo "\n6) Setting up Port 53 Bind for AdGuard Home...\n"
+    echo "\n8) Setting up Port 53 Bind for AdGuard Home...\n"
 
     RESOLVED_DIR="/etc/systemd/resolved.conf.d"
     sudo mkdir -p $RESOLVED_DIR
@@ -108,8 +115,8 @@ FallbackDNS=1.1.1.1 9.9.9.9
 DNSStubListener=no
 EOF
 
-    # Point resolv.conf at systemd-resolved's stub-less resolver. Only back up
-    # the original once so a re-run doesn't overwrite the real backup.
+    # Point resolv.conf at the stub-less resolver. Back up the original once, so
+    # a re-run does not overwrite the real backup.
     if [ ! -L /etc/resolv.conf ]; then
         sudo mv /etc/resolv.conf /etc/resolv.conf.backup
         sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf

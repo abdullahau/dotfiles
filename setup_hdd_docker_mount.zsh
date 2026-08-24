@@ -1,47 +1,32 @@
 #!/usr/bin/env zsh
 #
-# setup_hdd_docker_mount.zsh — zsh, self-contained (no .env/brew). Copy this ONE
-# file anywhere and run it with sudo.
+# setup_hdd_docker_mount.zsh — auto-mount an extra disk at boot, then restart
+# every Docker container that bind-mounts from it.
 #
-# Makes an external/extra disk auto-mount at boot AND ensures every Docker
-# container that bind-mounts from it gets (re)started once the disk is actually
-# mounted — for plex, transmission, motioneye, and anything future.
+# Docker starts containers before a slow USB disk finishes mounting, so they
+# bind an empty mount point and never see the disk. This script writes an
+# /etc/fstab entry (nofail) plus a systemd guard that restarts the affected
+# containers on every (re)mount. The guard finds containers by their bind-mount
+# SOURCE, so new containers need no config.
 #
-# WHY: Docker bind mounts are rprivate. On boot, dockerd starts containers
-# (restart: unless-stopped) BEFORE a slow USB disk is mounted, so they bind an
-# EMPTY mountpoint and never see the disk until restarted. This wires up:
-#   A) an /etc/fstab entry (by UUID or LABEL, + nofail) so the disk mounts
-#      automatically, and
-#   B) a systemd guard that restarts the affected containers whenever the disk
-#      (re)mounts. The guard discovers containers by their mount SOURCE, so it
-#      needs no per-service config and auto-covers any future container.
-#
-# Idempotent and safe to re-run. Designed for fresh Ubuntu installs too.
+# Self-contained: copy this one file anywhere and run it with sudo.
+# Idempotent and safe to re-run.
 #
 # Usage:
 #   sudo ./setup_hdd_docker_mount.zsh <device|UUID=...|LABEL=...> [mount-point]
-# Examples:
+#
 #   sudo ./setup_hdd_docker_mount.zsh /dev/sdb
 #   sudo ./setup_hdd_docker_mount.zsh UUID=7d8d589e-32d7-41b3-ad67-989dd33bca5f
 #   sudo ./setup_hdd_docker_mount.zsh LABEL=HDD /mnt/hdd
 #
-# Look up the device name (/dev/sdX), UUID, and LABEL with any of:
-#   lsblk -f                    # tree -> fs type, LABEL, UUID, mountpoint
-#   sudo blkid                  # e.g. /dev/sdb: LABEL="HDD" UUID="..." TYPE="ext4"
-#   sudo blkid /dev/sdb         # just that one device
-#   lsblk -o NAME,SIZE,TRAN,FSTYPE,LABEL,UUID,MOUNTPOINT   # TRAN shows USB vs SATA
+# Inputs:
+#   $1  disk spec — /dev/sdX, UUID=..., or LABEL=...  (required)
+#   $2  mount point (default /mnt/hdd)
 #
-# --- Prefer a LABEL if you might ever reformat -------------------------------
-# A UUID is regenerated every time you reformat; a LABEL is a name YOU choose and
-# re-apply, so mounting by LABEL keeps working across a reformat (just re-label
-# afterwards). Set a label ONCE, matching the filesystem type:
-#   ext2/3/4 :  sudo e2label /dev/sdb HDD
-#   xfs      :  sudo xfs_admin -L HDD /dev/sdb
-#   btrfs    :  sudo btrfs filesystem label /dev/sdb HDD
-#   exfat    :  sudo exfatlabel /dev/sdb HDD
-#   fat/vfat :  sudo fatlabel /dev/sdb HDD
-# Verify with `lsblk -f`, then run this script with LABEL=HDD. NOTE: reformatting
-# still WIPES the label, so re-apply the SAME label after any reformat.
+# Find the device, UUID, and LABEL with `lsblk -f` or `sudo blkid`.
+#
+# Prefer a LABEL: a reformat regenerates the UUID, but you re-apply the same
+# label yourself (ext2/3/4: `sudo e2label /dev/sdb HDD`).
 
 setopt errexit nounset pipefail
 
@@ -57,8 +42,8 @@ if [[ $EUID -ne 0 ]]; then
     echo "ERROR: run with sudo (it writes /etc/fstab and a systemd unit)."
     exit 1
 fi
-# Step 2 rewrites the fstab line whose mount point is $MOUNT_POINT. For "/" that
-# would strip the root filesystem entry and leave the box unbootable.
+# Step 2 deletes the fstab line for $MOUNT_POINT. For "/" that leaves the box
+# unbootable.
 MOUNT_POINT="${MOUNT_POINT%/}"; : "${MOUNT_POINT:=/}"
 if [[ "$MOUNT_POINT" == "/" ]]; then
     echo "ERROR: refusing to manage '/' — pass a dedicated mount point (e.g. /mnt/hdd)."
@@ -137,9 +122,8 @@ systemctl daemon-reload
 # Activate now (no-op if already mounted). mount -a respects nofail.
 mount "$MOUNT_POINT" 2>/dev/null || mount -a 2>/dev/null || true
 
-# `mount` silently no-ops when ANYTHING is already mounted here, and mountpoint(1)
-# only proves the path is occupied — not that the right disk is behind it. So
-# compare identities: a stale or hand-mounted device must not pass as success.
+# mountpoint(1) only proves the path is occupied, not that the right disk is
+# behind it. Compare UUIDs so a stale or hand-mounted device fails loudly.
 if mountpoint -q "$MOUNT_POINT"; then
     ACTUAL_DEV="$(findmnt -no SOURCE "$MOUNT_POINT" 2>/dev/null || true)"
     ACTUAL_UUID="$(blkid -s UUID -o value "$ACTUAL_DEV" 2>/dev/null || true)"
@@ -150,6 +134,24 @@ if mountpoint -q "$MOUNT_POINT"; then
         exit 1
     fi
     echo "   $MOUNT_POINT is mounted ($ACTUAL_DEV)."
+
+    # Some containers bind a SUBDIRECTORY of the disk (mediamtx uses
+    # /mnt/hdd/footage/recordings). If the disk is late, Docker creates that
+    # path on the root filesystem and the container writes there. The mount
+    # then hides those files, so they leak root-disk space. Look underneath.
+    SHADOW_DIR="$(mktemp -d)"
+    if mount --bind / "$SHADOW_DIR" 2>/dev/null; then
+        if [[ -n "$(find "$SHADOW_DIR$MOUNT_POINT" -mindepth 1 -print -quit 2>/dev/null || true)" ]]; then
+            echo "   WARNING: the root disk holds hidden data under $MOUNT_POINT"
+            echo "            ($(du -sh "$SHADOW_DIR$MOUNT_POINT" 2>/dev/null | cut -f1) written while the disk was absent)."
+            echo "            Inspect and delete it with:"
+            echo "              sudo mkdir -p /mnt/root && sudo mount --bind / /mnt/root"
+            echo "              sudo du -sh /mnt/root$MOUNT_POINT/*"
+            echo "              sudo umount /mnt/root"
+        fi
+        umount "$SHADOW_DIR" 2>/dev/null || true
+    fi
+    rmdir "$SHADOW_DIR" 2>/dev/null || true
 else
     echo "   WARNING: $MOUNT_POINT not mounted (disk absent?)."
 fi
@@ -163,9 +165,8 @@ echo "\n3) Installing /usr/local/sbin/restart-hdd-containers.sh..."
 cat > /usr/local/sbin/restart-hdd-containers.sh <<'HELPER'
 #!/usr/bin/env bash
 # Managed by setup_hdd_docker_mount.zsh — do not edit by hand.
-# Restart every RUNNING container whose bind-mount source is at/under $1 so it
-# re-binds the now-populated disk. Discovers containers dynamically — no
-# hard-coded service names.
+# Restart every RUNNING container whose bind-mount source is at or under $1, so
+# it re-binds the now-populated disk. Container names are never hard-coded.
 set -euo pipefail
 MP="${1:?mount point required}"
 command -v docker >/dev/null 2>&1 || exit 0
@@ -188,13 +189,11 @@ else
     docker restart "${TARGETS[@]}"
 fi
 
-# Only RUNNING containers are restarted above — starting an exited one could
-# resurrect a container that was deliberately stopped. But a container that is
-# down at boot is invisible to that loop, so its failure goes unnoticed until
-# someone opens the dashboard. Log it instead: the journal is where you will be
-# looking. NOTE this still cannot see a `devices:` break (a missing /dev/sdX
-# node) — those are not .Mounts, and a container that fails device setup never
-# starts, so the fix belongs in compose (address disks by /dev/disk/by-id).
+# The loop above skips stopped containers on purpose: starting one could
+# resurrect a container you stopped deliberately. Log them instead, so a
+# container that is down at boot is visible in the journal.
+# This cannot see a broken `devices:` entry — those are not .Mounts. Address
+# disks by /dev/disk/by-id in compose to avoid that failure.
 for id in $(docker ps -aq --filter status=exited --filter status=created); do
     if docker inspect "$id" --format '{{range .Mounts}}{{println .Source}}{{end}}' 2>/dev/null \
          | grep -qE "^${MP}(/|$)"; then
@@ -213,7 +212,7 @@ echo "   installed."
 
 echo "\n4) Installing + enabling hdd-docker-guard.service..."
 
-# /mnt/hdd -> mnt-hdd.mount (the auto-generated unit for this mount point).
+# /mnt/hdd -> mnt-hdd.mount, the auto-generated unit for this mount point.
 MOUNT_UNIT="$(systemd-escape -p --suffix=mount "$MOUNT_POINT")"
 
 cat > /etc/systemd/system/hdd-docker-guard.service <<UNIT
@@ -228,7 +227,7 @@ Type=oneshot
 ExecStart=/usr/local/sbin/restart-hdd-containers.sh $MOUNT_POINT
 
 [Install]
-# Start whenever the mount unit activates — covers boot AND a later manual mount.
+# Start whenever the mount unit activates: boot and later manual mounts.
 WantedBy=${MOUNT_UNIT}
 UNIT
 
