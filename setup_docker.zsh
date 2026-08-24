@@ -104,6 +104,7 @@ if [ "$homelab_ready" = true ] && [ -x "$TARGET_DIR/docker-manager.sh" ]; then
     sudo tee "$RESOLVED_DIR/adguardhome.conf" > /dev/null << EOF
 [Resolve]
 DNS=127.0.0.1
+FallbackDNS=1.1.1.1 9.9.9.9
 DNSStubListener=no
 EOF
 
