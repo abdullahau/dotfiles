@@ -19,3 +19,7 @@ rclone/rclone.conf
 
 # Editor Settings
 .vscode
+
+# micro editor state
+micro/buffers/
+micro/backups/
