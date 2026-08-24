@@ -1,77 +1,54 @@
-# dotfiles
+# dotfiles — `main` branch
 
-Configuration repository containing my customized home folder dotfiles.
+Config for my Macs. [Dotbot](https://github.com/anishathalye/dotbot) symlinks it;
+the setup scripts bootstrap the rest.
 
-## Steps to bootstrap a new Mac
+Branches: `main` (this machine), `homelab` (Ubuntu home server), `vps`.
 
-1. Install Apple's Command Line Tools, which are prerequisites for Git and Homebrew.
+## Bootstrap
 
-```zsh
-xcode-select --install
+```bash
+xcode-select --install                 # git + Homebrew prerequisite
+git clone https://github.com/abdullahau/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install
 ```
 
+`./install` is safe to re-run; the symlinks and `defaults` writes are idempotent.
+zsh becomes the login shell at your next login. Clone path doesn't matter —
+`install` resolves its own location.
 
-2. Clone repo into new hidden directory.
+## What `./install` runs
 
-```zsh
-# Use SSH (if set up)...
-git clone git@github.com:eieioxyz/Beyond-Dotfiles-in-100-Seconds.git ~/.dotfiles
+| Script | Does |
+| --- | --- |
+| `setup_homebrew.zsh` | Homebrew and everything in `packages/Brewfile`, Xcode license, share perms |
+| `setup_zsh.zsh` | adds Homebrew's zsh to `/etc/shells` (sudo), then `chsh` to it |
+| `setup_macos.zsh` | Finder, Dock, and Mission Control `defaults`, then restarts both |
+| `setup_uv.zsh` | `uv tool install` for each entry in `packages/uv-tools` |
 
-# ...or use HTTPS and switch remotes later.
-git clone https://github.com/eieioxyz/Beyond-Dotfiles-in-100-Seconds.git ~/.dotfiles
+Dotbot links shell, git, ssh, ghostty, zed, micro, nano, yazi, bat, btop, atuin,
+fastfetch, marimo, logseq, ruff, codebook, and Raycast scripts.
+
+## Run by hand
+
+```bash
+./macos_deepcleaner.sh                                    # fd + fzf TUI, large files and caches
+./honor-tablet/debloat.sh honor-tablet/packages-remove.txt  # adb debloat a tablet
 ```
 
+Raycast settings are `.rayconfig` exports in `raycast/`, imported through Raycast
+itself; only `raycast/scripts` is symlinked.
 
-3. Create symlinks in the Home directory to the real files in the repo.
+## Packages
 
-```zsh
-# There are better and less manual ways to do this;
-# investigate install scripts and bootstrapping tools.
+- `packages/Brewfile` — formulae, casks, **and** VS Code extensions. Refresh with
+  `brew bundle dump --describe --force --file=./packages/Brewfile`; the `bbd`
+  alias omits `--describe --force`, so it drops comments and fails on an
+  existing file.
+- `packages/uv-tools` — one per line, `#` comments allowed.
 
-ln -s ~/.dotfiles/.zshrc ~/.zshrc
-ln -s ~/.dotfiles/.gitconfig ~/.gitconfig
-```
+## Notes
 
-
-4. Install Homebrew, followed by the software listed in the Brewfile.
-
-```zsh
-# These could also be in an install script.
-
-# Install Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Then pass in the Brewfile location...
-brew bundle --file ~/.dotfiles/packages/Brewfile
-
-# ...or move to the directory first.
-cd ~/.dotfiles && brew bundle
-
-# Save/Dump Brewfile
-brew bundle dump --describe --force --file ~/.dotfiles/packages/Brewfile
-```
-
-## TODO 
-- Terminal Preferences
-- Change Shell to ZSH
-- Dock Preferences
-- Mission Control Preference (Don't Rearrange Spaces)
-- Finder Show Path Bar and Set to Column View
-- .zshrc
-- Git (config and SSH)
-- Homebrew installation automation
-- uv tool installation automation (ruff, pyrefly, basedpyright, jupyterlab, jupyter-core)
-- Linux pacman / yay package manager automation
-
-## TODO List
-
-- Learn how to use [`defaults`](https://macos-defaults.com/#%F0%9F%99%8B-what-s-a-defaults-command) to record and restore System Preferences and other macOS configurations.
-- Organize these growing steps into multiple script files.
-- Automate symlinking and run script files with a bootstrapping tool like [Dotbot](https://github.com/anishathalye/dotbot).
-- Revisit the list in [`.zshrc`](.zshrc) to customize the shell.
-- Make a checklist of steps to decommission your computer before wiping your hard drive.
-- Create a [bootable USB installer for macOS](https://support.apple.com/en-us/HT201372).
-- Integrate other cloud services into your Dotfiles process (Dropbox, Google Drive, etc.).
-- Find inspiration and examples in other Dotfiles repositories at [dotfiles.github.io](https://dotfiles.github.io/).
-- And last, but hopefully not least, [**take my course, *Dotfiles from Start to Finish-ish***](https://www.udemy.com/course/dotfiles-from-start-to-finish-ish/?referralCode=445BE0B541C48FE85276 "Learn Dotfiles from Start to Finish-ish on Udemy"
-)!
+`cli-utils.md` (ImageMagick snippets), `ghostty/ghostty-shortcuts.md`
+(keybindings), `honor-tablet/instruction.md` (adb setup).

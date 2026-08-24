@@ -13,3 +13,9 @@ __pycache__/
 # Environments
 .env
 .venv
+
+# Editor runtime state (rewritten in place by the app, not config)
+micro/buffers/
+micro/backups/
+zed/conversations/
+*.bak
