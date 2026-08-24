@@ -275,6 +275,13 @@ load_plugins {
 //
 // pane_frames true
 
+// Choose the style of pane frames
+// Options:
+//   - full (classic full border)
+//   - thin (single title line, default)
+//
+pane_frame_style "full"
+
 // Toggle between having Zellij lay out panes according to a predefined set of layouts whenever possible
 // Options:
 //   - true (default)
