@@ -16,7 +16,8 @@ __pycache__/
 
 # Editor Settings
 .vscode
-micro/buffers/history
+micro/buffers/
+micro/backups/
 
 # Hysteria
 hysteria/.env
