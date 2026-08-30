@@ -139,6 +139,9 @@ fi
 eval "$(atuin init zsh)"
 eval "$(atuin hex init)"
 
+# Mole shell completion
+if output="$(mole completion zsh 2>/dev/null)"; then eval "$output"; fi
+
 # Initialize tool-specific completions
 eval "$(zoxide init zsh)"                      # zoxide
 eval "$(uv generate-shell-completion zsh)"     # uv
