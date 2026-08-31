@@ -4,7 +4,7 @@ tap "philocalyst/tap", trusted: true
 # Command-line interface for SQLite
 brew "sqlite"
 # Improved shell history for zsh, bash, fish and nushell
-brew "atuin"
+brew "atuin", restart_service: :changed
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
@@ -45,6 +45,8 @@ brew "lazygit"
 brew "micro"
 # Matroska media files manipulation tools
 brew "mkvtoolnix"
+# Remote terminal application
+brew "mosh"
 # Open-source, cross-platform JavaScript runtime environment
 brew "node"
 # Swiss-army knife of markup format conversion
