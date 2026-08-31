@@ -10,8 +10,22 @@ if [ -n "${ZSH_VERSION-}" ]; then
   # If you are certain that you must export some environment variables
   # in ~/.zshenv (see comments at the top!), do it here:
 
+  # uv
+  export PATH="/home/abdullah/.local/share/../bin:$PATH"
+
+  # Homebrew on PATH for non-interactive shells (ssh commands, mosh-server).
+  # .zshrc does not run for `ssh host command`, so it must happen here.
+  if [[ -z ${HOMEBREW_PREFIX-} ]]; then
+    if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    elif [[ -x /opt/homebrew/bin/brew ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+  fi
+
   export HOMEBREW_CASK_OPTS="--no-quarantine"
 
+  # exists function to check for command existence
   function exists() {
     # `command -v` is similar to `which`
     # https://stackoverflow.com/a/677212/1341838
