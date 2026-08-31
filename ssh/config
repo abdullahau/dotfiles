@@ -6,8 +6,8 @@ Host homelab-ts
 
 # Oracle VPS relays
 # Dubai   (me-dubai-1):   `oracle-dxb` -> public IP, `oracle-dxb-ts` -> tailnet IP.
-Host oracle 145.241.121.9
-  HostName 145.241.121.9
+Host oracle 141.145.152.160
+  HostName 141.145.152.160
   User ubuntu
   ForwardAgent yes
 
