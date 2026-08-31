@@ -1,4 +1,6 @@
 tap "teamookla/speedtest", trusted: true
+# Improved shell history for zsh, bash, fish and nushell
+brew "atuin", restart_service: :changed
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -41,6 +43,10 @@ brew "less"
 brew "mas"
 # Modern and intuitive terminal-based text editor
 brew "micro"
+# Deep clean and optimize your Mac
+brew "mole"
+# Remote terminal application
+brew "mosh"
 # Free (GNU) replacement for the Pico text editor
 brew "nano"
 # Improved Nano Syntax Highlighting Files
@@ -176,6 +182,7 @@ vscode "hbenl.vscode-test-explorer"
 vscode "hediet.debug-visualizer"
 vscode "ivan-bocharov.stan-vscode"
 vscode "james-yu.latex-workshop"
+vscode "juliacomputing.juliahub-vscode-auth"
 vscode "julialang.language-julia"
 vscode "juliapluto-pankgeorg.advanced-vscode-extension"
 vscode "kevinrose.vsc-python-indent"
