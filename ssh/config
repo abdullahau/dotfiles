@@ -1,43 +1,85 @@
-# Homelab Sever
-Host homelab
-  HostName 192.168.0.100
+# =============================================================================
+#  Naming convention
+#    <host>      public / LAN IPv4
+#    <host>6     public IPv6   — fails on networks without IPv6, such as office
+#    <host>-ts   Tailscale MagicDNS — works on any network, v4 or v6
+#
+#  All three routes to a machine share one HostKeyAlias, so they resolve to a
+#  single known_hosts entry instead of one per address.
+#
+#  ORDERING: ssh keeps the FIRST value it finds for each keyword, so more
+#  specific patterns (oracle-us*) must come BEFORE broader ones (oracle*).
+#  These blocks list host names explicitly to sidestep that trap entirely.
+# =============================================================================
+
+
+# --- Homelab -----------------------------------------------------------------
+Host homelab homelab6 homelab-ts 192.168.0.100
   User abdullah
   ForwardAgent yes
+  HostKeyAlias homelab
+
+# LAN IPv4 (also reachable off-LAN via the Tailscale subnet route)
+Host homelab 192.168.0.100
+  HostName 192.168.0.100
+
+# ISP-delegated IPv6. Prefix is dynamic (~10 day lease) and inbound v6 is
+# currently blocked at the router, so this is a placeholder until port 22 is
+# opened for v6. Alternate prefix on the same NIC:
+#   2001:8f8:1927:2f34:caa3:62ff:fed8:c536
+Host homelab6
+  HostName 2001:8f8:1927:5732:caa3:62ff:fed8:c536
+  AddressFamily inet6
 
 Host homelab-ts
-  HostName 100.125.140.11
-  User abdullah
-  ForwardAgent yes
+  HostName homelab.napoleon-alkaline.ts.net
 
-# Oracle VPS relays
-# Dubai   (me-dubai-1):   `oracle-dxb` -> public IP, `oracle-dxb-ts` -> tailnet IP.
+
+# --- Oracle VPS — Dubai (me-dubai-1) -----------------------------------------
+Host oracle oracle6 oracle-ts 141.145.152.160
+  User ubuntu
+  ForwardAgent yes
+  HostKeyAlias oracle-dxb
+
+# Public IPv4
 Host oracle 141.145.152.160
   HostName 141.145.152.160
-  User ubuntu
-  ForwardAgent yes
+
+# Public IPv6
+Host oracle6
+  HostName 2603:c026:8008:8bff:0:ca54:b343:d055
+  AddressFamily inet6
 
 Host oracle-ts
-  HostName 100.107.165.88
+  HostName oracle.napoleon-alkaline.ts.net
+
+
+# --- Oracle VPS — US (us-phoenix-1) ------------------------------------------
+Host oracle-us oracle-us6 oracle-us-ts 144.24.59.133
   User ubuntu
   ForwardAgent yes
+  HostKeyAlias oracle-phoenix
 
-# Phoenix (us-phoenix-1): `oracle`     -> public IP, `oracle-ts`     -> tailnet IP.
+# Public IPv4
 Host oracle-us 144.24.59.133
   HostName 144.24.59.133
-  User ubuntu
-  ForwardAgent yes
+
+# Public IPv6
+Host oracle-us6
+  HostName 2603:c020:24:f3ff:0:9cbd:4b14:3d54
+  AddressFamily inet6
 
 Host oracle-us-ts
-  HostName 100.127.58.81
-  User ubuntu
-  ForwardAgent yes
+  HostName oracle-us.napoleon-alkaline.ts.net
 
-# GitHub
+
+# --- GitHub ------------------------------------------------------------------
 Host github.com
   AddKeysToAgent yes
   IdentityFile ~/.ssh/id_ed25519
 
-# Qubes (Work)
+
+# --- Qubes (Work) ------------------------------------------------------------
 Host qubes-root 130.0.0.104
   HostName 130.0.0.104
   User root
