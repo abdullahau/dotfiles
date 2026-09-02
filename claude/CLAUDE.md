@@ -65,6 +65,42 @@ I have `gh` installed through Homebrew. Use it for repo work: pull requests, iss
 - Always ask me first before you run a `gh` command that changes a repo. This includes pushes, pull requests, merges, issue edits, and releases.
 - Read-only commands, like status checks or listing issues, do not need my permission first.
 
-## 6. Priority
+## 6. Token efficiency
+
+Context is the scarce resource. Follow these rules on every task.
+
+### Read narrowly, not whole
+
+Do not read a whole file to find one thing. Search first, then read only the
+match and what it touches.
+
+- Find the symbol: `grep -rn "def build_cohort" src/`
+- Read the region: `sed -n '340,420p' file.py`
+- Trace callers and callees with `grep -n`, not with more full reads.
+- Use `rg`, `grep`, `glob`, or `ctags` for structure. Use `Read` for detail.
+
+Read a whole file or a whole repo only when I ask you to study it in full.
+If you must read a large file, state why first.
+
+### Compress every image before you look at it
+
+Never analyse a raw screenshot or photo. Shrink it first with ImageMagick:
+
+```bash
+magick shot.png -resize 1200x -quality 82 /tmp/shot-small.png
+```
+
+Read the small copy. A full-size screenshot costs many times more than the
+resized one, and the resized one shows the same layout.
+
+### Other habits
+
+- Never re-read a file after you edit it. A failed edit reports an error.
+- Run long commands with `run_in_background`. Do not stream output into context.
+- Pipe noisy commands through `tail -20`, `head`, or `grep`.
+- Batch independent tool calls into one block. Fewer round trips, fewer resends.
+- Send a wide search to a subagent when you only need the answer, not the files.
+
+## 7. Priority
 
 If a task pulls the writing standard in rule 1 against speed or brevity elsewhere in these instructions, rule 1 wins. Clear, correct STE output matters more than short output.

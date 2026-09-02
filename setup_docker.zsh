@@ -23,7 +23,7 @@ echo \
 sudo apt-get update
 
 # 3) Install Docker packages
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-model-plugin
 
 echo "\n1a) Granting root-level Docker privilege to a non-root user"
 
