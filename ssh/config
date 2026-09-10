@@ -14,25 +14,13 @@
 
 
 # --- Homelab -----------------------------------------------------------------
-Host homelab homelab6 homelab-ts 192.168.0.100
+Host homelab homelab-ts
   User abdullah
   ForwardAgent yes
   HostKeyAlias homelab
 
-# LAN IPv4 (also reachable off-LAN via the Tailscale subnet route)
-Host homelab 192.168.0.100
-  HostName 192.168.0.100
-
-# ISP-delegated IPv6. Prefix is dynamic (~10 day lease) and inbound v6 is
-# currently blocked at the router, so this is a placeholder until port 22 is
-# opened for v6. Alternate prefix on the same NIC:
-#   2001:8f8:1927:2f34:caa3:62ff:fed8:c536
-Host homelab6
-  HostName 2001:8f8:1927:5732:caa3:62ff:fed8:c536
-  AddressFamily inet6
-
 Host homelab-ts
-  HostName homelab.napoleon-alkaline.ts.net
+  HostName 100.125.140.11
 
 
 # --- Oracle VPS — Dubai (me-dubai-1) -----------------------------------------
@@ -51,7 +39,7 @@ Host oracle6
   AddressFamily inet6
 
 Host oracle-ts
-  HostName oracle.napoleon-alkaline.ts.net
+  HostName 100.107.165.88
 
 
 # --- Oracle VPS — US (us-phoenix-1) ------------------------------------------
@@ -70,7 +58,7 @@ Host oracle-us6
   AddressFamily inet6
 
 Host oracle-us-ts
-  HostName oracle-us.napoleon-alkaline.ts.net
+  HostName 100.127.58.81
 
 
 # --- GitHub ------------------------------------------------------------------
