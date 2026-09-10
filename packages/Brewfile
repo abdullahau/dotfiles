@@ -1,6 +1,6 @@
 tap "anomalyco/tap", trusted: true
 # Improved shell history for zsh, bash, fish and nushell
-brew "atuin", restart_service: :changed
+brew "atuin"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
@@ -9,6 +9,8 @@ brew "bat-extras"
 brew "btop"
 # Command-line interface for SQLite
 brew "sqlite"
+# Speech synthesizer that supports more than hundred languages and accents
+brew "espeak-ng"
 # Perl lib for reading and writing EXIF metadata
 brew "exiftool"
 # Modern, maintained replacement for ls
@@ -39,6 +41,8 @@ brew "just"
 brew "lazydocker"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Library to render SVG files using Cairo
+brew "librsvg"
 # Modern and intuitive terminal-based text editor
 brew "micro"
 # Remote terminal application
