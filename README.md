@@ -63,7 +63,36 @@ There are two ways to expose a service on the public hop:
 | Plex | homelab `:32400` | raw relay + Caddy alias | `abdullah.run:32400`, `plex.abdullah.run` / `.diy` |
 | Navidrome | homelab `:4533` | Caddy | `navidrome.abdullah.run` / `.diy` |
 | marimo / Jupyter | VPS `:8080` | local port | `abdullah.run:8080` |
+| Tailscale peer relay | VPS `:40000/udp` | local port | tailnet devices only |
 | Jellyfin | homelab `:8096` | Caddy (once live) | `jellyfin.abdullah.run` / `.diy` |
+
+## Tailscale peer relay
+
+This VPS is a Tailscale peer relay on UDP `40000`. This is separate from
+`vps/relay.sh`. It carries tailnet traffic between two devices that cannot
+connect directly, for example the homelab (reachable over IPv6) and a phone on
+an IPv4-only network. Without it, that traffic goes through Tailscale's DERP
+servers, which are slower.
+
+Setup:
+
+1. Add `40000/udp` to `LOCAL_PORTS` in `vps/.env`, then run `./vps/local-ports.sh`.
+2. In OCI, add an ingress rule: source `0.0.0.0/0`, protocol UDP, port `40000`.
+3. Run `sudo tailscale set --relay-server-port=40000`.
+4. In the tailnet policy, tag the VPS `tag:relay` and add this grant:
+
+   ```json
+   {
+       "src": ["autogroup:member", "tag:server"],
+       "dst": ["tag:relay"],
+       "app": {"tailscale.com/cap/relay": []},
+   },
+   ```
+
+   Keep the allow-all grant next to it. If you remove it, the tailnet blocks
+   all other traffic.
+
+Check it with `sudo tailscale debug peer-relay-sessions`.
 
 ## Caddy
 
