@@ -35,24 +35,6 @@ Host homelab-ts
   HostName homelab.napoleon-alkaline.ts.net
 
 
-# --- Wi-Fi AP — D-Link DIR-853 running OpenWrt --------------------------------
-Host ap ap-ts 192.168.0.2
-  User root
-  HostKeyAlias ap
-
-# LAN IPv4. Off-LAN this also works through the homelab subnet route, but only
-# when the client accepts subnet routes AND you are not sitting on a foreign
-# 192.168.0.0/24 — a very common range, which would shadow this address.
-Host ap 192.168.0.2
-  HostName 192.168.0.2
-
-# Off-LAN, via the homelab as a jump host. Immune to the subnet clash above and
-# needs no route acceptance on the client. Prefer this when away from home.
-Host ap-ts
-  HostName 192.168.0.2
-  ProxyJump homelab-ts
-
-
 # --- Oracle VPS — Dubai (me-dubai-1) -----------------------------------------
 Host oracle oracle6 oracle-ts 141.145.152.160
   User ubuntu
@@ -89,6 +71,42 @@ Host oracle-us6
 
 Host oracle-us-ts
   HostName oracle-us.napoleon-alkaline.ts.net
+
+
+# --- Wi-Fi AP — D-Link DIR-853 running OpenWrt --------------------------------
+Host ap ap-ts 192.168.0.2
+  User root
+  HostKeyAlias ap
+
+# LAN IPv4. Off-LAN this also works through the homelab subnet route, but only
+# when the client accepts subnet routes AND you are not sitting on a foreign
+# 192.168.0.0/24 — a very common range, which would shadow this address.
+Host ap 192.168.0.2
+  HostName 192.168.0.2
+
+# Off-LAN, via the homelab as a jump host. Immune to the subnet clash above and
+# needs no route acceptance on the client. Prefer this when away from home.
+Host ap-ts
+  HostName 192.168.0.2
+  ProxyJump homelab-ts
+
+
+# --- LG TV — webOS Developer Mode ---------------------------------------------
+# Dev Mode gives only the sandboxed `prisoner` account, home /media/developer.
+# Refetch the key when Dev Mode expires or is toggled; the passphrase is the
+# 6-character code in the Developer Mode app:
+#   curl -o ~/.ssh/webos_rsa http://192.168.0.196:9991/webos_rsa
+# The TV's SSH is old and offers ssh-rsa only, so both algorithm opts are needed.
+# Avoid `ares-shell`: it prepends `source /etc/profile`, which the jail lacks.
+Host tv 192.168.0.196
+  HostName 192.168.0.196
+  Port 9922
+  User prisoner
+  IdentityFile ~/.ssh/webos_rsa
+  AddKeysToAgent yes
+  HostKeyAlgorithms +ssh-rsa
+  PubkeyAcceptedKeyTypes +ssh-rsa
+  HostKeyAlias lg-tv
 
 
 # --- GitHub ------------------------------------------------------------------
