@@ -89,7 +89,7 @@ cmd_whoami() {
     cf GET "/zones" | jq -r '.result[] | "  \(.name)  \(.id)  (\(.status))"'
 }
 
-cmd_zones() { cf GET "/zones" | jq -r '.result[] | "\(.name)\t\(.id)\t\(.status)"' | column -t; }
+cmd_zones() { cf GET "/zones" | jq -r '.result[] | "\(.name)\t\(.id)\t\(.status)"' | column -t -s $'\t'; }
 
 cmd_dns() {
     local z
@@ -97,7 +97,7 @@ cmd_dns() {
         echo "== $z"
         cf GET "/zones/$(zone_id "$z")/dns_records?per_page=100" \
             | jq -r '.result[] | "  \(.type)\t\(.name)\t\(.content)\tproxied=\(.proxied)"' \
-            | sort | column -t
+            | sort | column -t -s $'\t'
     done < <(target_zones "$@")
 }
 
@@ -109,24 +109,36 @@ cmd_purge() {
     done < <(target_zones "$@")
 }
 
+# host -> zone name. Suffix match on a dot boundary, so "notabdullah.run"
+# does not match the zone "abdullah.run". A plain loop with `return`, not a
+# pipe into `head -1`: head closing the pipe early raises SIGPIPE in the
+# loop, and under `set -o pipefail` that failed the whole call.
+zone_for_host() {
+    local host="$1" c
+    for c in $CF_ZONES; do
+        [[ "$host" == "$c" || "$host" == *".$c" ]] && { printf '%s' "$c"; return 0; }
+    done
+    return 1
+}
+
 # Cloudflare matches files by exact URL, so a purge must name the scheme and
 # host it was cached under — https://abdullah.run/style.css, not /style.css.
 cmd_purge_url() {
     [[ $# -gt 0 ]] || { echo "ERROR: give at least one full URL." >&2; exit 1; }
     [[ $# -le 30 ]] || { echo "ERROR: Cloudflare caps a purge at 30 URLs per call." >&2; exit 1; }
 
-    local host z id body
+    local host z id body n
     for host in $(printf '%s\n' "$@" | awk -F/ '{print $3}' | sort -u); do
-        # Suffix match on a dot boundary: "notabdullah.run" must not match
-        # the zone "abdullah.run".
-        z="$(printf '%s\n' $CF_ZONES | while read -r c; do
-                [[ "$host" == "$c" || "$host" == *".$c" ]] && echo "$c"
-             done | head -1)"
-        [[ -n "$z" ]] || { echo "ERROR: '$host' is not under any zone in CF_ZONES." >&2; exit 1; }
+        if ! z="$(zone_for_host "$host")"; then
+            echo "ERROR: '$host' is not under any zone in CF_ZONES ($CF_ZONES)." >&2
+            exit 1
+        fi
         id="$(zone_id "$z")"
-        body="$(printf '%s\n' "$@" | grep -F "//$host/" | jq -R . | jq -sc '{files: .}')"
+        body="$(printf '%s\n' "$@" | grep -F "//$host/" \
+                | jq -Rsc 'split("\n") | map(select(length > 0)) | {files: .}')"
+        n="$(jq -r '.files | length' <<<"$body")"
         cf POST "/zones/$id/purge_cache" "$body" >/dev/null
-        echo "purged $(jq -r '.files | length' <<<"$body") url(s) on $host"
+        echo "purged $n url(s) on $host"
     done
 }
 
