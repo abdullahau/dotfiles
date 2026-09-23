@@ -4,7 +4,7 @@ tap "philocalyst/tap", trusted: true
 # Command-line interface for SQLite
 brew "sqlite"
 # Improved shell history for zsh, bash, fish and nushell
-brew "atuin", restart_service: :changed
+brew "atuin"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash scripts that integrate bat with various command-line tools
@@ -69,6 +69,8 @@ brew "rv-r"
 brew "sevenzip"
 # Analyze how space is allocated inside an SQLite file
 brew "sqlite-analyzer"
+# Command-line packet analyzer
+brew "tcpdump"
 # OCR (Optical Character Recognition) engine
 brew "tesseract"
 # Official tldr client written in Rust
@@ -105,3 +107,4 @@ uv "quarto-cli"
 uv "ruff"
 uv "ty"
 npm "@sanity/cli"
+npm "@webosose/ares-cli"
