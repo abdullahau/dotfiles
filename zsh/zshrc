@@ -140,8 +140,7 @@ eval "$(uv generate-shell-completion zsh)"     # uv
 eval "$(uvx --generate-shell-completion zsh)"  # uvx
 # eval "$(_MARIMO_COMPLETE=zsh_source marimo)"   # marimo
 
-# Initialize Zsh’s completion system
-autoload -Uz compinit && compinit
+# `z4h init` already ran compinit. A second call here only costs startup time.
 
 # fzf keybindings/completion are provided by z4h; no separate `fzf --zsh` needed.
 
