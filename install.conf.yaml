@@ -15,6 +15,15 @@
     ~/.p10k.zsh: zsh/p10k.zsh
     ~/.inputrc: zsh/inputrc
     ~/.zfunc: zsh/zfunc
+    # Shell (z4h-free, under test). Launch it with:
+    #   ZDOTDIR=~/.config/zsh-next zsh
+    ~/.config/zsh-next/.zshrc:
+      path: zsh-next/zshrc
+      create: true
+    ~/.config/zsh-next/.zshenv:
+      path: zsh-next/zshenv
+      create: true
+    ~/.config/starship.toml: zsh-next/starship.toml
     # Update APT
     ~/update_os.sh: update_os.sh
     # Git
