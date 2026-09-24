@@ -13,6 +13,13 @@ if [ -n "${ZSH_VERSION-}" ]; then
   # uv
   export PATH="/home/abdullah/.local/share/../bin:$PATH"
 
+  # UTF-8 locale. Without this, z4h's codeset check fails and it calls
+  # `locale -a` (enumerates all system locales) on every shell start, which
+  # alone is 35-45% of interactive startup time.
+  if [[ -z ${LANG-} ]]; then
+    export LANG=en_US.UTF-8
+  fi
+
   # Homebrew on PATH for non-interactive shells (ssh commands, mosh-server).
   # .zshrc does not run for `ssh host command`, so it must happen here.
   if [[ -z ${HOMEBREW_PREFIX-} ]]; then
