@@ -115,15 +115,12 @@ zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 # --------------------------------------------------------------
 # Order: fzf-tab after compinit, autosuggestions next,
 # syntax highlighting LAST. Syntax highlighting must wrap every other widget.
+# fzf-tab replaces the completion menu with fzf. It has no brew formula, so
+# the dotfiles repo carries it as a git submodule and dotbot links it here.
+# If this is missing, run `git submodule update --init` in the dotfiles repo.
 _zsh_plugins=$HOME/.local/share/zsh/plugins
-
-# fzf-tab replaces the completion menu with fzf. Clone it on first run.
-if [[ ! -e $_zsh_plugins/fzf-tab/fzf-tab.plugin.zsh ]]; then
-  print -u2 'zsh: fetching fzf-tab'
-  command git clone -q --depth 1 https://github.com/Aloxaf/fzf-tab \
-    $_zsh_plugins/fzf-tab 2>/dev/null
-fi
-source $_zsh_plugins/fzf-tab/fzf-tab.plugin.zsh 2>/dev/null
+source $_zsh_plugins/fzf-tab/fzf-tab.plugin.zsh 2>/dev/null ||
+  print -u2 'zsh: fzf-tab missing. Run: git submodule update --init'
 
 zstyle ':fzf-tab:*' fzf-bindings 'tab:accept'
 zstyle ':fzf-tab:*' use-fzf-default-opts yes

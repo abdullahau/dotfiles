@@ -1,22 +1,19 @@
-# catppuccin-powerline, modified.
-# Left: the preset as it ships, minus username and time.
-# Right: exit code, run time, user@host, clock.
-# Input sits on line two. Switch themes with `prompt-theme`.
-#
-# os and directory stay chained, because both always render. Everything after
-# them is a self-contained pill. Chained arrows leave a trail of empty
-# chevrons whenever a segment has nothing to show.
+# catppuccin-powerline, modified. The left bar is the preset's own,
+# untouched apart from username and time, which moved right.
+# Right: exit code, run time, then user@host flowing into the clock.
+# Input sits on line two.
 
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](fg:red)\
+[](red)\
 $os\
-[](fg:red bg:peach)\
+[](bg:peach fg:red)\
 $directory\
-[](fg:peach) \
+[](bg:yellow fg:peach)\
 $git_branch\
 $git_status\
+[](fg:yellow bg:green)\
 $c\
 $rust\
 $golang\
@@ -27,7 +24,9 @@ $java\
 $kotlin\
 $haskell\
 $python\
+[](fg:green bg:sapphire)\
 $conda\
+[](fg:sapphire)\
 $fill\
 $status\
 $cmd_duration\
@@ -37,10 +36,6 @@ $time\
 \n$character"""
 
 palette = 'catppuccin_mocha'
-
-[fill]
-symbol = " "
-style = "fg:surface0"
 
 [os]
 disabled = false
@@ -69,6 +64,29 @@ Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 
+[username]
+show_always = true
+style_user = "bg:sapphire fg:crust"
+style_root = "bg:sapphire fg:crust bold"
+format = '[](fg:sapphire)[ $user]($style)'
+
+[hostname]
+ssh_only = false
+ssh_symbol = ""
+format = '[@$hostname ](bg:sapphire fg:crust)[](fg:lavender bg:sapphire)'
+
+[status]
+disabled = false
+map_symbol = true
+symbol = "✘ "
+sigint_symbol = "󰂭 "
+signal_symbol = "⚡ "
+format = '[](fg:red)[ $symbol$status ](bg:red fg:crust)[](fg:red) '
+
+[fill]
+symbol = " "
+style = "fg:surface0"
+
 [directory]
 style = "bg:peach fg:crust"
 format = "[ $path ]($style)"
@@ -77,101 +95,106 @@ truncation_symbol = "…/"
 
 [directory.substitutions]
 "Documents" = "󰈙 "
-"Downloads" = " "
+"Downloads" = " "
 "Music" = "󰝚 "
-"Pictures" = " "
+"Pictures" = " "
 "Developer" = "󰲋 "
 
 [git_branch]
-symbol = ""
-format = '[](fg:yellow)[ $symbol $branch ](fg:crust bg:yellow)'
+symbol = ""
+style = "bg:yellow"
+format = '[[ $symbol $branch ](fg:crust bg:yellow)]($style)'
 
 [git_status]
-# The closing cap sits outside the ( ) group, so a clean repo still closes the
-# pill. The group itself vanishes when there is nothing to report.
-format = '[($all_status$ahead_behind )](fg:crust bg:yellow)[](fg:yellow) '
-
-[c]
-symbol = " "
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
-
-[rust]
-symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
-
-[golang]
-symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+style = "bg:yellow"
+format = '[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)'
 
 [nodejs]
 symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 
 [bun]
 symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[c]
+symbol = " "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 
 [php]
-symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 
 [java]
-symbol = " "
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+symbol = " "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 
 [kotlin]
 symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 
 [haskell]
-symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 
 [python]
-symbol = ""
-format = '[](fg:green)[ $symbol( $version) ](fg:crust bg:green)[](fg:green) '
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:crust bg:green)]($style)'
 
+[docker_context]
+symbol = ""
+style = "bg:sapphire"
+format = '[[ $symbol( $context) ](fg:crust bg:sapphire)]($style)'
 
 [conda]
-symbol = "  "
-format = '[](fg:sapphire)[$symbol$environment ](fg:crust bg:sapphire)[](fg:sapphire) '
+symbol = "  "
+style = "fg:crust bg:sapphire"
+format = '[$symbol$environment ]($style)'
 ignore_base = false
-
-[status]
-disabled = false
-map_symbol = true
-symbol = "✘ "
-sigint_symbol = "󰂭 "
-signal_symbol = "⚡ "
-format = '[](fg:red)[ $symbol$status ](bg:red fg:crust)[](fg:red) '
-
-[cmd_duration]
-disabled = false
-min_time = 2_000
-show_milliseconds = false
-format = '[](fg:yellow)[  $duration ](bg:yellow fg:crust)[](fg:yellow) '
-
-[username]
-show_always = true
-style_user = "bg:sapphire fg:crust"
-style_root = "bg:sapphire fg:red bold"
-format = '[](fg:sapphire)[ $user]($style)'
-
-[hostname]
-ssh_only = false
-ssh_symbol = ""
-format = '[@$hostname ](bg:sapphire fg:crust)[](fg:sapphire) '
 
 [time]
 disabled = false
 time_format = "%R"
-format = '[](fg:lavender)[  $time ](fg:crust bg:lavender)[](fg:lavender)'
+style = "bg:lavender"
+format = '[  $time ](fg:crust bg:lavender)[](fg:lavender)'
+
+[line_break]
+disabled = true
 
 [character]
 disabled = false
 success_symbol = '[❯](bold fg:green)'
 error_symbol = '[❯](bold fg:red)'
 vimcmd_symbol = '[❮](bold fg:green)'
+vimcmd_replace_one_symbol = '[❮](bold fg:lavender)'
+vimcmd_replace_symbol = '[❮](bold fg:lavender)'
+vimcmd_visual_symbol = '[❮](bold fg:yellow)'
+
+[cmd_duration]
+disabled = false
+min_time = 2_000
+show_milliseconds = false
+format = '[](fg:yellow)[  $duration ](bg:yellow fg:crust)[](fg:yellow) '
+show_notifications = true
+min_time_to_notify = 45000
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"

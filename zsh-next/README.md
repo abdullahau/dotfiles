@@ -119,14 +119,27 @@ Everything comes from Homebrew except one:
 | zsh-syntax-highlighting | brew | `$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/` |
 | zsh-completions | brew | `$HOMEBREW_PREFIX/share/zsh-completions/` |
 | fzf, atuin, zoxide | brew | `$HOMEBREW_PREFIX/bin/` |
-| **fzf-tab** | **git clone** | `~/.local/share/zsh/plugins/fzf-tab` |
-
-fzf-tab has no Homebrew formula. The zshrc clones it on first run if the
-directory is missing, so a new machine needs nothing extra. It is not tracked
-in this repo and not pinned to a commit. Update it with `git -C
-~/.local/share/zsh/plugins/fzf-tab pull`.
+| **fzf-tab** | **git submodule** | `zsh-next/plugins/fzf-tab` |
 
 The brew ones are in `packages/Brewfile`, so `brew bundle` installs them.
+
+fzf-tab has no Homebrew formula, so this repo carries it as a submodule.
+dotbot links `zsh-next/plugins` to `~/.local/share/zsh/plugins`.
+
+`submodule.recurse = true` is set in `git/gitconfig`, so a plain `git pull`
+already checks out each submodule at the commit this repo pins. Nothing extra
+to run on a new machine, and `./install` runs `git submodule update --init
+--recursive` first anyway.
+
+A submodule pins a commit. That is the point: every machine gets the same
+fzf-tab. To move the pin to upstream's newest, once, on one machine:
+
+```sh
+git submodule update --remote --merge
+git commit -am "bump zsh plugins"
+```
+
+Every other machine then picks it up on its next `git pull`.
 
 ## Choosing a different prompt
 
