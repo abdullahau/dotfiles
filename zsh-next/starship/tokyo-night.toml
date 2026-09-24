@@ -113,7 +113,7 @@ format = '[ $symbol$status](bg:#394260 fg:#f7768e)'
 
 [cmd_duration]
 disabled = false
-min_time = 2_000
+min_time = 1_000
 show_milliseconds = false
 format = '[  $duration](bg:#394260 fg:#e0af68)'
 
