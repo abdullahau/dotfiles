@@ -166,12 +166,16 @@ function zcache-clear() {
 # Themes live in ~/.config/starship/. The choice is just a name in a state
 # file, so startup reads one short line and never runs a subprocess.
 _prompt_theme_file=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/prompt-theme
-_prompt_theme=catppuccin-powerline
-[[ -r $_prompt_theme_file ]] && read -r _prompt_theme < $_prompt_theme_file
-export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/$_prompt_theme.toml
-[[ -r $STARSHIP_CONFIG ]] ||
-  export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/catppuccin-powerline.toml
-unset _prompt_theme
+# An inherited STARSHIP_CONFIG wins, so `STARSHIP_CONFIG=x.toml zsh` can try a
+# config without touching the saved choice. prompt-lab's `try` relies on this.
+if [[ -z ${STARSHIP_CONFIG-} ]]; then
+  _prompt_theme=catppuccin-powerline
+  [[ -r $_prompt_theme_file ]] && read -r _prompt_theme < $_prompt_theme_file
+  export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/$_prompt_theme.toml
+  [[ -r $STARSHIP_CONFIG ]] ||
+    export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/catppuccin-powerline.toml
+  unset _prompt_theme
+fi
 
 # Switch the prompt. starship reads its config at every prompt, so the change
 # lands on the next one, in this shell and in every shell opened afterwards.
