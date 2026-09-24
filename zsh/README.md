@@ -185,6 +185,19 @@ starship toggle git_status   # turn a module off for this session
 
 The module list is at <https://starship.rs/config/>.
 
+## Switching branches
+
+A branch switch does not repopulate submodules, so fzf-tab goes missing and
+the zshrc prints `fzf-tab missing`. Put it back with:
+
+```sh
+git submodule update --init --recursive
+```
+
+`submodule.recurse = true` in `git/gitconfig` covers `git pull`, and
+`./install` runs the same command, but `git checkout` between branches needs
+it by hand.
+
 ## Still to do
 
 - [ ] Test on the macbook (check the `mac` keyboard bindings).
