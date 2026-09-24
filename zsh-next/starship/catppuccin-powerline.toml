@@ -5,6 +5,13 @@
 
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# starship shells out to git and gives up after 500 ms by default, then
+# draws nothing at all. p10k never did that, because gitstatus ran as a
+# daemon. Raise the ceiling so a big repo still reports its branch and
+# its unpushed commits. It is a limit, not a delay: a fast repo is
+# unaffected.
+command_timeout = 1000
+
 format = """
 [](red)\
 $os\

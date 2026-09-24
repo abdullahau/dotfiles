@@ -44,12 +44,20 @@ Time from spawn to a drawn prompt, measured over a pty, five runs each:
 | config | time |
 | --- | --- |
 | z4h, before the cache | 375 ms |
-| z4h, with the cache | 180 ms |
-| zsh-next with starship | 135 ms |
+| z4h, with the cache | ~172 ms |
+| zsh-next with starship | ~93 ms |
 
-Measure it with `zsh -i -c exit` and you get much smaller numbers. Ignore
-them. That never starts the line editor, and z4h defers p10k and compinit
-until it does.
+The last two rows were measured back to back under the same load. Take single
+readings with a pinch of salt: the same config has come in anywhere from 50 ms
+to 95 ms depending on what else the machine was doing.
+
+Measure with `zsh -i -c exit` and you get much smaller numbers. Ignore them.
+That never starts the line editor, and z4h defers p10k and compinit until it
+does.
+
+Most of the gap over the earlier 135 ms came from `skip_global_compinit` in
+`.zshenv`. Ubuntu's `/etc/zsh/zshrc` runs its own `compinit` before `~/.zshrc`
+is read, so every shell paid for it twice.
 
 ## Caching
 
