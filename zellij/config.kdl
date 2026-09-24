@@ -375,138 +375,149 @@ themes {
     white "#cad3f5" // Text
   }
 
-  // Catppuccin Mocha, written out in zellij's detailed form so the UI lines up
+  // Built for a terminal that flips between light and dark.
+  //
+  // Every colour here clears 3:1 against a light background (#eff1f5) and a
+  // dark one (#1e1e2e). The previous version was mocha-only: its plain-text
+  // background scored 1.00 against a dark terminal, meaning identical to it,
+  // and 14.50 against a light one, a hard dark block. Its idle ribbon text
+  // scored 1.97 on light, which is the washed-out grey.
+  //
+  // Two rules do the work:
+  //   background 0  - the terminal's own background, for anything that should
+  //                   blend: plain text, lists, frames
+  //   a mid-tone    - for anything opaque: ribbons and highlighted rows. A
+  //                   mid-tone block reads against light and dark alike.
+  //
+  // The group list matches zellij's built-in themes exactly. frame_unselected
+  // is left out on purpose: no built-in theme sets it, so it is not worth
+  // risking the whole theme failing to parse over an unstyled border.
+  //
+  // Shared with the starship prompt: green #1a9850 for success and the active
+  // mode, red #d20f39 for failure.
+  //
   // NOTE: the name must not be "catppuccin-mocha". zellij ships a built-in
   // theme by that name which shadows anything defined here.
-  // with the starship prompt instead of only sharing a palette:
-  //   surface0  the ground under the prompt's right-hand bar
-  //   sapphire  the prompt's user@host
-  //   lavender  the prompt's clock
-  //   green/red the prompt's ❯ on success and failure
   catppuccin-mocha-prompt {
     text_unselected {
-      base 205 214 244        // text
-      background 30 30 46     // base
-      emphasis_0 250 179 135  // peach
-      emphasis_1 116 199 236  // sapphire
-      emphasis_2 166 227 161  // green
-      emphasis_3 203 166 247  // mauve
+      // background 0 means the terminal's own, so plain text never sits on a block
+      base 118 124 148
+      background 0
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 180 83 9
     }
     text_selected {
-      base 205 214 244
-      background 49 50 68     // surface0
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      base 255 255 255
+      background 108 112 134
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 180 83 9
     }
     ribbon_unselected {
-      base 166 173 200        // subtext0, so idle modes stay quiet
-      background 49 50 68     // surface0
-      emphasis_0 243 139 168
-      emphasis_1 250 179 135
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      // idle modes: an opaque mid-tone block, legible whichever way the terminal goes
+      base 255 255 255
+      background 108 112 134
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 180 83 9
     }
     ribbon_selected {
-      base 17 17 27           // crust, as the prompt writes on colour
-      background 116 199 236  // sapphire
-      emphasis_0 243 139 168
-      emphasis_1 30 30 46
-      emphasis_2 203 166 247
-      emphasis_3 250 179 135
+      // active mode: the same green as the prompt's success arrow
+      base 17 17 27
+      background 26 152 80
+      emphasis_0 210 15 57
+      emphasis_1 255 255 255
+      emphasis_2 20 133 127
+      emphasis_3 180 83 9
     }
     table_title {
-      base 180 190 254        // lavender
+      base 20 133 127
       background 0
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      emphasis_0 210 15 57
+      emphasis_1 26 152 80
+      emphasis_2 180 83 9
+      emphasis_3 118 124 148
     }
     table_cell_unselected {
-      base 205 214 244
+      base 118 124 148
       background 0
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 180 83 9
     }
     table_cell_selected {
-      base 205 214 244
-      background 49 50 68
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      base 255 255 255
+      background 108 112 134
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 180 83 9
     }
     list_unselected {
-      base 205 214 244
+      base 118 124 148
       background 0
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 180 83 9
     }
     list_selected {
-      base 205 214 244
-      background 49 50 68
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
-    }
-    frame_unselected {
-      base 88 91 112          // surface2, quiet borders
-      background 0
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      // the highlighted row: white on a mid block, not grey on a dark one
+      base 255 255 255
+      background 108 112 134
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 180 83 9
     }
     frame_selected {
-      base 180 190 254        // lavender
+      base 26 152 80
       background 0
-      emphasis_0 250 179 135
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 203 166 247
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 180 83 9
+      emphasis_3 118 124 148
     }
     frame_highlight {
-      base 250 179 135        // peach
+      base 180 83 9
       background 0
-      emphasis_0 203 166 247
-      emphasis_1 116 199 236
-      emphasis_2 166 227 161
-      emphasis_3 249 226 175
+      emphasis_0 210 15 57
+      emphasis_1 20 133 127
+      emphasis_2 26 152 80
+      emphasis_3 118 124 148
     }
     exit_code_success {
-      base 166 227 161        // green, the prompt's ❯ on success
+      base 26 152 80
       background 0
-      emphasis_0 116 199 236
-      emphasis_1 30 30 46
-      emphasis_2 203 166 247
-      emphasis_3 250 179 135
+      emphasis_0 20 133 127
+      emphasis_1 255 255 255
+      emphasis_2 180 83 9
+      emphasis_3 118 124 148
     }
     exit_code_error {
-      base 243 139 168        // red, the prompt's ❯ on failure
+      base 210 15 57
       background 0
-      emphasis_0 249 226 175
-      emphasis_1 30 30 46
-      emphasis_2 243 139 168
-      emphasis_3 250 179 135
+      emphasis_0 180 83 9
+      emphasis_1 255 255 255
+      emphasis_2 210 15 57
+      emphasis_3 118 124 148
     }
     multiplayer_user_colors {
-      player_1 203 166 247
-      player_2 116 199 236
-      player_3 166 227 161
-      player_4 249 226 175
-      player_5 250 179 135
-      player_6 180 190 254
-      player_7 243 139 168
-      player_8 137 220 235
-      player_9 245 194 231
-      player_10 148 226 213
+      player_1 26 152 80
+      player_2 20 133 127
+      player_3 180 83 9
+      player_4 210 15 57
+      player_5 118 124 148
+      player_6 108 112 134
+      player_7 26 152 80
+      player_8 20 133 127
+      player_9 180 83 9
+      player_10 210 15 57
     }
   }
 }
