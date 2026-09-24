@@ -376,12 +376,14 @@ themes {
   }
 
   // Catppuccin Mocha, written out in zellij's detailed form so the UI lines up
+  // NOTE: the name must not be "catppuccin-mocha". zellij ships a built-in
+  // theme by that name which shadows anything defined here.
   // with the starship prompt instead of only sharing a palette:
   //   surface0  the ground under the prompt's right-hand bar
   //   sapphire  the prompt's user@host
   //   lavender  the prompt's clock
   //   green/red the prompt's ❯ on success and failure
-  catppuccin-mocha {
+  catppuccin-mocha-prompt {
     text_unselected {
       base 205 214 244        // text
       background 30 30 46     // base
@@ -512,7 +514,7 @@ themes {
 // Choose the theme that is specified in the themes section.
 // Default: default
 //
-theme "catppuccin-mocha"
+theme "catppuccin-mocha-prompt"
 
 // The name of the default layout to load on startup
 // Default: "default"
