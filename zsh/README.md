@@ -1,19 +1,13 @@
-# zsh-next — the z4h-free config
+# zsh
 
-This is the default shell on the `homelab-dev` branch. It is on trial, so
-z4h is kept alongside it and nothing has been deleted.
+The shell config: plain zsh, starship for the prompt, plugins from Homebrew.
+zsh4humans is gone, along with powerlevel10k.
 
-## Falling back to z4h
+## What this replaced
 
-```sh
-ZDOTDIR=~/.config/zsh-z4h zsh
-```
+zsh4humans used to supply all of this:
 
-That gives the old z4h shell, p10k and all. `exit` returns you here.
-
-## What replaces what
-
-| z4h gave us | Now |
+| z4h gave us | now |
 | --- | --- |
 | powerlevel10k | starship, `starship/*.toml` |
 | gitstatus daemon | starship's own git code |
@@ -22,20 +16,21 @@ That gives the old z4h shell, p10k and all. `exit` returns you here.
 | zsh-completions | brew package |
 | zsh-history-substring-search | atuin |
 | fzf install and Ctrl+T | brew fzf, `fzf --zsh` |
-| fzf tab completion | fzf-tab, cloned on first run |
+| fzf tab completion | fzf-tab, a submodule under `plugins/` |
 | `z4h bindkey` layer | plain `bindkey` lines |
 | `z4h-cd-back` and friends | the `_dirhist_*` widgets |
 | compinit and its zstyles | written out in full |
-| ohmyzsh | dropped. We never loaded anything from it |
+| ohmyzsh | dropped. We never loaded a file from it |
 | `z4h update` | `brew upgrade` |
 
-## What we lose
+## What went with it
 
 1. **SSH teleport.** `z4h ssh` copied the config to a remote host. Nothing
-   replaces it. The old config had it turned off, so this costs us nothing.
+   replaces it. The old config had it turned off, so it cost us nothing.
 2. **Instant prompt.** p10k drew a prompt before the config finished loading.
-   At 135 ms there is little left to hide. See the numbers below.
-3. **gitstatus.** starship shells out to git. Very large repos may feel slower.
+   At ~93 ms there is little left to hide.
+3. **gitstatus.** starship shells out to git, with a 1 s ceiling set in each
+   theme. Very large repos may feel slower.
 
 ## Speed
 
@@ -43,9 +38,9 @@ Time from spawn to a drawn prompt, measured over a pty, five runs each:
 
 | config | time |
 | --- | --- |
-| z4h, before the cache | 375 ms |
-| z4h, with the cache | ~172 ms |
-| zsh-next with starship | ~93 ms |
+| z4h, as it was | 375 ms |
+| z4h, once its tool init was cached | ~172 ms |
+| this config | ~93 ms |
 
 The last two rows were measured back to back under the same load. Take single
 readings with a pinch of salt: the same config has come in anywhere from 50 ms
@@ -74,8 +69,7 @@ After you change a tool's config, run:
 zcache-clear
 ```
 
-The same cache and the same `zcache-clear` now exist in the z4h config, so
-both shells behave the same way.
+The `homelab` branch carries the same cache in its own zsh config.
 
 ## Load order
 
@@ -127,12 +121,12 @@ Everything comes from Homebrew except one:
 | zsh-syntax-highlighting | brew | `$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/` |
 | zsh-completions | brew | `$HOMEBREW_PREFIX/share/zsh-completions/` |
 | fzf, atuin, zoxide | brew | `$HOMEBREW_PREFIX/bin/` |
-| **fzf-tab** | **git submodule** | `zsh-next/plugins/fzf-tab` |
+| **fzf-tab** | **git submodule** | `zsh/plugins/fzf-tab` |
 
 The brew ones are in `packages/Brewfile`, so `brew bundle` installs them.
 
 fzf-tab has no Homebrew formula, so this repo carries it as a submodule.
-dotbot links `zsh-next/plugins` to `~/.local/share/zsh/plugins`.
+dotbot links `zsh/plugins` to `~/.local/share/zsh/plugins`.
 
 `submodule.recurse = true` is set in `git/gitconfig`, so a plain `git pull`
 already checks out each submodule at the commit this repo pins. Nothing extra
@@ -197,4 +191,3 @@ The module list is at <https://starship.rs/config/>.
 - [ ] Test on both Oracle VPS hosts.
 - [ ] Confirm Shift+Arrow sequences in Ghostty, tmux and zellij.
 - [ ] Decide whether to keep `alias cd=z`.
-- [ ] Decide when to drop the z4h fallback and delete `zsh/`.

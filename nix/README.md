@@ -54,17 +54,19 @@ Both outputs load the same `home/` module.
 - **Data.** `/data`, `/mnt/hdd`, and `/docker/*` (Plex database, Jellyfin metadata) still need backups.
 - **Image tags.** `:latest` images are not reproducible. Pin tags or digests.
 - **Samba passwords.** Run `sudo smbpasswd -a <user>` by hand.
-- **z4h.** z4h downloads itself on first login. Nix does not manage it.
+- **zsh plugins.** starship, zsh-autosuggestions, zsh-syntax-highlighting and
+  zsh-completions come from Homebrew. fzf-tab is a git submodule under
+  `zsh/plugins/`. Nix does not manage any of them.
 
 ### Design choices
 
-- **z4h keeps control of zsh.** `programs.zsh` stays off in home-manager, because it writes its own `.zshrc`. Home-manager only links the files in `zsh/`.
+- **zsh config stays ours.** `programs.zsh` stays off in home-manager, because it writes its own `.zshrc`. Home-manager only links the files in `zsh/`.
 - **Links go to the repo, not to `/nix/store`.** `mkOutOfStoreSymlink` works like dotbot, so a config edit takes effect with no rebuild. `home/default.nix` expects the repo at `~/Developer/dotfiles`.
 - **uid and gid stay at 1000.** `PUID`, `PGID`, and the file owners on the HDD still match.
 - **`RequiresMountsFor = /mnt/hdd`** on the Jellyfin and Transmission units replaces `setup_hdd_docker_mount.zsh`.
 - **Secrets use sops-nix.** The encrypted file lives in git. The host SSH key decrypts it at boot. Templates build the `.env` files outside `/nix/store`, readable only by root.
 - **The firewall is on.** NixOS turns it on by default, but Ubuntu does not. Docker-published ports skip the firewall. Only host-network services (AdGuard, Samba, mosh) need entries.
-- **`programs.nix-ld`** lets uv's Python builds and z4h's downloaded binaries run.
+- **`programs.nix-ld`** lets uv's Python builds run.
 
 ### Map from the old setup
 
@@ -110,7 +112,7 @@ curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 
 Nix does not touch `/home/linuxbrew`, apt, or Docker. Open a new shell after the install.
 
-## A3. Fix the shell PATH for z4h
+## A3. Fix the shell PATH
 
 `zsh/zshenv` sets `no_global_rcs`, so zsh never reads `/etc/zshrc`, and the Nix installer adds its PATH setup there. Add this to `zsh/zshenv`, **above** the Homebrew block:
 
@@ -179,7 +181,7 @@ Keep `install.conf.yaml` for machines without Nix.
 
 ## A7. Check, then merge
 
-- Open a new login shell. Check that z4h and the p10k prompt load.
+- Open a new login shell. Check that the starship prompt loads.
 - Run `ssh <host> which bat`. It must print a Nix path.
 - Merge the branch.
 
@@ -288,7 +290,7 @@ Stop the containers first (`/docker/docker-manager.sh down`), so the databases a
    ```
 
 4. Approve the exit node and subnet route in the Tailscale admin console.
-5. z4h installs itself on the first zsh login.
+5. `brew bundle --file=packages/Brewfile` installs starship and the zsh plugins.
 
 ## B7. Day-to-day use
 

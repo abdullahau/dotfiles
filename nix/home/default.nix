@@ -13,11 +13,10 @@ in
 
   programs.home-manager.enable = true;
 
-  # z4h owns zsh. Do not enable programs.zsh: it would write its own .zshrc.
+  # Do not enable programs.zsh: it would write its own .zshrc over ours.
   home.file = {
     ".zshrc".source = link "zsh/zshrc";
     ".zshenv".source = link "zsh/zshenv";
-    ".p10k.zsh".source = link "zsh/p10k.zsh";
     ".inputrc".source = link "zsh/inputrc";
     ".zfunc".source = link "zsh/zfunc";
     ".gitconfig".source = link "git/gitconfig";
@@ -33,6 +32,7 @@ in
     "fastfetch".source = link "fastfetch";
     "btop".source = link "btop";
     "atuin".source = link "atuin";
+    "starship".source = link "zsh/starship";
     "zellij".source = link "zellij";
     "codebook".source = link "codebook";
     "ruff".source = link "ruff";
