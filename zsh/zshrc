@@ -123,22 +123,49 @@ function zd() {
 fpath+=("$HOME/.zfunc")
 fpath+=("$HOME/.docker/completions")
 
-# Homebrew (put brew on PATH before the tools below, which are installed by it)
-if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+# Homebrew. .zshenv already ran `brew shellenv`, which costs 20 ms. Only pay
+# that again if something cleared the environment.
+if [[ -z ${HOMEBREW_PREFIX-} ]]; then
+  if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-elif [[ -x /opt/homebrew/bin/brew ]]; then
+  elif [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
 fi
 
-# Atuin shell plugin
-eval "$(atuin init zsh)"
-eval "$(atuin hex init)"
+# --- Cached tool init ---
+# Every `eval "$(tool init)"` is a subprocess at each shell start.
+# `uv generate-shell-completion` alone costs 26 ms. Cache the output instead
+# and rebuild it only when the tool binary is newer.
+_zinitcache=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init
+[[ -d $_zinitcache ]] || mkdir -p $_zinitcache
 
-# Initialize tool-specific completions
-eval "$(zoxide init zsh)"                      # zoxide
-eval "$(uv generate-shell-completion zsh)"     # uv
-eval "$(uvx --generate-shell-completion zsh)"  # uvx
-# eval "$(_MARIMO_COMPLETE=zsh_source marimo)"   # marimo
+# usage: _cached_eval <tag> <command> [args...]
+_cached_eval() {
+  local tag=$1 out
+  shift
+  out=$_zinitcache/$tag.zsh
+  [[ -n ${commands[$1]} ]] || return 0
+  if [[ ! -s $out || ${commands[$1]} -nt $out ]]; then
+    "$@" >| $out 2>/dev/null || { rm -f $out; return 1 }
+    zcompile -R -- $out.zwc $out 2>/dev/null
+  fi
+  source $out
+}
+
+# Drop the caches after you change a tool's config, then open a new shell.
+function zcache-clear() {
+  local c=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+  rm -rf $c/init $c/completions $c/zcompdump-*
+  print 'zsh caches cleared. Start a new shell.'
+}
+
+_cached_eval atuin     atuin init zsh
+_cached_eval atuin-hex atuin hex init
+_cached_eval zoxide    zoxide init zsh
+_cached_eval uv        uv  generate-shell-completion zsh
+_cached_eval uvx       uvx --generate-shell-completion zsh
+# _cached_eval marimo  env _MARIMO_COMPLETE=zsh_source marimo
 
 # `z4h init` already ran compinit. A second call here only costs startup time.
 
