@@ -58,7 +58,7 @@ symbol = ' '
 [git_status]
 # Dirty state shows as glyphs on a yellow pill, the way p10k switched
 # the vcs segment from green to yellow.
-format = '[](fg:3)[ $all_status$ahead_behind](fg:0 bg:3)[](fg:3)'
+format = '([](fg:3)[ $all_status$ahead_behind](fg:0 bg:3)[](fg:3))'
 conflicted = '~${count} '
 ahead = '⇡${count} '
 behind = '⇣${count} '
