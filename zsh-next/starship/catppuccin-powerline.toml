@@ -1,6 +1,6 @@
-# catppuccin-powerline, modified. The left bar is the preset's own,
-# untouched apart from username and time, which moved right.
-# Right: exit code, run time, then user@host flowing into the clock.
+# catppuccin-powerline, modified.
+# Left: the preset's own bar, minus username and time.
+# Right: one connected bar - exit code, run time, user@host, clock.
 # Input sits on line two.
 
 "$schema" = 'https://starship.rs/config-schema.json'
@@ -24,15 +24,17 @@ $java\
 $kotlin\
 $haskell\
 $python\
-[](fg:green bg:sapphire)\
 $conda\
-[](fg:sapphire)\
+[](fg:green)\
 $fill\
+[](fg:surface0)\
 $status\
 $cmd_duration\
 $username\
 $hostname\
+[](fg:lavender bg:surface0)\
 $time\
+[](fg:lavender)\
 \n$character"""
 
 palette = 'catppuccin_mocha'
@@ -66,14 +68,14 @@ RedHatEnterprise = "󱄛"
 
 [username]
 show_always = true
-style_user = "bg:sapphire fg:crust"
-style_root = "bg:sapphire fg:crust bold"
-format = '[](fg:sapphire)[ $user]($style)'
+style_user = "bg:surface0 fg:sapphire"
+style_root = "bg:surface0 fg:red bold"
+format = '[ $user]($style)'
 
 [hostname]
 ssh_only = false
 ssh_symbol = ""
-format = '[@$hostname ](bg:sapphire fg:crust)[](fg:lavender bg:sapphire)'
+format = '[@$hostname ](bg:surface0 fg:sapphire)'
 
 [status]
 disabled = false
@@ -81,7 +83,7 @@ map_symbol = true
 symbol = "✘ "
 sigint_symbol = "󰂭 "
 signal_symbol = "⚡ "
-format = '[](fg:red)[ $symbol$status ](bg:red fg:crust)[](fg:red) '
+format = '[ $symbol$status](bg:surface0 fg:red)'
 
 [fill]
 symbol = " "
@@ -107,7 +109,18 @@ format = '[[ $symbol $branch ](fg:crust bg:yellow)]($style)'
 
 [git_status]
 style = "bg:yellow"
-format = '[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)'
+format = '[[($all_status$ahead_behind)](fg:crust bg:yellow)]($style)'
+conflicted = "~${count} "
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+up_to_date = ""
+untracked = "?${count} "
+stashed = "*${count} "
+modified = "!${count} "
+staged = "+${count} "
+renamed = "»${count} "
+deleted = "✘${count} "
 
 [nodejs]
 symbol = ""
@@ -166,7 +179,7 @@ format = '[[ $symbol( $context) ](fg:crust bg:sapphire)]($style)'
 
 [conda]
 symbol = "  "
-style = "fg:crust bg:sapphire"
+style = "fg:crust bg:green"
 format = '[$symbol$environment ]($style)'
 ignore_base = false
 
@@ -174,7 +187,7 @@ ignore_base = false
 disabled = false
 time_format = "%R"
 style = "bg:lavender"
-format = '[  $time ](fg:crust bg:lavender)[](fg:lavender)'
+format = '[  $time ](fg:crust bg:lavender)'
 
 [line_break]
 disabled = true
@@ -192,7 +205,7 @@ vimcmd_visual_symbol = '[❮](bold fg:yellow)'
 disabled = false
 min_time = 2_000
 show_milliseconds = false
-format = '[](fg:yellow)[  $duration ](bg:yellow fg:crust)[](fg:yellow) '
+format = '[  $duration](bg:surface0 fg:yellow)'
 show_notifications = true
 min_time_to_notify = 45000
 

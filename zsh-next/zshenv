@@ -3,6 +3,12 @@
 # Keep this file small. Put anything a non-interactive shell needs here.
 # `ssh host command` does not read .zshrc, so PATH belongs here.
 
+# Ubuntu's /etc/zsh/zshrc runs its own compinit before ~/.zshrc gets a say.
+# That wrote a stray ~/.zcompdump and made us pay for compinit twice. This is
+# the opt-out that file documents. Narrower than `setopt no_global_rcs`, which
+# would also skip /etc/zprofile and break path_helper on macOS.
+skip_global_compinit=1
+
 # uv
 export PATH="$HOME/.local/bin:$PATH"
 
