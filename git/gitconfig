@@ -10,3 +10,9 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
+[submodule]
+	# `git pull` also checks out each submodule at the commit this repo pins,
+	# so dotbot and fzf-tab need no separate command on any machine.
+	# To move a pin to upstream's newest:
+	#   git submodule update --remote --merge && git commit -am "bump plugins"
+	recurse = true

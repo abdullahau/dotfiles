@@ -12,7 +12,10 @@
     # Shell
     ~/.zshrc: zsh/zshrc
     ~/.zshenv: zsh/zshenv
-    ~/.p10k.zsh: zsh/p10k.zsh
+    ~/.config/starship: zsh/starship
+    ~/.local/share/zsh/plugins:
+      path: zsh/plugins
+      create: true
     ~/.inputrc: zsh/inputrc
     ~/.zfunc: zsh/zfunc
     # Update APT
@@ -37,6 +40,12 @@
     ~/.config/ruff: ruff
 
 - shell:
+  # Pull every submodule to the commit this repo pins, dotbot and
+  # fzf-tab included. Runs before the links below are used.
+  - command: git submodule update --init --recursive
+    stdin: true
+    stdout: true
+    stderr: true
   - command: sudo apt-get update && sudo apt-get install -y zsh
     stdin: true
     stdout: true

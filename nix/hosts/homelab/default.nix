@@ -61,7 +61,8 @@
     ];
   };
 
-  # Needed for a zsh login shell. z4h sets no_global_rcs, so /etc/zshrc stays unused.
+  # Needed for a zsh login shell. .zshenv sets skip_global_compinit, so
+  # /etc/zsh/zshrc does not run its own compinit.
   programs.zsh.enable = true;
 
   services.openssh = {
@@ -81,7 +82,7 @@
     HandleSuspendKey = "ignore";
   };
 
-  # uv Python builds and z4h downloads are generic Linux binaries.
+  # uv Python builds are generic Linux binaries.
   programs.nix-ld.enable = true;
 
   hardware.graphics = {

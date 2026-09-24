@@ -65,7 +65,7 @@ echo "\n2) Add brew bin to secure_path...\n"
 echo 'Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/linuxbrew/.linuxbrew/bin"' | sudo tee /etc/sudoers.d/homebrew-path >/dev/null
 sudo visudo -c
 
-# zsh4humans bootstraps itself from ~/.zshenv on your first zsh login.
+# zsh config comes from dotbot: ~/.zshrc and ~/.zshenv link into zsh/.
 
 #----------------------------------------------------------------------
 # Tailscale Setup
