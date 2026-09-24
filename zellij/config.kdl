@@ -410,7 +410,7 @@ themes {
       // background 0 is the terminal's own, so body text never sits on a block
       base 118 124 148
       background 0
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -418,7 +418,7 @@ themes {
     text_selected {
       base 255 255 255
       background 30 102 245
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 255 255 255
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -428,7 +428,7 @@ themes {
       // on the light blue, the way tokyo-night writes its OS segment.
       base 17 17 27
       background 122 130 158
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -445,7 +445,7 @@ themes {
     table_title {
       base 90 127 214
       background 0
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 23 146 153
       emphasis_2 180 83 9
       emphasis_3 118 124 148
@@ -453,7 +453,7 @@ themes {
     table_cell_unselected {
       base 118 124 148
       background 0
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -461,7 +461,7 @@ themes {
     table_cell_selected {
       base 255 255 255
       background 30 102 245
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 255 255 255
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -469,7 +469,7 @@ themes {
     list_unselected {
       base 118 124 148
       background 0
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -478,7 +478,7 @@ themes {
       // the highlighted row: white on latte blue
       base 255 255 255
       background 30 102 245
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 255 255 255
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -486,7 +486,7 @@ themes {
     frame_unselected {
       base 118 124 148
       background 0
-      emphasis_0 210 15 57
+      emphasis_0 90 127 214
       emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
