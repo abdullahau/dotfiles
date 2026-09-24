@@ -108,6 +108,26 @@ prompt-theme tokyo-night
 The choice is one line in `~/.local/state/zsh/prompt-theme`, so a new shell
 reads it without running anything.
 
+## Where the plugins live
+
+Everything comes from Homebrew except one:
+
+| thing | source | path |
+| --- | --- | --- |
+| starship | brew | `$HOMEBREW_PREFIX/bin/starship` |
+| zsh-autosuggestions | brew | `$HOMEBREW_PREFIX/share/zsh-autosuggestions/` |
+| zsh-syntax-highlighting | brew | `$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/` |
+| zsh-completions | brew | `$HOMEBREW_PREFIX/share/zsh-completions/` |
+| fzf, atuin, zoxide | brew | `$HOMEBREW_PREFIX/bin/` |
+| **fzf-tab** | **git clone** | `~/.local/share/zsh/plugins/fzf-tab` |
+
+fzf-tab has no Homebrew formula. The zshrc clones it on first run if the
+directory is missing, so a new machine needs nothing extra. It is not tracked
+in this repo and not pinned to a commit. Update it with `git -C
+~/.local/share/zsh/plugins/fzf-tab pull`.
+
+The brew ones are in `packages/Brewfile`, so `brew bundle` installs them.
+
 ## Choosing a different prompt
 
 `prompt-lab.zsh` renders prompts without touching your config:

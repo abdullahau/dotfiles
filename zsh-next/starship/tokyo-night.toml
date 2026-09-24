@@ -1,33 +1,27 @@
-# tokyo-night, modified.
-# Left: the preset as it ships, minus username and time.
-# Right: exit code, run time, user@host, clock.
-# Input sits on line two. Switch themes with `prompt-theme`.
+# tokyo-night, modified. Built from the shipped preset, not rewritten:
+# the ░▒▓ ramp, the rounded separators, the colours and the five language
+# modules are all the preset's own.
 #
-# os and directory stay chained, because both always render. Everything after
-# them is a self-contained pill. Chained arrows leave a trail of empty
-# chevrons whenever a segment has nothing to show.
+# Changes: time moved right, and exit code, run time and user@host joined
+# it. os and directory stay chained because both always render; git and
+# the languages became self-contained pills, so they leave no empty
+# chevrons behind outside a repo.
 
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](fg:#a3aed2)\
+[░▒▓](#a3aed2)\
 $os\
-[](fg:#a3aed2 bg:#769ff0)\
+[](bg:#769ff0 fg:#a3aed2)\
 $directory\
-[](fg:#769ff0) \
+[](fg:#769ff0) \
 $git_branch\
 $git_status\
-$c\
-$rust\
-$golang\
 $nodejs\
 $bun\
+$rust\
+$golang\
 $php\
-$java\
-$kotlin\
-$haskell\
-$python\
-$conda\
 $fill\
 $status\
 $cmd_duration\
@@ -36,14 +30,90 @@ $hostname\
 $time\
 \n$character"""
 
+[directory]
+style = "fg:#e3e5e5 bg:#769ff0"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[git_branch]
+symbol = ""
+style = "bg:#394260"
+format = '[](fg:#394260)[ $symbol $branch ](fg:#769ff0 bg:#394260)'
+
+[git_status]
+style = "bg:#394260"
+format = '[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)[](fg:#394260) '
+
+[nodejs]
+symbol = ""
+style = "bg:#212736"
+format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
+
+[bun]
+symbol = ""
+style = "bg:#212736"
+format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
+
+[rust]
+symbol = ""
+style = "bg:#212736"
+format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
+
+[golang]
+symbol = ""
+style = "bg:#212736"
+format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
+
+[php]
+symbol = ""
+style = "bg:#212736"
+format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
+
+[time]
+disabled = false
+time_format = "%R"
+format = '[](fg:#1d2230)[  $time ](fg:#a0a9cb bg:#1d2230)[](fg:#1d2230)'
+
 [fill]
 symbol = " "
-style = "fg:#394260"
+style = "fg:#212736"
+
+[status]
+disabled = false
+map_symbol = true
+symbol = "✘ "
+sigint_symbol = "󰂭 "
+signal_symbol = "⚡ "
+format = '[](fg:#f7768e)[ $symbol$status ](bg:#f7768e fg:#1a1b26)[](fg:#f7768e) '
+
+[cmd_duration]
+disabled = false
+min_time = 2_000
+show_milliseconds = false
+format = '[](fg:#e0af68)[  $duration ](bg:#e0af68 fg:#1a1b26)[](fg:#e0af68) '
+
+[username]
+show_always = true
+style_user = "bg:#394260 fg:#a0a9cb"
+style_root = "bg:#394260 fg:#f7768e bold"
+format = '[](fg:#394260)[ $user]($style)'
+
+[hostname]
+ssh_only = false
+ssh_symbol = ""
+format = '[@$hostname ](bg:#394260 fg:#a0a9cb)[](fg:#394260) '
 
 [os]
-disabled = false
 style = "bg:#a3aed2 fg:#090c0c"
 format = "[ $symbol ]($style)"
+disabled = false
 
 [os.symbols]
 Windows = "󰍲"
@@ -68,108 +138,3 @@ Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 Pop = ""
-
-[directory]
-style = "bg:#769ff0 fg:#e3e5e5"
-format = "[ $path ]($style)"
-truncation_length = 3
-truncation_symbol = "…/"
-
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = "󰝚 "
-"Pictures" = " "
-"Developer" = "󰲋 "
-
-[git_branch]
-symbol = ""
-format = '[](fg:#394260)[ $symbol $branch ](fg:#769ff0 bg:#394260)'
-
-[git_status]
-# The closing cap sits outside the ( ) group, so a clean repo still closes the
-# pill. The group itself vanishes when there is nothing to report.
-format = '[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)[](fg:#394260) '
-
-[c]
-symbol = " "
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[rust]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[golang]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[nodejs]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[bun]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[php]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[java]
-symbol = " "
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[kotlin]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[haskell]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-[python]
-symbol = ""
-format = '[](fg:#212736)[ $symbol( $version) ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-
-
-[conda]
-symbol = "  "
-format = '[](fg:#212736)[$symbol$environment ](fg:#769ff0 bg:#212736)[](fg:#212736) '
-ignore_base = false
-
-[status]
-disabled = false
-map_symbol = true
-symbol = "✘ "
-sigint_symbol = "󰂭 "
-signal_symbol = "⚡ "
-format = '[](fg:#f7768e)[ $symbol$status ](bg:#f7768e fg:#1a1b26)[](fg:#f7768e) '
-
-[cmd_duration]
-disabled = false
-min_time = 2_000
-show_milliseconds = false
-format = '[](fg:#e0af68)[  $duration ](bg:#e0af68 fg:#1a1b26)[](fg:#e0af68) '
-
-[username]
-show_always = true
-style_user = "bg:#394260 fg:#a0a9cb"
-style_root = "bg:#394260 fg:#f7768e bold"
-format = '[](fg:#394260)[ $user]($style)'
-
-[hostname]
-ssh_only = false
-ssh_symbol = ""
-format = '[@$hostname ](bg:#394260 fg:#a0a9cb)[](fg:#394260) '
-
-[time]
-disabled = false
-time_format = "%R"
-format = '[](fg:#1d2230)[  $time ](fg:#a0a9cb bg:#1d2230)[](fg:#1d2230)'
-
-[character]
-disabled = false
-success_symbol = '[❯](bold fg:#9ece6a)'
-error_symbol = '[❯](bold fg:#f7768e)'
-vimcmd_symbol = '[❮](bold fg:#9ece6a)'
-

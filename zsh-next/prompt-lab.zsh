@@ -95,7 +95,7 @@ case ${1:-} in
     [[ -n ${2:-} ]] || { print -u2 "usage: prompt-lab.zsh try <name|file|mine>"; exit 1 }
     cfg=$(_resolve $2)
     print -P "%F{8}starship config: $cfg — type exit to leave%f"
-    STARSHIP_CONFIG=$cfg ZDOTDIR=$HOME/.config/zsh-next zsh
+    STARSHIP_CONFIG=$cfg zsh
     ;;
   add)
     # Copy a preset into your themes so prompt-theme can switch to it.
