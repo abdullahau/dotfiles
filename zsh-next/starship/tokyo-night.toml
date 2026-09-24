@@ -27,12 +27,12 @@ $golang\
 $php\
 [](fg:#394260)\
 $fill\
-[](fg:#394260)\
+[](fg:#394260)\
 $status\
 $cmd_duration\
 $username\
 $hostname\
-[](fg:#1d2230 bg:#394260)\
+[](fg:#1d2230 bg:#394260)\
 $time\
 [](fg:#1d2230)\
 \n$character"""
@@ -156,3 +156,10 @@ Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 Pop = ""
+
+[character]
+# Verified at 3:1 or better against a light terminal (#eff1f5) and a dark one
+# (#1e1e2e). Every pastel green fails one or the other.
+success_symbol = '[❯](bold fg:#1a9850)'
+error_symbol = '[❯](bold fg:#d20f39)'
+vimcmd_symbol = '[❮](bold fg:#1a9850)'
