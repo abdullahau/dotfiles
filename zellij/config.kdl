@@ -380,7 +380,7 @@ themes {
   // that flips light and dark. Every one clears 3:1 against #eff1f5 and
   // #1e1e2e:
   //
-  //   mauve  #8839ef  4.79 / 3.03   active mode
+  //   blue   #5a7fd6  3.41 / 4.25   active mode, focused frame
   //   blue   #1e66f5  4.34 / 3.34   highlighted row
   //   teal   #179299  3.31 / 4.38   focused frame
   //   red    #d20f39  4.80 / 3.02   failure
@@ -391,6 +391,10 @@ themes {
   // The pastel Mocha versions all fail one side: peach scores 2.64 on light,
   // yellow 2.31, pink 2.34, sky 2.47. They only ever looked right on a dark
   // terminal.
+  //
+  // The active-mode blue is tokyo-night's directory colour. Its exact value,
+  // #769ff0, scores 2.32 against a light terminal, so it is deepened to
+  // #5a7fd6: the same hue, 3.41 on light and 4.25 on dark.
   //
   // background 0 means the terminal's own, for anything that should blend.
   // Opaque blocks carry white text, at 4.9:1 or better.
@@ -407,7 +411,7 @@ themes {
       base 118 124 148
       background 0
       emphasis_0 210 15 57
-      emphasis_1 136 57 239
+      emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
     }
@@ -420,25 +424,26 @@ themes {
       emphasis_3 180 83 9
     }
     ribbon_unselected {
-      // idle modes stay calm; the accent letters carry the colour
-      base 255 255 255
-      background 108 112 134
+      // Tabs along the top and the key hints along the bottom. Near-black
+      // on the light blue, the way tokyo-night writes its OS segment.
+      base 17 17 27
+      background 122 130 158
       emphasis_0 210 15 57
-      emphasis_1 136 57 239
+      emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
     }
     ribbon_selected {
-      // active mode: latte mauve, the loudest hue that still reads on both
+      // active mode: tokyo-night's directory blue, deepened to hold on both
       base 255 255 255
-      background 136 57 239
+      background 90 127 214
       emphasis_0 230 69 83
       emphasis_1 255 255 255
       emphasis_2 23 146 153
       emphasis_3 180 83 9
     }
     table_title {
-      base 136 57 239
+      base 90 127 214
       background 0
       emphasis_0 210 15 57
       emphasis_1 23 146 153
@@ -449,7 +454,7 @@ themes {
       base 118 124 148
       background 0
       emphasis_0 210 15 57
-      emphasis_1 136 57 239
+      emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
     }
@@ -465,7 +470,7 @@ themes {
       base 118 124 148
       background 0
       emphasis_0 210 15 57
-      emphasis_1 136 57 239
+      emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
     }
@@ -482,20 +487,20 @@ themes {
       base 118 124 148
       background 0
       emphasis_0 210 15 57
-      emphasis_1 136 57 239
+      emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
     }
     frame_selected {
       base 23 146 153
       background 0
-      emphasis_0 136 57 239
+      emphasis_0 90 127 214
       emphasis_1 210 15 57
       emphasis_2 180 83 9
       emphasis_3 118 124 148
     }
     frame_highlight {
-      base 136 57 239
+      base 230 69 83
       background 0
       emphasis_0 210 15 57
       emphasis_1 23 146 153
@@ -519,14 +524,14 @@ themes {
       emphasis_3 118 124 148
     }
     multiplayer_user_colors {
-      player_1 136 57 239
+      player_1 90 127 214
       player_2 23 146 153
       player_3 180 83 9
       player_4 210 15 57
       player_5 30 102 245
       player_6 26 152 80
       player_7 230 69 83
-      player_8 136 57 239
+      player_8 90 127 214
       player_9 23 146 153
       player_10 180 83 9
     }
