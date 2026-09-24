@@ -409,15 +409,15 @@ themes {
     text_unselected {
       // background 0 is the terminal's own, so body text never sits on a block
       base 118 124 148
-      background 0
-      emphasis_0 210 15 57
+      background 26 27 38
+      emphasis_0 90 127 214
       emphasis_1 90 127 214
       emphasis_2 23 146 153
       emphasis_3 180 83 9
     }
     text_selected {
       base 17 17 27
-      background 30 102 245
+      background 163 174 210
       emphasis_0 210 15 57
       emphasis_1 255 255 255
       emphasis_2 23 146 153
@@ -435,9 +435,9 @@ themes {
     }
     ribbon_selected {
       // active mode: tokyo-night's directory blue, deepened to hold on both
-      base 17 17 27
-      background 90 127 214
-      emphasis_0 230 69 83
+      base 26 27 38
+      background 118 159 240
+      emphasis_0 92 0 17
       emphasis_1 255 255 255
       emphasis_2 23 146 153
       emphasis_3 180 83 9
@@ -460,7 +460,7 @@ themes {
     }
     table_cell_selected {
       base 17 17 27
-      background 30 102 245
+      background 163 174 210
       emphasis_0 210 15 57
       emphasis_1 255 255 255
       emphasis_2 23 146 153
@@ -477,7 +477,7 @@ themes {
     list_selected {
       // the highlighted row: white on latte blue
       base 17 17 27
-      background 30 102 245
+      background 163 174 210
       emphasis_0 210 15 57
       emphasis_1 255 255 255
       emphasis_2 23 146 153
