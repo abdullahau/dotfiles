@@ -35,7 +35,7 @@
   "buffer_font_fallbacks": ["JetBrainsMono Nerd Font"],
   "theme": {
     "mode": "system",
-    "light": "Catppuccin Latte (Blur)",
+    "light": "Catppuccin Iced Latte (Blur) [Heavy]",
     "dark": "Catppuccin Mocha (Blur)",
   },
   "icon_theme": {
@@ -189,7 +189,7 @@
       "nickname": "Homelab"
     },
     {
-      "host": "145.241.121.9",
+      "host": "141.145.152.160",
       "username": "ubuntu",
       "args": [
         "-A"
@@ -197,20 +197,11 @@
       "projects": [
         {
           "paths": [
-            "/home/ubuntu/Developer/home/./"
+            "/home/ubuntu/Developer/zig-tutorial"
           ]
         }
       ],
       "nickname": "Oracle"
-    },
-    {
-      "host": "130.0.0.104",
-      "username": "root",
-      "args": [
-        "-A"
-      ],
-      "projects": [],
-      "nickname": "Qubes-Root"
     }
   ],
 
