@@ -1,21 +1,21 @@
 # zsh-next — the z4h-free config
 
-A parallel zsh config for testing. It does not touch the live shell.
-z4h stays in place until this config proves itself on all three machines.
+This is the default shell on the `homelab-dev` branch. It is on trial, so
+z4h is kept alongside it and nothing has been deleted.
 
-## Try it
+## Falling back to z4h
 
 ```sh
-ZDOTDIR=~/.config/zsh-next zsh
+ZDOTDIR=~/.config/zsh-z4h zsh
 ```
 
-Type `exit` to return to the z4h shell.
+That gives the old z4h shell, p10k and all. `exit` returns you here.
 
 ## What replaces what
 
 | z4h gave us | Now |
 | --- | --- |
-| powerlevel10k | starship, `starship.toml` |
+| powerlevel10k | starship, `starship/*.toml` |
 | gitstatus daemon | starship's own git code |
 | zsh-autosuggestions | brew package |
 | zsh-syntax-highlighting | brew package |
@@ -79,6 +79,35 @@ Do not reorder these:
 4. `zsh-autosuggestions`
 5. `zsh-syntax-highlighting` last. It wraps every other widget.
 
+## Themes
+
+Two themes live in `starship/`, both modified from the shipped presets:
+
+- `catppuccin-powerline` — the default
+- `tokyo-night`
+
+Both carry the same changes:
+
+- **Right side:** exit code, run time, user@host, clock.
+- **Left side:** the preset as it ships, minus username and time, which moved
+  right.
+- **Input on line two**, which tokyo-night already did and catppuccin did not.
+  catppuccin ships `[line_break] disabled = true`.
+- `os` and `directory` stay chained, because both always render. Everything
+  after them is a self-contained pill. The presets chain every segment, which
+  leaves a trail of empty chevrons whenever a segment has nothing to show —
+  visible in any directory that is not a git repo.
+
+Switch with `prompt-theme`, which takes effect on the next prompt:
+
+```sh
+prompt-theme              # what is set, and what else exists
+prompt-theme tokyo-night
+```
+
+The choice is one line in `~/.local/state/zsh/prompt-theme`, so a new shell
+reads it without running anything.
+
 ## Choosing a different prompt
 
 `prompt-lab.zsh` renders prompts without touching your config:
@@ -88,7 +117,7 @@ Do not reorder these:
 ./prompt-lab.zsh compare         # every preset, same scenario, one screen
 ./prompt-lab.zsh show tokyo-night  # one prompt across six scenarios
 ./prompt-lab.zsh try  tokyo-night  # a real shell using it; exit to leave
-./prompt-lab.zsh save tokyo-night  # overwrite starship.toml, keep a .bak
+./prompt-lab.zsh add  gruvbox-rainbow  # keep a preset as one of your themes
 ```
 
 `show` renders six cases: clean repo, dirty repo, failed command, slow
@@ -127,4 +156,4 @@ The module list is at <https://starship.rs/config/>.
 - [ ] Test on both Oracle VPS hosts.
 - [ ] Confirm Shift+Arrow sequences in Ghostty, tmux and zellij.
 - [ ] Decide whether to keep `alias cd=z`.
-- [ ] Move `~/.zshenv` to a two-line stub that sets `ZDOTDIR`.
+- [ ] Decide when to drop the z4h fallback and delete `zsh/`.

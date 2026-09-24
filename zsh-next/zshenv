@@ -1,4 +1,4 @@
-# ~/.config/zsh-next/.zshenv — runs for every zsh, interactive or not.
+# ~/.zshenv — runs for every zsh, interactive or not.
 #
 # Keep this file small. Put anything a non-interactive shell needs here.
 # `ssh host command` does not read .zshrc, so PATH belongs here.

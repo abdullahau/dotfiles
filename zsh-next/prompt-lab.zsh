@@ -5,9 +5,9 @@
 #   ./prompt-lab.zsh show <name|file>  # render one across six scenarios
 #   ./prompt-lab.zsh compare           # render every preset, one scenario
 #   ./prompt-lab.zsh try <name|file>   # open a shell using it
-#   ./prompt-lab.zsh save <name>       # copy a preset to starship.toml
+#   ./prompt-lab.zsh add  <preset>     # keep a preset as one of your themes
 #
-# "mine" means the starship.toml next to this script.
+# "mine" means the theme you are using now.
 
 emulate -L zsh
 setopt err_return pipe_fail
@@ -16,14 +16,16 @@ local here=${0:A:h}
 local lab=${TMPDIR:-/tmp}/prompt-lab
 mkdir -p $lab
 
-# Resolve a name to a config file. A preset name, a path, or "mine".
+# Resolve a name to a config file: one of your themes, a path, or a preset.
+# Your themes win over presets of the same name.
 _resolve() {
   local n=$1
-  [[ $n == mine ]] && { print -r -- $here/starship.toml; return }
+  [[ $n == mine ]] && n=${STARSHIP_CONFIG:t:r}
+  [[ -f $here/starship/$n.toml ]] && { print -r -- $here/starship/$n.toml; return }
   [[ -f $n ]] && { print -r -- ${n:A}; return }
   local f=$lab/preset-$n.toml
   [[ -f $f ]] || starship preset $n > $f 2>/dev/null || {
-    print -u2 "unknown preset or file: $n"; return 1 }
+    print -u2 "unknown theme, preset or file: $n"; return 1 }
   print -r -- $f
 }
 
@@ -71,9 +73,10 @@ _show() {
 
 case ${1:-} in
   list)
-    print -P "%BPresets%b"
+    print -P "%BYour themes%b  (switch with: prompt-theme <name>)"
+    print -l -- $here/starship/*.toml(N:t:r) | sed 's/^/  /'
+    print -P "\n%BPresets%b"
     starship preset --list | sed 's/^/  /'
-    print -P "\n%BYours%b\n  mine  ($here/starship.toml)"
     ;;
   show)
     [[ -n ${2:-} ]] || { print -u2 "usage: prompt-lab.zsh show <name|file|mine>"; exit 1 }
@@ -94,12 +97,14 @@ case ${1:-} in
     print -P "%F{8}starship config: $cfg — type exit to leave%f"
     STARSHIP_CONFIG=$cfg ZDOTDIR=$HOME/.config/zsh-next zsh
     ;;
-  save)
-    [[ -n ${2:-} ]] || { print -u2 "usage: prompt-lab.zsh save <name|file>"; exit 1 }
+  add)
+    # Copy a preset into your themes so prompt-theme can switch to it.
+    [[ -n ${2:-} ]] || { print -u2 "usage: prompt-lab.zsh add <preset> [name]"; exit 1 }
     cfg=$(_resolve $2)
-    cp $here/starship.toml $here/starship.toml.bak
-    cp $cfg $here/starship.toml
-    print "saved $2 to starship.toml (old one kept as starship.toml.bak)"
+    local dest=$here/starship/${3:-$2}.toml
+    [[ -e $dest ]] && { print -u2 "already exists: $dest"; exit 1 }
+    cp $cfg $dest
+    print "added ${3:-$2}. Switch to it with: prompt-theme ${3:-$2}"
     ;;
   *)
     sed -n '2,10p' ${0:A} | sed 's/^# \?//'

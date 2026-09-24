@@ -9,21 +9,23 @@
    - ~/.config
 
 - link:
-    # Shell
-    ~/.zshrc: zsh/zshrc
-    ~/.zshenv: zsh/zshenv
-    ~/.p10k.zsh: zsh/p10k.zsh
+    # Shell. starship is the default on this branch.
+    ~/.zshrc: zsh-next/zshrc
+    ~/.zshenv: zsh-next/zshenv
+    ~/.config/starship: zsh-next/starship
     ~/.inputrc: zsh/inputrc
     ~/.zfunc: zsh/zfunc
-    # Shell (z4h-free, under test). Launch it with:
-    #   ZDOTDIR=~/.config/zsh-next zsh
-    ~/.config/zsh-next/.zshrc:
-      path: zsh-next/zshrc
+    # z4h fallback, kept while starship is on trial. Launch it with:
+    #   ZDOTDIR=~/.config/zsh-z4h zsh
+    ~/.config/zsh-z4h/.zshrc:
+      path: zsh/zshrc
       create: true
-    ~/.config/zsh-next/.zshenv:
-      path: zsh-next/zshenv
+    ~/.config/zsh-z4h/.zshenv:
+      path: zsh/zshenv
       create: true
-    ~/.config/starship.toml: zsh-next/starship.toml
+    ~/.config/zsh-z4h/.p10k.zsh:
+      path: zsh/p10k.zsh
+      create: true
     # Update APT
     ~/update_os.sh: update_os.sh
     # Git
