@@ -1,63 +1,126 @@
+# ~/.zshrc — zsh4humans (z4h).
+#
+# z4h bundles the prompt (powerlevel10k + gitstatusd), completions, fzf,
+# autosuggestions, syntax highlighting and history search. Do not install
+# those separately. Run `z4h update` to update everything.
+#
+# Load order matters. fpath must be complete before `z4h init`, because
+# z4h runs compinit inside it. Anything that binds keys must come after.
+
 # --------------------------------------------------------------
 # Z4H CORE CONFIGURATION
 # --------------------------------------------------------------
 zstyle ':z4h:' auto-update      'ask'
 zstyle ':z4h:' auto-update-days '7'
-zstyle ':omz:update' mode auto
-zstyle ':omz:update' frequency 7
+# 'mac' because the terminal is Ghostty on a Mac.
 zstyle ':z4h:bindkey' keyboard  'mac'
 zstyle ':z4h:' start-tmux       no
 zstyle ':z4h:' term-shell-integration 'yes'
 zstyle ':z4h:autosuggestions' forward-char 'accept'
 zstyle ':z4h:direnv' enable 'no'
-zstyle ':z4h:direnv:success' notify 'yes'
 
-# fzf completion settings
+# fzf completion
 zstyle ':z4h:fzf-complete' recurse-dirs 'yes'
 zstyle ':z4h:fzf-complete' fzf-bindings tab:repeat
 
-# SSH Completions
+# SSH completions: offer hosts before users.
 zstyle ':completion:*:ssh:argument-1:'       tag-order  hosts users
 zstyle ':completion:*:scp:argument-rest:'    tag-order  hosts files users
-zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
-
-# run `z4h update` to update everything
 
 # --------------------------------------------------------------
-# SSH TELEPORTATION SETTINGS
+# SSH TELEPORTATION
 # --------------------------------------------------------------
-zstyle ':z4h:ssh:abdullah@omarchy'   enable 'no'
-zstyle ':z4h:ssh:root@130.0.0.104'   enable 'no'
-zstyle ':z4h:ssh:*'                  enable 'no'  # default for others
+# Off everywhere. Turn it on per host if you want z4h copied over.
+zstyle ':z4h:ssh:*' enable 'no'
 
 # Send additional files when teleporting
 # zstyle ':z4h:ssh:*' send-extra-files '~/.p10k.zsh'
 # zstyle ':z4h:ssh:*' send-extra-files '<file path>'
 
 # --------------------------------------------------------------
-# GIT REPOSITORIES TO INSTALL
+# PATH EXTENSIONS
 # --------------------------------------------------------------
-z4h install ohmyzsh/ohmyzsh || return
+# Homebrew and ~/.local/bin are already on PATH from .zshenv.
+path=(~/bin $path)
+typeset -U path PATH            # drop duplicate PATH entries
 
 # --------------------------------------------------------------
-# INITIALIZE Z4H (core plugins, completions, fzf, prompt, etc.)
+# COMPLETION SYSTEM
 # --------------------------------------------------------------
+# This block must run before `z4h init`, which calls compinit.
+#
+# Generated completion scripts live in the cache, never in the dotfiles repo.
+_zcompcache=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/completions
+[[ -d $_zcompcache ]] || mkdir -p $_zcompcache
+
+# Write a tool's completion script to the cache. Rebuild it only when the tool
+# binary is newer. `uv generate-shell-completion` alone costs 26 ms, so never
+# run it at every shell start.
+_gen_completion() {
+  local name=$1 out=$_zcompcache/_$1
+  shift
+  [[ -n ${commands[$name]} ]] || return 0
+  [[ -s $out && $out -nt ${commands[$name]} ]] && return 0
+  "$@" >| $out 2>/dev/null || rm -f $out
+}
+_gen_completion uv  uv  generate-shell-completion zsh
+_gen_completion uvx uvx --generate-shell-completion zsh
+
+fpath=(
+  $_zcompcache
+  "$HOME/.zfunc"
+  "$HOME/.docker/completions"
+  $fpath
+)
+fpath=(${^fpath}(N-/))          # drop entries that do not exist
+
+# --------------------------------------------------------------
+# INITIALIZE Z4H
+# --------------------------------------------------------------
+# Everything below this line runs with z4h's plugins already loaded.
 z4h init || return
 
 # --------------------------------------------------------------
-# PATH EXTENSIONS
+# HISTORY
 # --------------------------------------------------------------
-path=(~/bin $path)
+HISTFILE=$HOME/.zsh_history
+# 2000 on purpose. atuin owns the searchable history; this file is only the
+# fallback for when atuin is not loaded. z4h would otherwise set 1000000000.
+HISTSIZE=2000
+SAVEHIST=2000
+setopt EXTENDED_HISTORY       # keep timestamps through a full file rewrite
+setopt SHARE_HISTORY          # share history across sessions
+setopt APPEND_HISTORY         # append rather than overwrite
+setopt HIST_REDUCE_BLANKS     # clean up extra spaces
+setopt HIST_IGNORE_SPACE      # ignore commands starting with a space
+setopt HIST_EXPIRE_DUPS_FIRST # expire duplicates first
+setopt HIST_IGNORE_ALL_DUPS   # ignore duplicates
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+
+# --------------------------------------------------------------
+# SHELL OPTIONS
+# --------------------------------------------------------------
+setopt glob_dots              # show dotfiles in globs
+setopt no_auto_menu           # require a second TAB to open the menu
+setopt interactive_comments   # allow # comments on the command line
+setopt auto_cd                # `foo` alone cds into ./foo
+setopt extended_glob
+setopt no_beep
 
 # --------------------------------------------------------------
 # ENVIRONMENT VARIABLES
 # --------------------------------------------------------------
-export XDG_CONFIG_HOME="$HOME/.config"   # XDG base directory
-export LOCAL_NOTEBOOK_DEV=1              # Zed Preview flag
-export EDITOR='micro'                    # Default terminal editor (yazi)
-export MICRO_TRUECOLOR=1                 # Micro editor theming
-export GPG_TTY=$TTY                      # For GPG TTY binding
-# export NULLCMD=bat                     # set bat as the NULLCMD instead of cat
+# XDG_CONFIG_HOME is set in .zshenv, so non-interactive shells get it too.
+export LOCAL_NOTEBOOK_DEV=1   # Zed Preview flag
+export EDITOR='micro'         # Default terminal editor
+export MICRO_TRUECOLOR=1      # Micro editor theming
+export GPG_TTY=$TTY           # For GPG TTY binding
+# export NULLCMD=bat          # set bat as the NULLCMD instead of cat
+
+# z4h bundles fzf, so do not source it again. These only change what it lists.
+export FZF_DEFAULT_COMMAND='fd --type f --type d --strip-cwd-prefix --hidden --follow --exclude .git --exclude .venv'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # --------------------------------------------------------------
 # LOCAL ENVIRONMENT OVERRIDES
@@ -65,16 +128,11 @@ export GPG_TTY=$TTY                      # For GPG TTY binding
 # z4h source ~/.env.zsh
 
 # --------------------------------------------------------------
-# ADDITIONAL GIT REPOS PULLED IN WITH `z4h install`
-# --------------------------------------------------------------
-# z4h source ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
-# z4h load   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
-
-# --------------------------------------------------------------
 # KEYBINDINGS
 # --------------------------------------------------------------
+# z4h already binds Home, End, Delete, Ctrl+Arrow and Alt+Arrow.
 z4h bindkey undo Ctrl+/   Shift+Tab     # undo the last command line change
-z4h bindkey redo Option+/               # redo the last undone command line change
+z4h bindkey redo Option+/               # redo the last undone change
 z4h bindkey z4h-cd-back    Shift+Left   # cd into the previous directory
 z4h bindkey z4h-cd-forward Shift+Right  # cd into the next directory
 z4h bindkey z4h-cd-up      Shift+Up     # cd into the parent directory
@@ -86,60 +144,10 @@ z4h bindkey z4h-cd-down    Shift+Down   # cd into a child directory
 autoload -Uz zmv
 
 # --------------------------------------------------------------
-# DEFINE FUNCTIONS AND COMPLETIONS
+# TOOL INTEGRATION
 # --------------------------------------------------------------
-
-# --- Custom Functions ---
-
-# Make + cd into directory
-function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
-compdef _directories md
-
-# Yazi shell wrapper (cd into last directory)
-function y() {
-  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-  yazi "$@" --cwd-file="$tmp"
-  IFS= read -r -d '' cwd < "$tmp"
-  [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
-  rm -f -- "$tmp"
-}
-
-# Zoxide + fallback cd
-function zd() {
-  if [ $# -eq 0 ]; then
-    builtin cd ~ && return
-  elif [ -d "$1" ]; then
-    builtin cd "$1"
-  else
-    z "$@" && printf "\U000F17A9 " && pwd || echo "Error: Directory not found"
-  fi
-}
-
-# macOS-style "open" command for Linux
-# Define "open" only on non-macOS systems
-if [[ "$OSTYPE" != "darwin"* ]]; then
-  function open() {
-    xdg-open "$@" >/dev/null 2>&1 &
-  }
-fi
-
-# --- Completions ---
-
-# Add custom completion directories
-fpath+=("$HOME/.zfunc")
-fpath+=("$HOME/.docker/completions")
-
-# macOS-only Homebrew completions. .zshenv already ran `brew shellenv` (costs
-# ~20ms); only pay that again if something cleared the environment.
-if [[ "$OSTYPE" == "darwin"* && -z "$Z4H_SSH" && -z ${HOMEBREW_PREFIX-} && -x "$(command -v brew)" ]]; then
-  eval "$(brew shellenv)"
-fi
-
-# --- Cached tool init ---
-# Every `eval "$(tool init)"` is a subprocess at each shell start; some (like
-# `uv generate-shell-completion`) also emit hundreds of KB of zsh that gets
-# reparsed every time. Cache each tool's output and precompile it with
-# zcompile, rebuilding only when the tool binary is newer.
+# Each `tool init` call is a subprocess at every shell start. Cache the output
+# and rebuild it only when the tool binary is newer.
 _zinitcache=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init
 [[ -d $_zinitcache ]] || mkdir -p $_zinitcache
 
@@ -159,70 +167,80 @@ _cached_eval() {
 # Drop the caches after you change a tool's config, then open a new shell.
 function zcache-clear() {
   local c=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
-  rm -rf $c/init $c/completions $c/zcompdump-*
+  rm -rf $c/init $c/completions
   print 'zsh caches cleared. Start a new shell.'
 }
 
-_cached_eval atuin     atuin init zsh
-_cached_eval atuin-hex atuin hex init
+# --- Prompt theme ---
+# Palettes live in zsh/p10k/. ~/.p10k.zsh reads the choice at startup, so this
+# costs one short line read and no subprocess.
+function prompt-theme() {
+  local dir=${_p10k_dir:-${${:-~/.p10k.zsh}:A:h}/p10k}
+  local state=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/prompt-theme
+  local -a themes=($dir/*.zsh(N:t:r))
+  themes=(${themes:#base})
+  if (( ! $# )); then
+    local cur=catppuccin-mocha
+    [[ -r $state ]] && read -r cur < $state
+    print "current:   $cur"
+    print "available: ${(j:, :)themes}"
+    return
+  fi
+  (( ${themes[(Ie)$1]} )) || {
+    print -u2 "no such theme: $1 (have: ${(j:, :)themes})"; return 1 }
+  mkdir -p ${state:h}
+  print -r -- $1 >| $state
+  source $dir/$1.zsh
+  (( ${+functions[p10k]} )) && p10k reload
+}
+_prompt_theme_complete() {
+  local dir=${_p10k_dir:-${${:-~/.p10k.zsh}:A:h}/p10k}
+  _values theme $dir/*.zsh(N:t:r)
+}
+compdef _prompt_theme_complete prompt-theme
+
 _cached_eval mole      mole completion zsh
 _cached_eval zoxide    zoxide init zsh
-_cached_eval uv        uv  generate-shell-completion zsh
-_cached_eval uvx       uvx --generate-shell-completion zsh
 
-# `z4h init` already ran compinit. A second call here only costs startup time.
-
-# fzf keybindings/completion are provided by z4h; no separate `fzf --zsh` needed.
-
-# Setting fd as the default source for fzf
-export FZF_DEFAULT_COMMAND='fd --type f --type d --strip-cwd-prefix --hidden --follow --exclude .git --exclude .venv'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-# eval "$(starship init zsh)" 				   # Starship
-# eval "$(oh-my-posh init zsh)" 			   # Oh My Posh
+# atuin last: it takes over Ctrl+R and Up from z4h's own history search.
+_cached_eval atuin     atuin init zsh
+_cached_eval atuin-hex atuin hex init
 
 # --------------------------------------------------------------
-# DEFINE NAMED DIRECTORIES
+# CUSTOM FUNCTIONS
 # --------------------------------------------------------------
+
+# Make a directory and cd into it.
+function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && builtin cd -- "$1" }
+compdef _directories md
+
+# Yazi wrapper. Leaves you in the directory yazi exited from.
+function y() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+  yazi "$@" --cwd-file="$tmp"
+  IFS= read -r -d '' cwd < "$tmp"
+  [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+  rm -f -- "$tmp"
+}
 
 # --------------------------------------------------------------
 # ALIASES
 # --------------------------------------------------------------
 alias zed-preview="/opt/homebrew/bin/zed-preview"                # Zed Preview
-alias ls='eza -lh --git --group-directories-first --icons=auto'        # eza
+alias ls='eza -lAh --git --group-directories-first --icons=auto' # eza
 alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
 alias ff="fzf --preview 'bat --style=numbers --color=always {}'" # fzf
-alias cd="zd"                                                    # use zoxide wrapper
+alias cd="z"                                                     # zoxide
 alias man=batman                                                 # `man` page colorizer using `bat`
-alias tree='tree -a -I .git'
-alias trail='print -l $path'                                     # $path array to multi-line string. Alternative: alias trail='<<<${(F)path}'
+alias tree='tree -a -I ".git|.venv|__pycache__"'
+alias trail='print -l $path'                                     # $path array to multi-line string
 alias 'ip-local'='ipconfig getifaddr en0'                        # Local network IP address
 alias 'ip-public'='curl checkip.amazonaws.com'                   # Public IP Address
-alias bbd='brew bundle dump --file=~/.dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir alias
-alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all' 	     # brew update, upgrade, and cleanup cache
-
-# Add flags to existing aliases
-alias ls="${aliases[ls]:-ls} -A"                                 # z4h default enhancement
-
-# --------------------------------------------------------------
-# SHELL OPTIONS
-# --------------------------------------------------------------
-HISTFILE=$HOME/.zsh_history
-HISTSIZE=2000
-SAVEHIST=2000
-setopt SHARE_HISTORY          # share history across sessions
-setopt APPEND_HISTORY         # append rather than overwrite
-setopt HIST_REDUCE_BLANKS     # clean up extra spaces
-setopt HIST_IGNORE_SPACE      # ignore commands starting with space
-setopt HIST_EXPIRE_DUPS_FIRST # expire duplicates first
-setopt HIST_IGNORE_DUPS		  # ignore duplicates
-setopt HIST_FIND_NO_DUPS
-setopt HIST_SAVE_NO_DUPS
-setopt glob_dots              # show dotfiles in globs
-setopt no_auto_menu           # require second TAB to open menu
-
+alias ports='sudo lsof -i -P -n'                                 # listening ports
+alias bbd='brew bundle dump --file=~/.dotfiles/packages/Brewfile' # brew bundle and save to dotfiles dir
+alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all' # brew update, upgrade, cleanup
 
 if [[ $- == *i* && $TERM_PROGRAM == "ghostty" ]]; then
   fastfetch --pipe false
