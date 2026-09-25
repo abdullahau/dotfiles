@@ -1,4 +1,4 @@
-# Tokyo Night. Hues from the starship bar in zsh/backup/starship, but the
+# Tokyo Night. Hues from the starship bar this box ran before p10k, but the
 # lightness is not: that preset puts #e3e5e5 on #769ff0, which is 2.08:1.
 # Every pair below clears 4.5:1. Run zsh/p10k/contrast.py after an edit.
 

@@ -1,4 +1,4 @@
-# Catppuccin Mocha, taken from the starship bar in zsh/backup/starship.
+# Catppuccin Mocha, taken from the starship bar this box ran before p10k.
 # Colours only. base.zsh owns the layout.
 # Every pair clears 4.5:1. Run zsh/p10k/contrast.py after an edit.
 

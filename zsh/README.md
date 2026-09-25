@@ -29,7 +29,6 @@ Do not install those parts through Homebrew. z4h keeps its own copies in
 | `inputrc` | `~/.inputrc` | readline, for non-zsh tools |
 | `zfunc/` | `~/.zfunc` | hand-written completions |
 | `p10k/contrast.py` | — | WCAG check over the palettes |
-| `backup/` | — | the old starship setup, kept for reference |
 
 ## Load order
 
@@ -44,8 +43,8 @@ z4h's inline search back.
 
 ## Prompt themes
 
-Two palettes ship: `catppuccin-mocha` and `tokyo-night`. Both come from the
-starship bars in `backup/starship`.
+Two palettes ship: `catppuccin-mocha` and `tokyo-night`. Both keep the hues
+of the starship bars this box ran before p10k.
 
 ```
 prompt-theme                  # show the current one and the list
