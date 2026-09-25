@@ -12,10 +12,7 @@
     # Shell
     ~/.zshrc: zsh/zshrc
     ~/.zshenv: zsh/zshenv
-    ~/.config/starship: zsh/starship
-    ~/.local/share/zsh/plugins:
-      path: zsh/plugins
-      create: true
+    ~/.p10k.zsh: zsh/p10k.zsh
     ~/.inputrc: zsh/inputrc
     ~/.zfunc: zsh/zfunc
     # Update APT
@@ -40,8 +37,8 @@
     ~/.config/ruff: ruff
 
 - shell:
-  # Pull every submodule to the commit this repo pins, dotbot and
-  # fzf-tab included. Runs before the links below are used.
+  # Pull every submodule to the commit this repo pins. z4h installs its own
+  # plugins into ~/.cache/zsh4humans, so nothing else is vendored here.
   - command: git submodule update --init --recursive
     stdin: true
     stdout: true

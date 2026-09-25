@@ -70,7 +70,6 @@ brew "sevenzip"
 # Analyze how space is allocated inside an SQLite file
 brew "sqlite-analyzer"
 # Cross-shell prompt for astronauts
-brew "starship"
 # Command-line packet analyzer
 brew "tcpdump"
 # OCR (Optical Character Recognition) engine
@@ -94,11 +93,8 @@ brew "zls"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # Fish-like fast/unobtrusive autosuggestions for zsh
-brew "zsh-autosuggestions"
 # Additional completion definitions for zsh
-brew "zsh-completions"
 # Fish shell like syntax highlighting for zsh
-brew "zsh-syntax-highlighting"
 # The AI coding agent built for the terminal.
 brew "anomalyco/tap/opencode", trusted: true
 # Command-line client for LibreSpeed

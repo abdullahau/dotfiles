@@ -1,17 +1,84 @@
-# ~/.zshrc — plain zsh, starship for the prompt.
+# ~/.zshrc — zsh4humans (z4h) on the homelab box.
 #
-# Load order matters. Read the section headers before you move things.
+# z4h bundles the prompt (powerlevel10k + gitstatusd), completions, fzf,
+# autosuggestions, syntax highlighting and history search. Do not install
+# those separately. Run `z4h update` to update everything.
+#
+# Load order matters. fpath must be complete before `z4h init`, because
+# z4h runs compinit inside it. Anything that binds keys must come after.
 
 # --------------------------------------------------------------
-# SHELL OPTIONS
+# Z4H CORE CONFIGURATION
 # --------------------------------------------------------------
-setopt glob_dots              # show dotfiles in globs
-setopt no_auto_menu           # require a second TAB to open the menu
-setopt interactive_comments   # allow # comments on the command line
-setopt auto_cd                # `foo` alone cds into ./foo
-setopt extended_glob
-setopt no_beep
-setopt prompt_subst
+zstyle ':z4h:' auto-update      'ask'
+zstyle ':z4h:' auto-update-days '7'
+# 'mac' because the terminal is Ghostty on a Mac, even when this box is remote.
+zstyle ':z4h:bindkey' keyboard  'mac'
+zstyle ':z4h:' start-tmux       no
+zstyle ':z4h:' term-shell-integration 'yes'
+zstyle ':z4h:autosuggestions' forward-char 'accept'
+zstyle ':z4h:direnv' enable 'no'
+zstyle ':z4h:direnv:success' notify 'yes'
+
+# fzf completion
+zstyle ':z4h:fzf-complete' recurse-dirs 'yes'
+zstyle ':z4h:fzf-complete' fzf-bindings tab:repeat
+
+# SSH completions: offer hosts before users.
+zstyle ':completion:*:ssh:argument-1:'       tag-order  hosts users
+zstyle ':completion:*:scp:argument-rest:'    tag-order  hosts files users
+zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
+
+# --------------------------------------------------------------
+# SSH TELEPORTATION
+# --------------------------------------------------------------
+# Off everywhere. Turn it on per host if you want z4h copied over.
+zstyle ':z4h:ssh:*' enable 'no'
+
+# --------------------------------------------------------------
+# PATH EXTENSIONS
+# --------------------------------------------------------------
+# Homebrew and ~/.local/bin are already on PATH from .zshenv.
+path=(~/bin $path)
+export BUN_INSTALL="$HOME/.bun"
+[ -d "$BUN_INSTALL/bin" ] && path=("$BUN_INSTALL/bin" $path)
+typeset -U path PATH            # drop duplicate PATH entries
+
+# --------------------------------------------------------------
+# COMPLETION SYSTEM
+# --------------------------------------------------------------
+# This block must run before `z4h init`, which calls compinit.
+#
+# Generated completion scripts live in the cache, never in the dotfiles repo.
+_zcompcache=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/completions
+[[ -d $_zcompcache ]] || mkdir -p $_zcompcache
+
+# Write a tool's completion script to the cache. Rebuild it only when the tool
+# binary is newer. `uv generate-shell-completion` alone costs 26 ms, so never
+# run it at every shell start.
+_gen_completion() {
+  local name=$1 out=$_zcompcache/_$1
+  shift
+  [[ -n ${commands[$name]} ]] || return 0
+  [[ -s $out && $out -nt ${commands[$name]} ]] && return 0
+  "$@" >| $out 2>/dev/null || rm -f $out
+}
+_gen_completion uv  uv  generate-shell-completion zsh
+_gen_completion uvx uvx --generate-shell-completion zsh
+
+fpath=(
+  $_zcompcache
+  "$HOME/.zfunc"
+  "$HOME/.docker/completions"
+  $fpath
+)
+fpath=(${^fpath}(N-/))          # drop entries that do not exist
+
+# --------------------------------------------------------------
+# INITIALIZE Z4H
+# --------------------------------------------------------------
+# Everything below this line runs with z4h's plugins already loaded.
+z4h init || return
 
 # --------------------------------------------------------------
 # HISTORY
@@ -19,6 +86,7 @@ setopt prompt_subst
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=2000
 SAVEHIST=2000
+setopt EXTENDED_HISTORY       # keep timestamps through a full file rewrite
 setopt SHARE_HISTORY          # share history across sessions
 setopt APPEND_HISTORY         # append rather than overwrite
 setopt HIST_REDUCE_BLANKS     # clean up extra spaces
@@ -29,12 +97,14 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 
 # --------------------------------------------------------------
-# PATH EXTENSIONS
+# SHELL OPTIONS
 # --------------------------------------------------------------
-path=(~/bin $path)
-export BUN_INSTALL="$HOME/.bun"
-[ -d "$BUN_INSTALL/bin" ] && path=("$BUN_INSTALL/bin" $path)
-typeset -U path PATH            # drop duplicate PATH entries
+setopt glob_dots              # show dotfiles in globs
+setopt no_auto_menu           # require a second TAB to open the menu
+setopt interactive_comments   # allow # comments on the command line
+setopt auto_cd                # `foo` alone cds into ./foo
+setopt extended_glob
+setopt no_beep
 
 # --------------------------------------------------------------
 # ENVIRONMENT VARIABLES
@@ -46,91 +116,29 @@ export GPG_TTY=$TTY
 export CMDSTAN="$HOME/cmdstan"
 export BRIDGESTAN="$HOME/cmdstan/bridgestan"
 
-# --------------------------------------------------------------
-# COMPLETION SYSTEM
-# --------------------------------------------------------------
-# Generated completion scripts live in the cache, never in the dotfiles repo.
-_zcompcache=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/completions
-[[ -d $_zcompcache ]] || mkdir -p $_zcompcache
-
-# Write a tool's completion script to the cache. Rebuild it only when the tool
-# binary is newer. `uv generate-shell-completion` alone costs 26 ms, so never
-# run it at every shell start.
-_zcomp_stale=0
-_gen_completion() {
-  local name=$1 out=$_zcompcache/_$1
-  shift
-  [[ -n ${commands[$name]} ]] || return 0
-  [[ -s $out && $out -nt ${commands[$name]} ]] && return 0
-  "$@" >| $out 2>/dev/null && _zcomp_stale=1 || rm -f $out
-}
-_gen_completion uv  uv  generate-shell-completion zsh
-_gen_completion uvx uvx --generate-shell-completion zsh
-
-# fpath must be complete before compinit runs.
-fpath=(
-  $_zcompcache
-  ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/share/zsh-completions}
-  ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/share/zsh/site-functions}
-  "$HOME/.zfunc"
-  "$HOME/.docker/completions"
-  $fpath
-)
-fpath=(${^fpath}(N-/))          # drop entries that do not exist
-
-autoload -Uz compinit
-_zcompdump=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-$ZSH_VERSION
-[[ -d ${_zcompdump:h} ]] || mkdir -p ${_zcompdump:h}
-(( _zcomp_stale )) && rm -f $_zcompdump $_zcompdump.zwc
-
-# Rebuild the dump at most once a day. `compinit -C` skips the security scan,
-# which is the slow part.
-if [[ ! -s $_zcompdump || -n ${_zcompdump}(#qN.mh+24) ]]; then
-  compinit -d $_zcompdump
-  zcompile -R -- $_zcompdump.zwc $_zcompdump 2>/dev/null
-else
-  compinit -C -d $_zcompdump
-fi
-unset _zcompdump _zcomp_stale
-
-# --- Completion behaviour ---
-zstyle ':completion:*' menu no                      # fzf-tab replaces the menu
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'l:|=* r:|=*'
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*:descriptions' format '[%d]'
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache
-
-# SSH completions: offer hosts before users.
-zstyle ':completion:*:ssh:argument-1:'       tag-order  hosts users
-zstyle ':completion:*:scp:argument-rest:'    tag-order  hosts files users
-zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
+# z4h bundles fzf, so do not source it again. These only change what it lists.
+export FZF_DEFAULT_COMMAND='fd --type f --type d --strip-cwd-prefix --hidden --follow --exclude .git --exclude .venv'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # --------------------------------------------------------------
-# PLUGINS
+# KEYBINDINGS
 # --------------------------------------------------------------
-# Order: fzf-tab after compinit, autosuggestions next,
-# syntax highlighting LAST. Syntax highlighting must wrap every other widget.
-# fzf-tab replaces the completion menu with fzf. It has no brew formula, so
-# the dotfiles repo carries it as a git submodule and dotbot links it here.
-# If this is missing, run `git submodule update --init` in the dotfiles repo.
-_zsh_plugins=$HOME/.local/share/zsh/plugins
-source $_zsh_plugins/fzf-tab/fzf-tab.plugin.zsh 2>/dev/null ||
-  print -u2 'zsh: fzf-tab missing. Run: git submodule update --init'
+# z4h already binds Home, End, Delete, Ctrl+Arrow and Alt+Arrow.
+z4h bindkey undo Ctrl+/   Shift+Tab     # undo the last command line change
+z4h bindkey redo Option+/               # redo the last undone change
+z4h bindkey z4h-cd-back    Shift+Left   # cd into the previous directory
+z4h bindkey z4h-cd-forward Shift+Right  # cd into the next directory
+z4h bindkey z4h-cd-up      Shift+Up     # cd into the parent directory
+z4h bindkey z4h-cd-down    Shift+Down   # cd into a child directory
 
-zstyle ':fzf-tab:*' fzf-bindings 'tab:accept'
-zstyle ':fzf-tab:*' use-fzf-default-opts yes
-zstyle ':fzf-tab:complete:(cd|z|zd|__zoxide_z):*' fzf-preview \
-  'eza -1 --color=always --icons=auto $realpath 2>/dev/null || ls -1 $realpath'
-zstyle ':fzf-tab:complete:(bat|cat|micro|nano|less):*' fzf-preview \
-  'bat --style=numbers --color=always $realpath 2>/dev/null'
+# --------------------------------------------------------------
+# AUTOLOAD FUNCTIONS
+# --------------------------------------------------------------
+autoload -Uz zmv
 
 # --------------------------------------------------------------
 # TOOL INTEGRATION
 # --------------------------------------------------------------
-# Homebrew is already on PATH from .zshenv.
-
 # Each `tool init` call is a subprocess at every shell start. Cache the output
 # and rebuild it only when the tool binary is newer.
 _zinitcache=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/init
@@ -152,151 +160,15 @@ _cached_eval() {
 # Drop the caches after you change a tool's config, then open a new shell.
 function zcache-clear() {
   local c=${XDG_CACHE_HOME:-$HOME/.cache}/zsh
-  rm -rf $c/init $c/completions $c/zcompdump-*
+  rm -rf $c/init $c/completions
   print 'zsh caches cleared. Start a new shell.'
 }
 
-# --- Prompt theme ---
-# Themes live in ~/.config/starship/. The choice is just a name in a state
-# file, so startup reads one short line and never runs a subprocess.
-_prompt_theme_file=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/prompt-theme
-# An inherited STARSHIP_CONFIG wins, so `STARSHIP_CONFIG=x.toml zsh` can try a
-# config without touching the saved choice. prompt-lab's `try` relies on this.
-if [[ -z ${STARSHIP_CONFIG-} ]]; then
-  _prompt_theme=catppuccin-powerline
-  [[ -r $_prompt_theme_file ]] && read -r _prompt_theme < $_prompt_theme_file
-  export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/$_prompt_theme.toml
-  [[ -r $STARSHIP_CONFIG ]] ||
-    export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/catppuccin-powerline.toml
-  unset _prompt_theme
-fi
+_cached_eval zoxide    zoxide init zsh
 
-# Switch the prompt. starship reads its config at every prompt, so the change
-# lands on the next one, in this shell and in every shell opened afterwards.
-function prompt-theme() {
-  local dir=$XDG_CONFIG_HOME/starship
-  local -a themes=($dir/*.toml(N:t:r))
-  if (( ! $# )); then
-    print "current:   ${STARSHIP_CONFIG:t:r}"
-    print "available: ${(j:, :)themes}"
-    return
-  fi
-  [[ -r $dir/$1.toml ]] || {
-    print -u2 "no such theme: $1 (have: ${(j:, :)themes})"; return 1 }
-  mkdir -p ${_prompt_theme_file:h}
-  print -r -- $1 >| $_prompt_theme_file
-  export STARSHIP_CONFIG=$dir/$1.toml
-}
-_prompt_theme_complete() {
-  _values theme ${XDG_CONFIG_HOME:-$HOME/.config}/starship/*.toml(N:t:r)
-}
-compdef _prompt_theme_complete prompt-theme
-
-# fzf first: it binds Ctrl+R, and atuin takes that key over right after.
-_cached_eval fzf       fzf --zsh
+# atuin last: it takes over Ctrl+R and Up from z4h's own history search.
 _cached_eval atuin     atuin init zsh
 _cached_eval atuin-hex atuin hex init
-_cached_eval zoxide    zoxide init zsh
-_cached_eval starship  starship init zsh
-
-export FZF_DEFAULT_COMMAND='fd --type f --type d --strip-cwd-prefix --hidden --follow --exclude .git --exclude .venv'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-# --------------------------------------------------------------
-# KEYBINDINGS
-# --------------------------------------------------------------
-zmodload zsh/terminfo
-bindkey -e                                    # emacs keymap
-
-# Home / End / Delete. Terminals disagree, so bind every common sequence.
-bindkey '^[[H' beginning-of-line;  bindkey '^[OH' beginning-of-line
-bindkey '^[[1~' beginning-of-line
-bindkey '^[[F' end-of-line;        bindkey '^[OF' end-of-line
-bindkey '^[[4~' end-of-line
-bindkey '^[[3~' delete-char
-bindkey '^[[3;5~' kill-word                   # Ctrl+Delete
-bindkey '^[^?' backward-kill-word             # Alt+Backspace
-
-# Word navigation with Ctrl+Arrow and Alt+Arrow.
-bindkey '^[[1;5D' backward-word;   bindkey '^[[1;5C' forward-word
-bindkey '^[[1;3D' backward-word;   bindkey '^[[1;3C' forward-word
-
-# Undo and redo.
-bindkey '^_'   undo                           # Ctrl+/
-bindkey '^[[Z' undo                           # Shift+Tab
-bindkey '^[/'  redo                           # Option+/
-
-# --- Directory history on Shift+Arrow ---
-typeset -ga _dirhist_back _dirhist_fwd
-typeset -g  _dirhist_mute=0
-autoload -Uz add-zsh-hook
-
-# Record a manual cd. Any manual move clears the forward list.
-_dirhist_record() {
-  (( _dirhist_mute )) && return
-  [[ -n $OLDPWD ]] && _dirhist_back+=("$OLDPWD")
-  _dirhist_fwd=()
-}
-add-zsh-hook chpwd _dirhist_record
-
-# Redraw the prompt after a cd inside a widget. starship builds PROMPT in
-# precmd, so re-run precmd before resetting.
-_dirhist_redraw() {
-  local f
-  for f in "${precmd_functions[@]}"; do
-    (( $+functions[$f] )) && $f >/dev/null 2>&1
-  done
-  zle .reset-prompt
-}
-
-_dirhist_cd() { _dirhist_mute=1; builtin cd -- "$1" 2>/dev/null; _dirhist_mute=0 }
-
-_dirhist_back_widget() {
-  (( $#_dirhist_back )) || return
-  _dirhist_fwd=("$PWD" $_dirhist_fwd)
-  local d=$_dirhist_back[-1]
-  _dirhist_back[-1]=()
-  _dirhist_cd "$d"; _dirhist_redraw
-}
-_dirhist_fwd_widget() {
-  (( $#_dirhist_fwd )) || return
-  _dirhist_back+=("$PWD")
-  local d=$_dirhist_fwd[1]
-  shift _dirhist_fwd
-  _dirhist_cd "$d"; _dirhist_redraw
-}
-_dirhist_up_widget() {
-  [[ $PWD == / ]] && return
-  _dirhist_back+=("$PWD"); _dirhist_fwd=()
-  _dirhist_cd ..; _dirhist_redraw
-}
-_dirhist_down_widget() {
-  local -a kids=(*(N/))
-  (( $#kids )) || return
-  local target=$kids[1]
-  # More than one child: let fzf pick.
-  if (( $#kids > 1 )) && [[ -n ${commands[fzf]} ]]; then
-    target=$(print -rl -- $kids | fzf --height=40% --reverse --prompt='cd > ')
-    [[ -n $target ]] || { _dirhist_redraw; return }
-  fi
-  _dirhist_back+=("$PWD"); _dirhist_fwd=()
-  _dirhist_cd "$target"; _dirhist_redraw
-}
-
-zle -N _dirhist_back_widget
-zle -N _dirhist_fwd_widget
-zle -N _dirhist_up_widget
-zle -N _dirhist_down_widget
-
-bindkey '^[[1;2D' _dirhist_back_widget        # Shift+Left
-bindkey '^[[1;2C' _dirhist_fwd_widget         # Shift+Right
-bindkey '^[[1;2A' _dirhist_up_widget          # Shift+Up
-bindkey '^[[1;2B' _dirhist_down_widget        # Shift+Down
-
-# --------------------------------------------------------------
-# AUTOLOAD FUNCTIONS
-# --------------------------------------------------------------
-autoload -Uz zmv
 
 # --------------------------------------------------------------
 # CUSTOM FUNCTIONS
@@ -349,18 +221,3 @@ alias ls="${aliases[ls]:-ls} -A"
 
 # bun completions
 [ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
-
-# --------------------------------------------------------------
-# PLUGINS THAT MUST LOAD LAST
-# --------------------------------------------------------------
-if [[ -r ${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-  source ${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-  ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-  # Right arrow accepts the suggestion.
-  ZSH_AUTOSUGGEST_ACCEPT_WIDGETS+=(forward-char vi-forward-char)
-fi
-
-# Syntax highlighting wraps every widget, so it has to be the last thing sourced.
-if [[ -r ${HOMEBREW_PREFIX}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-  source ${HOMEBREW_PREFIX}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi

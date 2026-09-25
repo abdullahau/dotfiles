@@ -1,33 +1,64 @@
 # ~/.zshenv — runs for every zsh, interactive or not.
 #
-# Keep this file small. Put anything a non-interactive shell needs here.
-# `ssh host command` does not read .zshrc, so PATH belongs here.
+# z4h owns the bottom half of this file. Keep your own settings in the block
+# marked below, and leave the z4h bootstrap alone.
+# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md
 
-# Ubuntu's /etc/zsh/zshrc runs its own compinit before ~/.zshrc gets a say.
-# That wrote a stray ~/.zcompdump and made us pay for compinit twice. This is
-# the opt-out that file documents. Narrower than `setopt no_global_rcs`, which
-# would also skip /etc/zprofile and break path_helper on macOS.
-skip_global_compinit=1
+if [ -n "${ZSH_VERSION-}" ]; then
+  # ---- Your settings go here ----
+  # `ssh host command` does not read .zshrc, so PATH belongs in this file.
 
-# uv
-export PATH="$HOME/.local/bin:$PATH"
+  # uv
+  export PATH="$HOME/.local/bin:$PATH"
 
-# Rust / Cargo
-[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+  # Rust / Cargo
+  [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-# Homebrew. Needed here so `ssh host command` and mosh-server find brew tools.
-if [[ -z ${HOMEBREW_PREFIX-} ]]; then
-  if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  elif [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+  # Homebrew. Needed here so `ssh host command` and mosh-server find brew tools.
+  if [[ -z ${HOMEBREW_PREFIX-} ]]; then
+    if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    elif [[ -x /opt/homebrew/bin/brew ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
   fi
+
+  # Check whether a command exists.
+  function exists() { command -v "$1" >/dev/null 2>&1 }
+
+  # NOTE: TERM is deliberately not set here.
+  # Ghostty ships `xterm-ghostty` to remote hosts through its ssh-terminfo shell
+  # integration, so the entry is already there. Overriding TERM only throws away
+  # capabilities, such as styled and coloured underlines.
+
+  # ---- Do not change anything below this line ----
+
+  : ${ZDOTDIR:=~}
+  setopt no_global_rcs
+  [[ -o no_interactive && -z "${Z4H_BOOTSTRAPPING-}" ]] && return
+  setopt no_rcs
+  unset Z4H_BOOTSTRAPPING
 fi
 
-# Check whether a command exists.
-function exists() { command -v "$1" >/dev/null 2>&1 }
+Z4H_URL="https://raw.githubusercontent.com/romkatv/zsh4humans/v5"
+: "${Z4H:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh4humans/v5}"
 
-# NOTE: TERM is deliberately not set here.
-# Ghostty ships `xterm-ghostty` to remote hosts through its ssh-terminfo shell
-# integration, so the entry is already there. Overriding TERM only throws away
-# capabilities, such as styled and coloured underlines.
+umask o-w
+
+if [ ! -e "$Z4H"/z4h.zsh ]; then
+  mkdir -p -- "$Z4H" || return
+  >&2 printf '\033[33mz4h\033[0m: fetching \033[4mz4h.zsh\033[0m\n'
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL -- "$Z4H_URL"/z4h.zsh >"$Z4H"/z4h.zsh.$$ || return
+  elif command -v wget >/dev/null 2>&1; then
+    wget -O-   -- "$Z4H_URL"/z4h.zsh >"$Z4H"/z4h.zsh.$$ || return
+  else
+    >&2 printf '\033[33mz4h\033[0m: please install \033[32mcurl\033[0m or \033[32mwget\033[0m\n'
+    return 1
+  fi
+  mv -- "$Z4H"/z4h.zsh.$$ "$Z4H"/z4h.zsh || return
+fi
+
+. "$Z4H"/z4h.zsh || return
+
+setopt rcs
