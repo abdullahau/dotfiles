@@ -35,6 +35,29 @@ _p10k_tool_chips() {
   done
 }
 
+# Hide the divider inside a run of same-coloured chips.
+#
+# When two neighbours share a background, p10k draws the thin subsegment arc
+# instead of a head, and it paints that arc in the chip's own text colour.
+# The palettes give whole groups one colour on purpose (status, exec time and
+# background jobs; every tool chip), so that arc reads as a seam inside what
+# should look like one chip. Paint each arc in its own chip's background.
+#
+# p10k re-appends the segment style after a separator that holds a '%', so the
+# colour stops at the arc and does not leak into the chip's text.
+# Leave the \u escapes alone: p10k expands them itself, the same way it does
+# for the two globals in base.zsh.
+_p10k_hide_subsep() {
+  local p seg bg
+  for p in ${(k)parameters[(I)POWERLEVEL9K_*_BACKGROUND]}; do
+    bg=${(P)p}
+    [[ -n $bg ]] || continue
+    seg=${${p#POWERLEVEL9K_}%_BACKGROUND}
+    typeset -g POWERLEVEL9K_${seg}_LEFT_SUBSEGMENT_SEPARATOR="%F{$bg}$POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR"
+    typeset -g POWERLEVEL9K_${seg}_RIGHT_SUBSEGMENT_SEPARATOR="%F{$bg}$POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR"
+  done
+}
+
 source $_p10k_dir/base.zsh
 
 () {
@@ -43,3 +66,6 @@ source $_p10k_dir/base.zsh
   [[ -r $_p10k_dir/$theme.zsh ]] || theme=$_p10k_default
   source $_p10k_dir/$theme.zsh
 }
+
+# After the palette, so every chip's background is final.
+_p10k_hide_subsep
