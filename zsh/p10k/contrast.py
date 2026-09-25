@@ -21,6 +21,11 @@ PAIRS = [
 # Extra foregrounds drawn on another segment's background.
 EXTRA = [("DIR_SHORTENED", "DIR"), ("DIR_ANCHOR", "DIR")]
 
+# p10k does not take the git chip's text colour from VCS_*_FOREGROUND. The
+# palettes set these globals and base.zsh reads them. Missing this is what
+# left the branch name grey on the yellow chip, so check them here too.
+GIT = ["meta", "clean", "modified", "untracked", "conflicted"]
+
 
 def luminance(h):
     h = h.lstrip("#")
@@ -43,15 +48,23 @@ def ratio(fg, bg):
 def dump(theme):
     names = [f"POWERLEVEL9K_{s}_{k}" for s in PAIRS for k in ("FOREGROUND", "BACKGROUND")]
     names += [f"POWERLEVEL9K_{s}_FOREGROUND" for s, _ in EXTRA]
+    names += [f"_p10k_git_{g}" for g in GIT]
     script = (
         f'_p10k_state=/nonexistent; source {DISPATCH}; '
         f'source {HERE}/{theme}.zsh; '
         + "; ".join(f'print -r -- "{n}=${{{n}}}"' for n in names)
     )
     out = subprocess.run(["zsh", "-c", script], capture_output=True, text=True).stdout
-    return dict(
-        line.split("=", 1) for line in out.splitlines() if line.startswith("POWERLEVEL9K_")
+    v = dict(
+        line.split("=", 1)
+        for line in out.splitlines()
+        if line.startswith(("POWERLEVEL9K_", "_p10k_git_"))
     )
+    # Unwrap the %F{#rrggbb} prompt escape the git colours are stored in.
+    for k, val in list(v.items()):
+        if k.startswith("_p10k_git_"):
+            v[k] = val[3:-1] if val.startswith("%F{") and val.endswith("}") else ""
+    return v
 
 
 def main():
@@ -63,6 +76,8 @@ def main():
                   for s in PAIRS]
         checks += [(s, f"POWERLEVEL9K_{s}_FOREGROUND", f"POWERLEVEL9K_{b}_BACKGROUND")
                    for s, b in EXTRA]
+        checks += [(f"git text: {g}", f"_p10k_git_{g}",
+                    "POWERLEVEL9K_VCS_CLEAN_BACKGROUND") for g in GIT]
         for label, fk, bk in checks:
             fg, bg = v.get(fk, ""), v.get(bk, "")
             if not (fg.startswith("#") and bg.startswith("#")):

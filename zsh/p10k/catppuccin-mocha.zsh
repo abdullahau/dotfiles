@@ -49,6 +49,14 @@
   # --- the gap between the two bars ---
   typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_FOREGROUND=$surface1
 
+  # --- git chip text ---
+  # p10k does not take these from VCS_*_FOREGROUND. See base.zsh.
+  typeset -g _p10k_git_meta="%F{$crust}"        # 14.76:1 on yellow
+  typeset -g _p10k_git_clean="%F{$crust}"
+  typeset -g _p10k_git_modified="%F{$crust}"
+  typeset -g _p10k_git_untracked="%F{$crust}"
+  typeset -g _p10k_git_conflicted='%F{#7d0b2b}'  # 8.45:1, still reads as red
+
   # --- every language and tool chip ---
   _p10k_tool_chips $yellow $crust
 }

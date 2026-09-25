@@ -393,11 +393,16 @@
     fi
 
     # Styling for different parts of Git status.
-    local       meta='%7F' # white foreground
-    local      clean='%0F' # black foreground
-    local   modified='%0F' # black foreground
-    local  untracked='%0F' # black foreground
-    local conflicted='%1F' # red foreground
+    #
+    # These are the only colours p10k does NOT take from the segment's
+    # FOREGROUND, so a palette must set them or the git chip keeps the
+    # wizard's ANSI defaults. The palette files in zsh/p10k/ set the
+    # _p10k_git_* globals; the fallbacks below are what the wizard wrote.
+    local       meta=${_p10k_git_meta:-%7F}
+    local      clean=${_p10k_git_clean:-%0F}
+    local   modified=${_p10k_git_modified:-%0F}
+    local  untracked=${_p10k_git_untracked:-%0F}
+    local conflicted=${_p10k_git_conflicted:-%1F}
 
     local res
 
