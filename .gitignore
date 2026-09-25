@@ -23,3 +23,6 @@ rclone/rclone.conf
 # micro editor state
 micro/buffers/
 micro/backups/
+
+# Pasted screenshots
+Screenshot *.png

@@ -28,6 +28,7 @@ Do not install those parts through Homebrew. z4h keeps its own copies in
 | `p10k/*.zsh` | — | one palette each, colours only |
 | `inputrc` | `~/.inputrc` | readline, for non-zsh tools |
 | `zfunc/` | `~/.zfunc` | hand-written completions |
+| `p10k/contrast.py` | — | WCAG check over the palettes |
 | `backup/` | — | the old starship setup, kept for reference |
 
 ## Load order
@@ -53,6 +54,17 @@ prompt-theme tokyo-night      # switch, now and in every new shell
 
 The choice goes to `~/.local/state/zsh/prompt-theme`, one word. Startup reads
 that line and sources the matching palette. No subprocess.
+
+Every text-on-chip pair clears 4.5:1 (WCAG AA). The starship tokyo-night
+preset does not: it puts `#e3e5e5` on `#769ff0`, which is 2.08:1. The palette
+keeps that preset's hues and fixes the lightness. After a colour edit:
+
+```
+uv run zsh/p10k/contrast.py
+```
+
+It sources each palette in a real zsh, reads the resulting variables and fails
+on anything under 4.5:1.
 
 `base.zsh` holds the layout. A palette file only sets colours, so a palette
 survives a layout change. `_p10k_tool_chips` in `p10k.zsh` paints every
