@@ -33,6 +33,12 @@
     ~/.config/ruff: ruff
 
 - shell:
+  # Pull every submodule to the commit this repo pins. z4h installs its own
+  # plugins into ~/.cache/zsh4humans, so nothing else is vendored here.
+  - command: git submodule update --init --recursive
+    stdin: true
+    stdout: true
+    stderr: true
   - command: sudo apt-get update && sudo apt-get install -y zsh
     stdin: true
     stdout: true

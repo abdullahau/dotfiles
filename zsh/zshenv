@@ -1,25 +1,24 @@
-# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
+# ~/.zshenv — runs for every zsh, interactive or not.
 #
-# Do not modify this file unless you know exactly what you are doing.
-# It is strongly recommended to keep all shell customization and configuration
-# (including exported environment variables such as PATH) in ~/.zshrc or in
-# files sourced from ~/.zshrc. If you are certain that you must export some
-# environment variables in ~/.zshenv, do it where indicated by comments below.
+# z4h owns the bottom half of this file. Keep your own settings in the block
+# marked below, and leave the z4h bootstrap alone.
+# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md
 
 if [ -n "${ZSH_VERSION-}" ]; then
-  # If you are certain that you must export some environment variables
-  # in ~/.zshenv (see comments at the top!), do it here:
+  # ---- Your settings go here ----
+  # `ssh host command` does not read .zshrc, so PATH belongs in this file.
+
+  # XDG base directories. Here, not in .zshrc, so `ssh host command` and
+  # mosh-server get them too.
+  export XDG_CONFIG_HOME="$HOME/.config"
 
   # uv
-  export PATH="/home/abdullah/.local/share/../bin:$PATH"
+  export PATH="$HOME/.local/bin:$PATH"
 
-  # Rust / Cargo for non-interactive shells
-  if [ -f "$HOME/.cargo/env" ]; then
-    . "$HOME/.cargo/env"
-  fi
+  # Rust / Cargo
+  [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-  # Homebrew on PATH for non-interactive shells (ssh commands, mosh-server).
-  # .zshrc does not run for `ssh host command`, so it must happen here.
+  # Homebrew. Needed here so `ssh host command` and mosh-server find brew tools.
   if [[ -z ${HOMEBREW_PREFIX-} ]]; then
     if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
@@ -28,17 +27,15 @@ if [ -n "${ZSH_VERSION-}" ]; then
     fi
   fi
 
-  # exists function to check for command existence
-  function exists() {
-    # `command -v` is similar to `which`
-    # https://stackoverflow.com/a/677212/1341838
-    command -v $1 >/dev/null 2>&1
+  # Check whether a command exists.
+  function exists() { command -v "$1" >/dev/null 2>&1 }
 
-    # More explicitly written:
-    # command -v $1 1>/dev/null 2>/dev/null
-  }
+  # NOTE: TERM is deliberately not set here.
+  # Ghostty ships `xterm-ghostty` to remote hosts through its ssh-terminfo shell
+  # integration, so the entry is already there. Overriding TERM only throws away
+  # capabilities, such as styled and coloured underlines.
 
-  # Do not change anything else in this file.
+  # ---- Do not change anything below this line ----
 
   : ${ZDOTDIR:=~}
   setopt no_global_rcs
