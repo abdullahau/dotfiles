@@ -18,7 +18,6 @@ zstyle ':z4h:' start-tmux       no
 zstyle ':z4h:' term-shell-integration 'yes'
 zstyle ':z4h:autosuggestions' forward-char 'accept'
 zstyle ':z4h:direnv' enable 'no'
-zstyle ':z4h:direnv:success' notify 'yes'
 
 # fzf completion
 zstyle ':z4h:fzf-complete' recurse-dirs 'yes'
@@ -27,7 +26,6 @@ zstyle ':z4h:fzf-complete' fzf-bindings tab:repeat
 # SSH completions: offer hosts before users.
 zstyle ':completion:*:ssh:argument-1:'       tag-order  hosts users
 zstyle ':completion:*:scp:argument-rest:'    tag-order  hosts files users
-zstyle ':completion:*:(ssh|scp|rdp):*:hosts' hosts
 
 # --------------------------------------------------------------
 # SSH TELEPORTATION
@@ -84,6 +82,8 @@ z4h init || return
 # HISTORY
 # --------------------------------------------------------------
 HISTFILE=$HOME/.zsh_history
+# 2000 on purpose. atuin owns the searchable history; this file is only the
+# fallback for when atuin is not loaded. z4h would otherwise set 1000000000.
 HISTSIZE=2000
 SAVEHIST=2000
 setopt EXTENDED_HISTORY       # keep timestamps through a full file rewrite
@@ -109,7 +109,7 @@ setopt no_beep
 # --------------------------------------------------------------
 # ENVIRONMENT VARIABLES
 # --------------------------------------------------------------
-export XDG_CONFIG_HOME="$HOME/.config"
+# XDG_CONFIG_HOME is set in .zshenv, so non-interactive shells get it too.
 export EDITOR='micro'
 export MICRO_TRUECOLOR=1
 export GPG_TTY=$TTY
@@ -215,21 +215,10 @@ function y() {
   rm -f -- "$tmp"
 }
 
-# zoxide with a plain cd fallback.
-function zd() {
-  if [ $# -eq 0 ]; then
-    builtin cd ~ && return
-  elif [ -d "$1" ]; then
-    builtin cd "$1"
-  else
-    z "$@" && printf "\U000F17A9 " && pwd || echo "Error: Directory not found"
-  fi
-}
-
 # --------------------------------------------------------------
 # ALIASES
 # --------------------------------------------------------------
-alias ls='eza -lh --git --group-directories-first --icons=auto'
+alias ls='eza -lAh --git --group-directories-first --icons=auto'
 alias lsa='ls -a'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias lta='lt -a'
@@ -238,14 +227,12 @@ alias cd="z"
 alias man=batman
 alias tree='tree -a -I ".git|.venv|__pycache__"'
 alias trail='print -l $path'
-alias "ip-local"="ip -4 addr show enxc8a362d8c536 | awk '/inet / {print \$2}' | cut -d/ -f1"
+alias "ip-local"="ip -4 route get 1.1.1.1 | awk '{print \$7; exit}'"
 alias "ip-public"="curl checkip.amazonaws.com"
 alias bbd='brew bundle dump --file=~/Developer/dotfiles/packages/Brewfile'
 alias bup='brew update && brew upgrade --greedy && brew cleanup --prune=all'
 alias disks='lsblk'
 alias ports='sudo lsof -i -P -n'
-
-alias ls="${aliases[ls]:-ls} -A"
 
 # bun completions
 [ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"

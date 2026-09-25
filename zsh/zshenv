@@ -8,6 +8,10 @@ if [ -n "${ZSH_VERSION-}" ]; then
   # ---- Your settings go here ----
   # `ssh host command` does not read .zshrc, so PATH belongs in this file.
 
+  # XDG base directories. Here, not in .zshrc, so `ssh host command` and
+  # mosh-server get them too.
+  export XDG_CONFIG_HOME="$HOME/.config"
+
   # uv
   export PATH="$HOME/.local/bin:$PATH"
 
