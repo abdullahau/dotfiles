@@ -164,6 +164,34 @@ function zcache-clear() {
   print 'zsh caches cleared. Start a new shell.'
 }
 
+# --- Prompt theme ---
+# Palettes live in zsh/p10k/. ~/.p10k.zsh reads the choice at startup, so this
+# costs one short line read and no subprocess.
+function prompt-theme() {
+  local dir=${_p10k_dir:-${${:-~/.p10k.zsh}:A:h}/p10k}
+  local state=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/prompt-theme
+  local -a themes=($dir/*.zsh(N:t:r))
+  themes=(${themes:#base})
+  if (( ! $# )); then
+    local cur=catppuccin-mocha
+    [[ -r $state ]] && read -r cur < $state
+    print "current:   $cur"
+    print "available: ${(j:, :)themes}"
+    return
+  fi
+  (( ${themes[(Ie)$1]} )) || {
+    print -u2 "no such theme: $1 (have: ${(j:, :)themes})"; return 1 }
+  mkdir -p ${state:h}
+  print -r -- $1 >| $state
+  source $dir/$1.zsh
+  (( ${+functions[p10k]} )) && p10k reload
+}
+_prompt_theme_complete() {
+  local dir=${_p10k_dir:-${${:-~/.p10k.zsh}:A:h}/p10k}
+  _values theme $dir/*.zsh(N:t:r)
+}
+compdef _prompt_theme_complete prompt-theme
+
 _cached_eval zoxide    zoxide init zsh
 
 # atuin last: it takes over Ctrl+R and Up from z4h's own history search.
