@@ -5,7 +5,7 @@
 () {
   local ice='#a3aed2' blue='#769ff0' navy='#394260' ink='#1d2230'
   local dark='#090c0c' deep='#16161e' dim='#24283b'
-  local fg='#c0caf5' fgdim='#a9b1d6' comment='#565f89'
+  local fg='#c0caf5' fgdim='#a9b1d6' comment='#565f89' slate='#414868'
   local green='#9ece6a' red='#f7768e' rederr='#1a1b26'
 
   # --- left bar ---
@@ -30,7 +30,16 @@
   typeset -g POWERLEVEL9K_VCS_LOADING_FOREGROUND=$fgdim    # 4.69:1
 
   # --- right bar ---
-  for s in STATUS_OK STATUS_OK_PIPE COMMAND_EXECUTION_TIME CONTEXT BACKGROUND_JOBS; do
+  # Three steps, lightest to darkest: slate, navy, ink. The exec-time chip
+  # must not share a colour with user@host or p10k draws a thin arc between
+  # them instead of a head, which is what the stray outline was.
+  for s in STATUS_OK STATUS_OK_PIPE COMMAND_EXECUTION_TIME BACKGROUND_JOBS; do
+    typeset -g POWERLEVEL9K_${s}_BACKGROUND=$slate         # 5.53:1
+    typeset -g POWERLEVEL9K_${s}_FOREGROUND=$fg
+  done
+  # Every context state, including the REMOTE ones base.zsh declares through
+  # brace expansion. Over SSH p10k uses CONTEXT_REMOTE, not CONTEXT.
+  for s in CONTEXT CONTEXT_DEFAULT CONTEXT_REMOTE CONTEXT_REMOTE_SUDO CONTEXT_SUDO; do
     typeset -g POWERLEVEL9K_${s}_BACKGROUND=$navy          # 6.13:1
     typeset -g POWERLEVEL9K_${s}_FOREGROUND=$fg
   done

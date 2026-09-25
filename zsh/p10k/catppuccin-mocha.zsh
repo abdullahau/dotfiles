@@ -4,7 +4,7 @@
 
 () {
   local crust='#11111b' red='#f38ba8' peach='#fab387' yellow='#f9e2af'
-  local green='#a6e3a1' overlay1='#7f849c' surface0='#313244'
+  local green='#a6e3a1' mauve='#cba6f7' surface0='#313244'
   local surface1='#45475a' subtext0='#a6adc8' text='#cdd6f4'
 
   # --- left bar ---
@@ -29,8 +29,17 @@
   typeset -g POWERLEVEL9K_VCS_LOADING_FOREGROUND=$text      # 6.31:1
 
   # --- right bar ---
-  for s in STATUS_OK STATUS_OK_PIPE COMMAND_EXECUTION_TIME CONTEXT BACKGROUND_JOBS; do
-    typeset -g POWERLEVEL9K_${s}_BACKGROUND=$overlay1
+  # Mauve, then cream, then dark. Grey sat outside the palette, and the
+  # exec-time chip must not share a colour with user@host or p10k draws a
+  # thin arc between them instead of a head.
+  for s in STATUS_OK STATUS_OK_PIPE COMMAND_EXECUTION_TIME BACKGROUND_JOBS; do
+    typeset -g POWERLEVEL9K_${s}_BACKGROUND=$mauve          # 9.23:1
+    typeset -g POWERLEVEL9K_${s}_FOREGROUND=$crust
+  done
+  # Every context state, including the REMOTE ones base.zsh declares through
+  # brace expansion. Over SSH p10k uses CONTEXT_REMOTE, not CONTEXT.
+  for s in CONTEXT CONTEXT_DEFAULT CONTEXT_REMOTE CONTEXT_REMOTE_SUDO CONTEXT_SUDO; do
+    typeset -g POWERLEVEL9K_${s}_BACKGROUND=$yellow         # 14.76:1
     typeset -g POWERLEVEL9K_${s}_FOREGROUND=$crust
   done
   for s in STATUS_ERROR STATUS_ERROR_PIPE STATUS_ERROR_SIGNAL CONTEXT_ROOT; do

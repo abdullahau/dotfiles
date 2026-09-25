@@ -13,10 +13,21 @@ DISPATCH = HERE.parent / "p10k.zsh"
 
 # Segments whose FOREGROUND sits on their own BACKGROUND.
 PAIRS = [
-    "OS_ICON", "DIR", "DIR_WORK",
+    "OS_ICON", "DIR", "DIR_WORK", "DIR_WORK_NOT_WRITABLE",
     "VCS_CLEAN", "VCS_MODIFIED", "VCS_UNTRACKED", "VCS_CONFLICTED", "VCS_LOADING",
-    "STATUS_OK", "STATUS_ERROR", "COMMAND_EXECUTION_TIME", "CONTEXT", "CONTEXT_ROOT",
-    "TIME", "VIRTUALENV", "RUST_VERSION", "GO_VERSION", "NODE_VERSION",
+    "STATUS_OK", "STATUS_OK_PIPE", "STATUS_ERROR", "STATUS_ERROR_PIPE",
+    "STATUS_ERROR_SIGNAL", "COMMAND_EXECUTION_TIME", "BACKGROUND_JOBS",
+    # Every context state. Over SSH p10k uses CONTEXT_REMOTE, not CONTEXT.
+    "CONTEXT", "CONTEXT_DEFAULT", "CONTEXT_REMOTE", "CONTEXT_REMOTE_SUDO",
+    "CONTEXT_SUDO", "CONTEXT_ROOT",
+    "TIME", "VIRTUALENV", "RUST_VERSION", "GO_VERSION", "NODE_VERSION", "DIRENV",
+]
+
+# Neighbours on the right bar. Sharing a background makes p10k draw a thin
+# subsegment arc instead of a solid head, which reads as a stray outline.
+ADJACENT = [
+    ("COMMAND_EXECUTION_TIME", "CONTEXT_REMOTE"),
+    ("CONTEXT_REMOTE", "TIME"),
 ]
 # Extra foregrounds drawn on another segment's background.
 EXTRA = [("DIR_SHORTENED", "DIR"), ("DIR_ANCHOR", "DIR")]
@@ -86,7 +97,13 @@ def main():
             ok = r >= 4.5
             bad += not ok
             print(f"  {'ok  ' if ok else 'FAIL'} {r:5.2f}:1  {label:<22} {fg} on {bg}")
-    print(f"\n{bad} pair(s) below 4.5:1")
+        for a, b in ADJACENT:
+            ba = v.get(f"POWERLEVEL9K_{a}_BACKGROUND", "")
+            bb = v.get(f"POWERLEVEL9K_{b}_BACKGROUND", "")
+            if ba and ba == bb:
+                bad += 1
+                print(f"  FAIL  same bg    {a} and {b} are both {ba} -> stray arc")
+    print(f"\n{bad} problem(s)")
     return 1 if bad else 0
 
 
