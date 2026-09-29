@@ -1,46 +1,82 @@
 abdullah.run, abdullah.diy {
 	root * /srv
-	file_server
-	encode gzip
+	file_server {
+		precompressed zstd br gzip
+	}
+	encode zstd gzip
 
-	# HTML always revalidates; assets get a short cache window (no
-	# cache-busting filenames here, so not longer). Matches ellie.wtf.
+	# No cache-busting filenames here, so assets get a short window, not a long one.
 	@static path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
 	@html not path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
 	header @static Cache-Control "public, max-age=14400, must-revalidate"
 	header @html Cache-Control "public, max-age=0, must-revalidate"
 
-	# Images/etc that live only on the VPS, outside the git repo — see
-	# CLAUDE.md. /media/travel/some-trip/photo.jpg -> media/travel/some-trip/photo.jpg
+	# /media is write-once, so it caches far longer. `>` replaces the value @static
+	# set. No `immutable`: a same-path replace would then stick in browsers.
+	@media path /media/*
+	header @media >Cache-Control "public, max-age=2592000"
+
+	# VPS-only, outside the git repo.
 	handle_path /media/* {
 		root * /media
 		file_server
 	}
 
-	# Serve the styled 404 page while keeping the real status code.
+	# Styled 404 page, real status code.
 	handle_errors {
 		rewrite * /404.html
-		file_server
+		file_server {
+			precompressed zstd br gzip
+		}
 	}
 }
 
-# Plex alias — raw relay on 32400 (vps/relay.sh) for Plex apps direct use
-# Plex server settings (Settings > Network):
-#   Custom server access URLs: https://plex.abdullah.run:443
-#   Secure connections: Preferred (not Required — blocks Caddy's cert)
+# labels are right-to-left: 0=tld, 1=domain.
+www.abdullah.run, www.abdullah.diy {
+	redir https://{labels.1}.{labels.0}{uri} permanent
+}
+
+# Raw relay on 32400 (vps/relay.sh) for Plex apps. In Plex > Settings > Network:
+# custom access URL https://plex.abdullah.run:443, secure connections Preferred
+# (Required blocks Caddy's cert).
 plex.abdullah.run {
 	reverse_proxy 100.125.140.11:32400
+}
+
+jellyfin.abdullah.run {
+	reverse_proxy 100.125.140.11:8096
 }
 
 navidrome.abdullah.run {
 	reverse_proxy 100.125.140.11:4533
 }
 
+# Reached by container name on this stack's compose network. The host firewall
+# rejects 8000 anyway.
+textcast.abdullah.run {
+	reverse_proxy textcast-app:8000 {
+		# Article bodies are megabytes of HTML.
+		transport http {
+			read_timeout 300s
+		}
+	}
+
+	# Compress the prose, not the 30 MB Opus file.
+	encode zstd gzip
+
+	# The app sends `public, immutable`, wrong in front of Cloudflare: the audio
+	# sits behind its own login. `>` replaces rather than adds a second header.
+	@media path /media/*
+	header @media >Cache-Control "private, max-age=31536000, immutable"
+}
+
 # Fallback bare-IP block — uncomment if the domains ever break.
 # :80 {
 # 	root * /srv
-# 	file_server
-# 	encode gzip
+# 	file_server {
+# 		precompressed zstd br gzip
+# 	}
+# 	encode zstd gzip
 #
 # 	@static path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
 # 	@html not path *.css *.js *.svg *.avif *.png *.jpg *.jpeg *.pdf *.woff *.woff2
@@ -54,6 +90,8 @@ navidrome.abdullah.run {
 #
 # 	handle_errors {
 # 		rewrite * /404.html
-# 		file_server
+# 		file_server {
+# 			precompressed zstd br gzip
+# 		}
 # 	}
 # }
