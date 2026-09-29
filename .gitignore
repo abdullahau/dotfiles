@@ -26,3 +26,7 @@ micro/backups/
 
 # Pasted screenshots
 Screenshot *.png
+
+# Samba: ucf writes these next to smb.conf on a package upgrade
+samba/*.ucf-dist
+samba/*.ucf-old
