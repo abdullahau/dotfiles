@@ -12,14 +12,22 @@ sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+# 2) Add the repository to Apt sources.
+# A release upgrade renames third-party .list files to .list.disabled and never
+# restores them, stranding Docker on the old release. Clear those and write .sources.
+UBUNTU_CODENAME_NOW="$(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")"
 
-# 2) Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo rm -f /etc/apt/sources.list.d/docker.list /etc/apt/sources.list.d/docker.list.disabled
+
+sudo tee /etc/apt/sources.list.d/docker.sources > /dev/null << EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: ${UBUNTU_CODENAME_NOW}
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
 sudo apt-get update
 
 # 3) Install Docker packages
@@ -36,7 +44,10 @@ sudo usermod -aG docker $USER
 
 echo "\n2) Enable IPv6 in Docker Daemon...\n"
 
-sudo tee /etc/docker/daemon.json > /dev/null << EOF
+# fixed-cidr-v6 only reaches docker0. Compose networks stay IPv4-only unless they
+# set enable_ipv6, and fd00::/80 is a ULA with no route off this host.
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json > /dev/null << 'EOF'
 {
   "ipv6": true,
   "fixed-cidr-v6": "fd00::/80",
@@ -47,11 +58,12 @@ EOF
 
 echo "\n3) Enable IPv6 on Host System...\n"
 
-cat << EOF | sudo tee -a /etc/sysctl.conf > /dev/null
-
+# Ubuntu 26.04 ships no /etc/sysctl.conf, and appending to it stacked a copy per run.
+sudo tee /etc/sysctl.d/99-docker-ipv6.conf > /dev/null << 'EOF'
 net.ipv6.conf.all.disable_ipv6 = 0
 net.ipv6.conf.default.disable_ipv6 = 0
 EOF
+sudo sysctl -p /etc/sysctl.d/99-docker-ipv6.conf
 
 
 echo "\n<<< Docker Services Setup Complete >>>\n"

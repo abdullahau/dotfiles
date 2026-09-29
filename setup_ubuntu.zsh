@@ -65,6 +65,11 @@ sudo visudo -c
 
 echo "\n3) Setting up Tailscale...\n"
 
+# A release upgrade leaves tailscale.list.disabled behind and never restores it,
+# stranding Tailscale on the old release. Clear it so install.sh writes a fresh repo.
+sudo rm -f /etc/apt/sources.list.d/tailscale.list \
+           /etc/apt/sources.list.d/tailscale.list.disabled
+
 curl -fsSL https://tailscale.com/install.sh | sh
 
 if [[ -n "${TAILSCALE_AUTH_KEY:-}" ]]; then
