@@ -73,6 +73,11 @@ sudo visudo -c
 
 echo "\n3) Setting up Tailscale...\n"
 
+# A release upgrade leaves tailscale.list.disabled behind and never restores it,
+# stranding Tailscale on the old release. Clear it so install.sh writes a fresh repo.
+sudo rm -f /etc/apt/sources.list.d/tailscale.list \
+           /etc/apt/sources.list.d/tailscale.list.disabled
+
 curl -fsSL https://tailscale.com/install.sh | sh
 if [[ -n "${TAILSCALE_AUTH_KEY:-}" ]]; then
     sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}" --advertise-exit-node
@@ -116,7 +121,8 @@ rustup update
 
 echo "\n5) Configuring Logind for Lid Switch behavior...\n"
 
-# Use a drop-in file instead of appending to logind.conf.
+# A systemd upgrade can replace logind.conf and take appended lines with it,
+# leaving this laptop to suspend on lid close. A drop-in survives that.
 LOGIND_DROPIN="/etc/systemd/logind.conf.d/99-lid-switch.conf"
 
 echo "Writing lid switch settings to $LOGIND_DROPIN..."
@@ -129,8 +135,40 @@ HandleLidSwitch=ignore
 HandleLidSwitchDocked=ignore
 EOF
 
+# Keep these settings in the drop-in only, not also appended to logind.conf.
+if sudo grep -q '^# ------- Custom Lid Switch Settings -------' /etc/systemd/logind.conf 2>/dev/null; then
+    echo "Removing the older appended block from /etc/systemd/logind.conf..."
+    sudo sed -i '/^# ------- Custom Lid Switch Settings -------$/,/^# ------------------------------------------$/d' /etc/systemd/logind.conf
+fi
+
 echo "Reloading systemd-logind service to apply changes..."
 sudo systemctl reload systemd-logind.service || echo "WARNING: Failed to reload systemd-logind."
+
+#----------------------------------------------------------------------
+# GRUB - headless single-OS boot
+#----------------------------------------------------------------------
+
+echo "\n5.a) Configuring GRUB for a headless single-OS boot...\n"
+
+# Never edit /etc/default/grub: ucf prompts on every grub upgrade. Use a drop-in
+# and leave the package file alone, so upgrades stay silent.
+sudo mkdir -p /etc/default/grub.d
+sudo tee /etc/default/grub.d/99-homelab.cfg > /dev/null << 'EOF'
+# Headless, one OS on the disk: boot straight through and skip the os-prober scan.
+GRUB_TIMEOUT=0
+GRUB_TIMEOUT_STYLE=hidden
+GRUB_DISABLE_OS_PROBER=true
+EOF
+
+# An earlier hand-edit left ucf holding the package version. Take it back.
+if [[ -f /etc/default/grub.ucf-dist ]]; then
+    echo "Restoring the package /etc/default/grub; the drop-in carries our settings."
+    sudo cp -a /etc/default/grub /etc/default/grub.before-reset
+    sudo cp -a /etc/default/grub.ucf-dist /etc/default/grub
+    sudo rm -f /etc/default/grub.ucf-dist
+fi
+
+sudo update-grub
 
 #----------------------------------------------------------------------
 # Samba Setup
@@ -139,7 +177,19 @@ sudo systemctl reload systemd-logind.service || echo "WARNING: Failed to reload 
 echo "\n6) Setting Up Samba SMB...\n"
 
 # https://chriskalos.notion.site/The-0-Home-Server-Written-Guide-5d5ff30f9bdd4dfbb9ce68f0d914f1f6#ad77305c83424605b859168b243ff81d
-sudo ln -sf "$DOTFILES_DIR/samba/smb.conf" /etc/samba/smb.conf
+#
+# A samba upgrade replaces the symlink with a plain copy and adds new defaults to
+# it. Fold that back in before relinking, so the addition is kept not discarded.
+if [[ -f /etc/samba/smb.conf && ! -L /etc/samba/smb.conf ]]; then
+    if ! diff -q /etc/samba/smb.conf "$DOTFILES_DIR/samba/smb.conf" >/dev/null; then
+        echo "/etc/samba/smb.conf is a plain file and differs from the repo."
+        echo "Folding it back into $DOTFILES_DIR/samba/smb.conf; review with 'git diff'."
+        cat /etc/samba/smb.conf > "$DOTFILES_DIR/samba/smb.conf"
+    fi
+fi
+
+sudo ln -sfn "$DOTFILES_DIR/samba/smb.conf" /etc/samba/smb.conf
+sudo testparm -s >/dev/null || echo "WARNING: testparm rejected smb.conf; not restarting smbd."
 
 sudo smbpasswd -a "$USER"
 sudo systemctl restart smbd
