@@ -118,10 +118,11 @@ for _ in $(seq 1 20); do
 done
 
 if ! tailscale status >/dev/null 2>&1; then
-    # A relay must not advertise as exit node/subnet router — plain membership only.
+    # Matches setup_ubuntu.zsh. The exit node is wanted here: this VPS has both
+    # IPv4 and IPv6, so it serves peers the homelab cannot reach directly.
     if [[ -n "${TAILSCALE_AUTH_KEY:-}" ]]; then
         echo "Joining the tailnet with TAILSCALE_AUTH_KEY from .env..."
-        sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}" --accept-dns=false
+        sudo tailscale up --auth-key="${TAILSCALE_AUTH_KEY}" --accept-dns=false --advertise-exit-node
     else
         echo "ERROR: tailscale is not up and TAILSCALE_AUTH_KEY is unset (missing .env?)."
         echo "       Run manually: sudo tailscale up"
