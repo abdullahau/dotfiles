@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 #
 # setup_ubuntu.zsh — apt packages, Tailscale (exit node + subnet router), Rust,
-# logind lid-switch behaviour, and Samba.
+# logind lid-switch behaviour, Samba, and disabling unused services.
 #
 # Inputs:
 #   packages/apt-packages   one package per line, `#` comments allowed
@@ -193,5 +193,21 @@ sudo testparm -s >/dev/null || echo "WARNING: testparm rejected smb.conf; not re
 
 sudo smbpasswd -a "$USER"
 sudo systemctl restart smbd
+
+#----------------------------------------------------------------------
+# Disable Unused Services
+#----------------------------------------------------------------------
+
+echo "\n7) Disabling unused services (snapd, multipathd, nmbd)...\n"
+
+# No snaps (brew does that job), no multipath disks, and smbd serves the shares
+# without NetBIOS. Mask the sockets too, or they start the services on demand.
+UNUSED_UNITS=(snapd.service snapd.socket multipathd.service multipathd.socket nmbd.service)
+
+sudo systemctl disable --now "${UNUSED_UNITS[@]}" snapd.seeded.service \
+    snapd.apparmor.service snapd.autoimport.service snapd.core-fixup.service \
+    snapd.recovery-chooser-trigger.service snapd.system-shutdown.service \
+    snapd.snap-repair.timer 2>/dev/null
+sudo systemctl mask "${UNUSED_UNITS[@]}"
 
 echo "\n<<< Ubuntu Setup Complete >>>\n"
