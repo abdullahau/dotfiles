@@ -1,5 +1,5 @@
 {
-    "colorscheme": "catppuccin-frappe-transparent",
+    "colorscheme": "catppuccin-latte-transparent",
     "lsp.autocompleteDetails": true,
     "lsp.ignoreMessages": "LS message1 to ignore|LS message 2 to ignore|...",
     "lsp.ignoreTriggerCharacters": "completion,signature",
