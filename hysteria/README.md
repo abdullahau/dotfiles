@@ -1,4 +1,4 @@
-# Hysteria2 on Oracle Phoenix (`oracle` / 129.146.179.208)
+# Hysteria2 on Oracle Phoenix (`oracle` / 129.146.189.15)
 
 A single-user Hysteria2 (QUIC) proxy endpoint on the Oracle Cloud Phoenix VPS,
 used to get US-egress internet from macOS / iOS / iPadOS clients.
@@ -100,6 +100,11 @@ openssl req -x509 -nodes -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 \
   -subj "/CN=www.bing.com" -addext "subjectAltName=DNS:www.bing.com"
 chmod 600 certs/key.pem && chmod 644 certs/cert.pem
 
+# the cert MUST exist before `up`: if certs/ is missing, docker creates it
+# root-owned and empty, and hysteria crash-loops on
+# "tls.cert: stat /certs/cert.pem: no such file or directory"
+test -s certs/cert.pem && test -s certs/key.pem || { echo "generate the cert first" >&2; exit 1; }
+
 docker compose -f hysteria-docker-compose.yml up -d
 ```
 
@@ -109,8 +114,8 @@ Then add the OCI ingress rule below.
 
 ## OCI ingress rule — REQUIRED, and easy to forget
 
-Oracle gives the instance a **private** address (`10.0.0.42` on `enp0s6`) and
-1:1 NATs the public IP (`129.146.179.208`). The port is unreachable from the
+Oracle gives the instance a **private** address (`10.0.0.85` on `ens3`) and
+1:1 NATs the public IP (`129.146.189.15`). The port is unreachable from the
 internet until it is opened in the VCN, no matter what is listening locally.
 
 **Console → Networking → Virtual Cloud Networks → *your VCN* → Security Lists
@@ -126,7 +131,7 @@ internet until it is opened in the VCN, no matter what is listening locally.
 
 UDP, not TCP — Hysteria2 is QUIC. A TCP/443 rule does nothing here.
 
-Verify from outside: `nc -zvu 129.146.179.208 443` (UDP probes are unreliable;
+Verify from outside: `nc -zvu 129.146.189.15 443` (UDP probes are unreliable;
 the real test is just connecting a client).
 
 ## iptables — nothing to do, deliberately
@@ -154,7 +159,7 @@ Any of these work: **Hiddify** (free, App Store, iOS/iPadOS/macOS),
 Print the import URI (run on the VPS):
 
 ```bash
-cd ~/Developer/dotfiles/hysteria && echo "hysteria2://$(grep HYSTERIA_PASSWORD .env | cut -d= -f2-)@129.146.179.208:443/?insecure=1&sni=www.bing.com#Oracle-Phoenix"
+cd ~/Developer/dotfiles/hysteria && echo "hysteria2://$(grep HYSTERIA_PASSWORD .env | cut -d= -f2-)@129.146.189.15:443/?insecure=1&sni=www.bing.com#Oracle-Phoenix"
 ```
 
 `insecure=1` is required while using the self-signed cert. Paste into the client
@@ -191,12 +196,12 @@ Hysteria's default QUIC receive windows (~20 MB connection) already cover a
 
 Fine here. The goal is throughput, not evading DPI, and the client pins nothing.
 Cost: the client needs `insecure=1`, and a TLS-fingerprinting observer can tell
-the cert is not real. Expires **2036-08-03**.
+the cert is not real. Expires **2036-09-27**.
 
 ### Optional upgrade: ACME (needs a real domain)
 
 Only worth it if you want the endpoint to genuinely pass as a website. Point an
-A record at `129.146.179.208`, then replace the `tls:` block in
+A record at `129.146.189.15`, then replace the `tls:` block in
 `config.yaml.template` with:
 
 ```yaml
@@ -235,7 +240,7 @@ Confirms cert, auth and egress in one shot:
 PW=$(grep HYSTERIA_PASSWORD ~/Developer/dotfiles/hysteria/.env | cut -d= -f2-)
 printf 'server: 127.0.0.1:443\nauth: %s\ntls:\n  sni: www.bing.com\n  insecure: true\nsocks5:\n  listen: 127.0.0.1:11080\n' "$PW" > /tmp/hy-c.yaml
 docker run --rm -d --name hy-test --network host -v /tmp/hy-c.yaml:/c.yaml:ro tobyxdd/hysteria:latest client -c /c.yaml
-curl -s --socks5-hostname 127.0.0.1:11080 https://ifconfig.me   # expect 129.146.179.208
+curl -s --socks5-hostname 127.0.0.1:11080 https://ifconfig.me   # expect 129.146.189.15
 docker rm -f hy-test && rm /tmp/hy-c.yaml
 ```
 

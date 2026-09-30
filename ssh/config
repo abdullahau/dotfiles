@@ -43,22 +43,22 @@ Host oracle-ts
 
 
 # --- Oracle VPS — US (us-phoenix-1) ------------------------------------------
-Host oracle-us oracle-us6 oracle-us-ts 144.24.59.133
+Host oracle-us oracle-us6 oracle-us-ts 129.146.189.15
   User ubuntu
   ForwardAgent yes
   HostKeyAlias oracle-phoenix
 
 # Public IPv4
-Host oracle-us 144.24.59.133
-  HostName 144.24.59.133
+Host oracle-us 129.146.189.15
+  HostName 129.146.189.15
 
 # Public IPv6
 Host oracle-us6
-  HostName 2603:c020:24:f3ff:0:9cbd:4b14:3d54
+  HostName 2603:c020:24:f3ff:0:d2d1:a531:6114
   AddressFamily inet6
 
 Host oracle-us-ts
-  HostName 100.127.58.81
+  HostName 100.115.97.65
 
 
 # --- GitHub ------------------------------------------------------------------
