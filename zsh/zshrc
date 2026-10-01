@@ -238,4 +238,6 @@ alias claude-abdullah="CLAUDE_CONFIG_DIR=~/.claude claude"
 alias claude-rehab="CLAUDE_CONFIG_DIR=~/.claude-rehab claude"
 
 # bun completions
-[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
+if [[ -s "$BUN_INSTALL/_bun" ]]; then
+  source "$BUN_INSTALL/_bun"
+fi
