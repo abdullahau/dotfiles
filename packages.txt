@@ -6,7 +6,8 @@ network-manager-applet blueman dex polkit-gnome
 papirus-icon-theme kvantum capitaine-cursors ttf-hack ttf-meslo-nerd ttf-fira-sans
 xorg-xinit pacman-contrib python libreoffice-fresh paru stow git
 micro ufw openssh
-ueberzugpp 7zip resvg
+# media + yazi previews
+mpv ffmpeg imagemagick poppler ueberzugpp 7zip resvg
 
 # AUR (paru)
 catppuccin-gtk-theme-mocha kvantum-theme-catppuccin-git
