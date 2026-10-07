@@ -1,6 +1,6 @@
 {
     // Matches the desktop: Catppuccin Latte (maroon accent) + JetBrains Mono
-    "workbench.colorTheme": "Solarized Dark",
+    "workbench.colorTheme": "Catppuccin Latte",
     "workbench.iconTheme": "catppuccin-latte",
     "catppuccin.accentColor": "maroon",
 
