@@ -1,0 +1,17 @@
+{
+    // Matches the desktop: Catppuccin Mocha (peach accent) + JetBrains Mono
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "workbench.iconTheme": "catppuccin-mocha",
+    "catppuccin.accentColor": "peach",
+
+    "editor.fontFamily": "'JetBrainsMono Nerd Font', monospace",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font'",
+
+    // No animations, same as the rest of the desktop
+    "workbench.reduceMotion": "on",
+    "editor.smoothScrolling": false,
+    "editor.cursorSmoothCaretAnimation": "off",
+    "terminal.integrated.smoothScrolling": false
+}

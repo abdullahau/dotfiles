@@ -33,4 +33,10 @@ gsettings set org.blueman.general plugin-list "['!StatusIcon', '!ShowConnected']
 systemctl --user disable clipmenud 2>/dev/null || true
 
 
+if command -v code >/dev/null; then
+    echo ":: VS Code extensions (Catppuccin theme + icons)"
+    code --install-extension Catppuccin.catppuccin-vsc
+    code --install-extension Catppuccin.catppuccin-vsc-icons
+fi
+
 echo ":: Done. Reboot to start in i3."

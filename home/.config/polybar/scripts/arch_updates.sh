@@ -6,10 +6,10 @@ cache="${XDG_CACHE_HOME:-$HOME/.cache}/polybar-updates"
 log=/var/log/pacman.log
 
 show() {
-    if [ "${2:-0}" -gt 0 ]; then echo "%{T6}󰏔%{T-} $1+$2"; else echo "%{T6}󰏔%{T-} $1"; fi
+    if [ "${2:-0}" -gt 0 ]; then echo "%{T2}󰏔%{T-} $1+$2"; else echo "%{T2}󰏔%{T-} $1"; fi
 }
 
-[ -r "$cache" ] && show $(cat "$cache") || echo "%{T6}󰏔%{T-} …"
+[ -r "$cache" ] && show $(cat "$cache") || echo "%{T2}󰏔%{T-} …"
 
 while true; do
     arch=$(checkupdates 2>/dev/null | wc -l)

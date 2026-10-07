@@ -59,13 +59,9 @@ module-margin-left = 0
 module-margin-right = 0
 
 font-0 = JetBrainsMono Nerd Font:pixelsize=11;3
-font-2 = "Wuncon Siji:pixelsize=12;3"
-font-1 = Weather Icons:style=Regular:size=12;3
-font-3 = FontAwesome5Free:style=Solid:pixelsize=12;3
-font-4 = FontAwesome5Brands:style=Solid:pixelsize=12;3
-font-5 = "JetBrainsMono Nerd Font:pixelsize=14;3"
+font-1 = "JetBrainsMono Nerd Font:pixelsize=14;3"
 ; fallback for symbols JetBrains Mono lacks (e.g. in window titles)
-font-6 = DejaVu Sans:pixelsize=11;3
+font-2 = DejaVu Sans:pixelsize=11;3
 
 
 modules-left = i3 sp1 xwindow
@@ -140,7 +136,7 @@ type = internal/date
 interval = 5
 date = "%a %d %b %Y"
 time = "%I:%M %p"
-format-prefix = "%{T6}󰃭%{T-} "
+format-prefix = "%{T2}󰃭%{T-} "
 format-prefix-foreground = ${colors.foreground-alt}
 label = %date%  %time%
 label-foreground = ${colors.foreground-alt}
@@ -171,7 +167,7 @@ label-empty =
 type = internal/cpu
 interval = 3
 format = <label>
-format-prefix = "%{T6}󰻠%{T-} "
+format-prefix = "%{T2}󰻠%{T-} "
 format-prefix-foreground = ${colors.foreground-alt}
 label = %percentage:2%%
 
@@ -180,7 +176,7 @@ label = %percentage:2%%
 type = internal/memory
 interval = 5
 format = <label>
-format-prefix = "%{T6}󰢮%{T-} "
+format-prefix = "%{T2}󰢮%{T-} "
 format-prefix-foreground = ${colors.foreground-alt}
 label = %percentage_used:2%%
 
@@ -190,7 +186,7 @@ type = internal/fs
 mount-0 = /
 interval = 60
 format-mounted = <label-mounted>
-format-mounted-prefix = "%{T6}󰋊%{T-} "
+format-mounted-prefix = "%{T2}󰋊%{T-} "
 format-mounted-prefix-foreground = ${colors.foreground-alt}
 label-mounted = %free%
 
@@ -202,10 +198,10 @@ use-ui-max = false
 interval = 3
 format-volume = <ramp-volume> <label-volume>
 label-volume = %percentage%%
-ramp-volume-0 = %{T6}󰕿%{T-}
-ramp-volume-1 = %{T6}󰖀%{T-}
-ramp-volume-2 = %{T6}󰕾%{T-}
-label-muted = %{T6}󰝟%{T-} muted
+ramp-volume-0 = %{T2}󰕿%{T-}
+ramp-volume-1 = %{T2}󰖀%{T-}
+ramp-volume-2 = %{T2}󰕾%{T-}
+label-muted = %{T2}󰝟%{T-} muted
 label-muted-foreground = ${colors.muted}
 click-right = pavucontrol &
 
@@ -242,17 +238,17 @@ battery = BAT0
 adapter = AC
 full-at = 98
 poll-interval = 10
-format-charging = %{T6}󰂄%{T-} <label-charging>
+format-charging = %{T2}󰂄%{T-} <label-charging>
 format-discharging = <ramp-capacity> <label-discharging>
-format-full = %{T6}󰁹%{T-} <label-full>
+format-full = %{T2}󰁹%{T-} <label-full>
 label-charging = %percentage%%
 label-discharging = %percentage%%
 label-full = %percentage%%
-ramp-capacity-0 = %{T6}󰁺%{T-}
-ramp-capacity-1 = %{T6}󰁼%{T-}
-ramp-capacity-2 = %{T6}󰁾%{T-}
-ramp-capacity-3 = %{T6}󰂀%{T-}
-ramp-capacity-4 = %{T6}󰁹%{T-}
+ramp-capacity-0 = %{T2}󰁺%{T-}
+ramp-capacity-1 = %{T2}󰁼%{T-}
+ramp-capacity-2 = %{T2}󰁾%{T-}
+ramp-capacity-3 = %{T2}󰂀%{T-}
+ramp-capacity-4 = %{T2}󰁹%{T-}
 
 ; Brightness: scroll to change
 [module/backlight]
@@ -261,4 +257,4 @@ card = intel_backlight
 use-actual-brightness = true
 enable-scroll = true
 format = <label>
-label = %{T6}󰃠%{T-} %percentage%%
+label = %{T2}󰃠%{T-} %percentage%%

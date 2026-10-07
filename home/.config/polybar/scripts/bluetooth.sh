@@ -22,13 +22,13 @@ if [ "$1" = toggle ]; then
 fi
 
 if ! bluetoothctl show 2>/dev/null | grep -q 'Powered: yes'; then
-    echo "%{F#7D8799}%{T6}󰂲%{T-} off%{F-}"
+    echo "%{F#7D8799}%{T2}󰂲%{T-} off%{F-}"
     exit
 fi
 
 devices=$(bluetoothctl devices Connected 2>/dev/null | cut -d' ' -f3- | paste -sd ',' | sed 's/,/, /g')
 if [ -n "$devices" ]; then
-    echo "%{T6}󰂱%{T-} $devices"
+    echo "%{T2}󰂱%{T-} $devices"
 else
-    echo "%{T6}󰂯%{T-} on"
+    echo "%{T2}󰂯%{T-} on"
 fi
