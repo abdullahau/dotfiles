@@ -1,0 +1,69 @@
+/* Sunset theme, matched to axyl-bspwm-tower-sunset.jpg and polybar */
+* {
+    bg:        #17232CCC;
+    bg-alt:    #2F3849CC;
+    fg:        #E8DCE0;
+    muted:     #7D8799;
+    accent:    #E6B18B;
+    coral:     #C26967;
+
+    background-color: transparent;
+    text-color:       @fg;
+    font:             "Hack 11";
+}
+
+window {
+    width:            640px;
+    background-color: @bg;
+    border:           2px;
+    border-color:     @coral;
+    border-radius:    10px;
+    padding:          14px;
+}
+
+mainbox      { spacing: 10px; children: [ inputbar, listview, mode-switcher ]; }
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius:    6px;
+    padding:          8px 12px;
+    spacing:          8px;
+    children:         [ prompt, entry ];
+}
+prompt       { text-color: @accent; }
+entry        { placeholder: "search…"; placeholder-color: @muted; cursor: text; }
+
+listview {
+    lines:        8;
+    columns:      1;
+    fixed-height: false;
+    scrollbar:    false;
+    spacing:      2px;
+}
+
+element {
+    padding:       6px 10px;
+    border-radius: 6px;
+    spacing:       10px;
+}
+element normal.normal, element alternate.normal { text-color: @fg; }
+element normal.active, element alternate.active { text-color: @accent; }
+element normal.urgent, element alternate.urgent { text-color: @coral; }
+element selected.normal, element selected.active {
+    background-color: @accent;
+    text-color:       #17232C;
+}
+element selected.urgent { background-color: @coral; text-color: #17232C; }
+element-icon { size: 1.1em; }
+element-text { text-color: inherit; vertical-align: 0.5; }
+
+mode-switcher { spacing: 6px; }
+button {
+    padding:          4px;
+    border-radius:    6px;
+    text-color:       @muted;
+}
+button selected { background-color: @bg-alt; text-color: @accent; }
+
+message  { background-color: @bg-alt; border-radius: 6px; padding: 8px; }
+textbox  { text-color: @fg; }

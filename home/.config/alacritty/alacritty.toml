@@ -1,0 +1,95 @@
+[general]
+working_directory = "None"
+live_config_reload = true
+
+[env]
+TERM = "xterm-256color"
+WINIT_X11_SCALE_FACTOR = "1.0"
+
+[window]
+dimensions = { columns = 100, lines = 30 }
+dynamic_padding = true
+decorations = "Full"
+opacity = 0.8
+title = "Alacritty@CachyOS"
+class = { instance = "Alacritty", general = "Alacritty" }
+decorations_theme_variant = "Dark"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[font]
+normal = { family = "Hack", style = "Regular" }
+bold = { family = "Hack", style = "Bold" }
+italic = { family = "Hack", style = "Italic" }
+bold_italic = { family = "Hack", style = "Bold Italic" }
+size = 12.0
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.primary]
+background = "0x17232C"
+foreground = "0xE8DCE0"
+
+[colors.cursor]
+text = "0x17232C"
+cursor = "0xE6B18B"
+
+[colors.selection]
+text = "0x17232C"
+background = "0xE6B18B"
+
+[colors.normal]
+black = "0x2F3849"
+red = "0xC26967"
+green = "0x8FB394"
+yellow = "0xE6B18B"
+blue = "0x7A9CC6"
+magenta = "0xB48EAD"
+cyan = "0x7FB3B5"
+white = "0xD8CCD2"
+
+[colors.bright]
+black = "0x5F6B80"
+red = "0xE0838B"
+green = "0xA9CBA9"
+yellow = "0xF0C6A4"
+blue = "0x95B4DB"
+magenta = "0xCBA6C3"
+cyan = "0x9CCBCB"
+white = "0xF3EAEE"
+
+[selection]
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+save_to_clipboard = true
+
+[cursor]
+style = { shape = "Underline", blinking = "Off" }
+unfocused_hollow = true
+thickness = 0.15
+
+[mouse]
+hide_when_typing = true
+bindings = [
+{ mouse = "Middle", mods = "None", action = "PasteSelection" },
+]
+
+[keyboard]
+bindings = [
+{ key = "Paste", mods = "None", action = "Paste" },
+{ key = "Copy", mods = "None", action = "Copy" },
+{ key = "L", mods = "Control", action = "ClearLogNotice" },
+{ key = "L", mods = "Control", mode = "~Vi", chars = "\f" },
+{ key = "PageUp", mods = "Shift", mode = "~Alt", action = "ScrollPageUp" },
+{ key = "PageDown", mods = "Shift", mode = "~Alt", action = "ScrollPageDown" },
+{ key = "Home", mods = "Shift", mode = "~Alt", action = "ScrollToTop" },
+{ key = "End", mods = "Shift", mode = "~Alt", action = "ScrollToBottom" },
+{ key = "V", mods = "Control|Shift", action = "Paste" },
+{ key = "C", mods = "Control|Shift", action = "Copy" },
+{ key = "F", mods = "Control|Shift", action = "SearchForward" },
+{ key = "B", mods = "Control|Shift", action = "SearchBackward" },
+{ key = "C", mods = "Control|Shift", mode = "Vi", action = "ClearSelection" },
+{ key = "Key0", mods = "Control", action = "ResetFontSize" },
+]

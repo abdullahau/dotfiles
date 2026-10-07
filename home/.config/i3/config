@@ -1,0 +1,187 @@
+# i3 config. Super+/ lists every shortcut.
+
+########################################################################
+#  Basics
+########################################################################
+set $mod Mod4
+set $term alacritty
+font pango:Hack 10
+floating_modifier $mod
+
+# Sunset palette
+# class                 border  backgr. text    indicator child_border
+client.focused          #C26967 #C26967 #17232C #E6B18B   #C26967
+client.focused_inactive #2F3849 #2F3849 #E8DCE0 #2F3849   #2F3849
+client.unfocused        #17232C #17232C #7D8799 #17232C   #17232C
+client.urgent           #E0605F #E0605F #17232C #E0605F   #E0605F
+client.placeholder      #17232C #17232C #E8DCE0 #17232C   #17232C
+client.background       #17232C
+
+# 2px borders, 10px gaps between windows and around the screen edges
+for_window [class="^.*"] border pixel 2
+gaps inner 10
+gaps outer 0
+
+########################################################################
+#  Apps and menus
+########################################################################
+bindsym $mod+Return exec $term
+bindsym $mod+b exec firefox
+bindsym $mod+e exec thunar
+bindsym $mod+y exec $term -e yazi
+bindsym $mod+Shift+v exec pavucontrol
+
+bindsym $mod+space exec --no-startup-id "rofi -show combi -modi combi,drun,run,window -combi-modi window,drun"
+bindsym $mod+c exec --no-startup-id env CM_LAUNCHER=rofi clipmenu -p clipboard
+bindsym $mod+Shift+p exec --no-startup-id rofi -show calc -modi calc -no-show-match -no-sort -calc-command "echo -n '{result}' | xsel -ib"
+bindsym $mod+slash exec --no-startup-id ~/.config/rofi/keyhelp.py
+bindsym $mod+F1 exec --no-startup-id ~/.config/rofi/keyhelp.py
+
+# Power menu (suspend / log out / reboot / shut down)
+bindsym $mod+Escape exec --no-startup-id ~/.config/rofi/powermenu.sh
+bindsym $mod+Shift+e exec --no-startup-id ~/.config/rofi/powermenu.sh
+
+# Notifications
+bindsym $mod+n exec --no-startup-id dunstctl history-pop
+bindsym $mod+Shift+n exec --no-startup-id dunstctl close-all
+
+########################################################################
+#  Windows
+########################################################################
+bindsym $mod+q kill
+
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Where the next window opens: beside (h) or below (v)
+bindsym $mod+h split h
+bindsym $mod+v split v
+bindsym $mod+t split toggle
+
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+Shift+t layout toggle split
+
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+ctrl+space focus mode_toggle
+bindsym $mod+Shift+w sticky toggle
+bindsym $mod+a focus parent
+
+# Scratchpad: park a window with Super+Shift+-, bring it back with Super+-
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Resize mode: arrows resize, Enter/Esc/Super+R to leave
+mode "resize" {
+        bindsym Left resize shrink width 5 px or 5 ppt
+        bindsym Down resize grow height 5 px or 5 ppt
+        bindsym Up resize shrink height 5 px or 5 ppt
+        bindsym Right resize grow width 5 px or 5 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+########################################################################
+#  Workspaces
+########################################################################
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Super+Tab, or pressing the current workspace's number again, goes back
+workspace_auto_back_and_forth yes
+bindsym $mod+Tab workspace back_and_forth
+
+########################################################################
+#  i3 itself
+########################################################################
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+########################################################################
+#  Fn / media keys (volume and brightness show the xob bar)
+########################################################################
+bindsym XF86AudioRaiseVolume exec --no-startup-id "pamixer -ui 3 && pamixer --get-volume > /tmp/xobpipe"
+bindsym XF86AudioLowerVolume exec --no-startup-id "pamixer -ud 3 && pamixer --get-volume > /tmp/xobpipe"
+bindsym XF86AudioMute exec --no-startup-id "pamixer -t && { pamixer --get-mute | grep -q true && echo 0 || pamixer --get-volume; } > /tmp/xobpipe"
+bindsym XF86AudioMicMute exec --no-startup-id "pamixer --default-source -t"
+
+bindsym XF86MonBrightnessUp exec --no-startup-id "brightnessctl -m s +5% | cut -d, -f4 | tr -d % > /tmp/xobpipe"
+bindsym XF86MonBrightnessDown exec --no-startup-id "brightnessctl -m --min-value=1% s 5%- | cut -d, -f4 | tr -d % > /tmp/xobpipe"
+
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+
+# PrtSc: pick an area; Shift+PrtSc: whole screen to ~/Pictures
+bindsym Print exec --no-startup-id flameshot gui
+bindsym Shift+Print exec --no-startup-id flameshot full -p ~/Pictures
+
+########################################################################
+#  Window rules
+########################################################################
+
+for_window [class="mpv"] floating enable
+for_window [class="imv"] floating enable
+for_window [class="zenity"] floating enable
+for_window [class="cachyos-welcome"] floating enable
+for_window [title="Timer"] floating enable
+for_window [class="(?i)pavucontrol"] floating enable, resize set 800 500, move position center
+for_window [class="(?i)blueman-manager"] floating enable, resize set 700 450, move position center
+for_window [class="(?i)thunar" title="^(File Operation Progress|Confirm to replace files)"] floating enable
+
+########################################################################
+#  Startup
+########################################################################
+exec --no-startup-id feh --bg-fill ~/Pictures/wallpapers/axyl-bspwm-tower-sunset.jpg
+exec --no-startup-id picom
+exec --no-startup-id dunst
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# nm-applet and blueman-applet start from /etc/xdg/autostart via dex
+exec --no-startup-id dex -a -s /etc/xdg/autostart/:~/.config/autostart/
+# clipboard history needs the X display, so start it once i3 is up
+exec --no-startup-id sh -c 'systemctl --user import-environment DISPLAY XAUTHORITY && systemctl --user start clipmenud'
+
+# These re-run on every i3 restart
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+exec_always --no-startup-id ~/.config/i3/xob.sh

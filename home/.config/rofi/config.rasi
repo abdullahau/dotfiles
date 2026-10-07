@@ -1,0 +1,11 @@
+configuration {
+    modi:              "drun,run,window";
+    show-icons:        true;
+    display-drun:      "apps";
+    display-run:       "run";
+    display-window:    "windows";
+    display-combi:     "go";
+    drun-display-format: "{name}";
+    matching:          "fuzzy";
+}
+@theme "~/.config/rofi/sunset.rasi"
