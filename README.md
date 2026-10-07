@@ -39,3 +39,4 @@ Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 - New config file: move it into `home/` at the same path, then `stow -d ~/.dotfiles -t ~ --restow home`.
 - If an app replaced a symlink with a real file (flameshot or Kvantum Manager saving settings can do this),
   copy it back into `home/` and `--restow`; `git status` shows the change.
+- `sed -i` replaces a symlink with a plain file; use `sed -i --follow-symlinks`, or edit the copy in `home/`.
