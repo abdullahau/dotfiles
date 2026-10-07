@@ -167,6 +167,7 @@ for_window [class="zenity"] floating enable
 for_window [class="cachyos-welcome"] floating enable
 for_window [title="Timer"] floating enable
 for_window [class="(?i)pavucontrol"] floating enable, resize set 800 500, move position center
+for_window [class="(?i)nm-connection-editor"] floating enable, resize set 700 450, move position center
 for_window [class="(?i)blueman-manager"] floating enable, resize set 700 450, move position center
 for_window [class="(?i)thunar" title="^(File Operation Progress|Confirm to replace files)"] floating enable
 
