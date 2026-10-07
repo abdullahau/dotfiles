@@ -20,7 +20,7 @@ Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 - **rofi**: `latte.rasi` theme, `keyhelp.py` (Super+/ shortcut list built from the i3 config), `powermenu.sh` (Super+Esc / Super+Shift+E)
 - **alacritty, dunst, btop, micro, VS Code**: official Catppuccin Latte colours; btop and micro have no background so the terminal's 90% opacity shows through
 - **picom, xob, flameshot**: Latte colours, no animations
-- **GTK 3/4, Kvantum, Papirus**: Catppuccin Latte (maroon), no animations
+- **GTK 3/4, Kvantum, Papirus**: Catppuccin Latte (maroon), no animations. The GTK theme is the official release zip in `~/.local/share/themes` (setup.sh downloads it), not an AUR package
 - **Login**: tty1 auto-login (getty override written by `system.sh`) → fish `conf.d/startx.fish` → `~/.xinitrc` (loads `~/.profile`) → i3. No display manager.
 - **yazi**: hidden files shown, micro as editor
 - **System** (`system.sh`): GRUB hidden menu with 0s timeout, `LC_TIME=en_GB.UTF-8`, sshd + ufw (port 22), paccache.timer

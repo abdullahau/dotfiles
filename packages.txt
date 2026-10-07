@@ -5,9 +5,9 @@ thunar thunar-volman gvfs tumbler yazi pavucontrol
 network-manager-applet blueman dex polkit-gnome
 papirus-icon-theme kvantum capitaine-cursors ttf-jetbrains-mono-nerd ttf-dejavu ttf-fira-sans
 xorg-xinit pacman-contrib python libreoffice-fresh paru stow git uv
-micro ufw openssh
+micro ufw openssh unzip curl
 # media + yazi previews
 mpv ffmpeg imagemagick poppler ueberzugpp 7zip resvg
 
 # AUR (paru)
-catppuccin-gtk-theme-latte kvantum-theme-catppuccin-git visual-studio-code-bin
+kvantum-theme-catppuccin-git visual-studio-code-bin

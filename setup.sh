@@ -19,9 +19,16 @@ done
 [ -d "$backup" ] && echo "   previous files moved to $backup"
 stow -d "$PWD" -t "$HOME" --restow home
 
-# GTK 4 apps read the theme from ~/.config/gtk-4.0 (links into the installed theme)
-theme=/usr/share/themes/catppuccin-latte-maroon-standard+default/gtk-4.0
-for f in assets gtk.css gtk-dark.css; do ln -sfn "$theme/$f" "$HOME/.config/gtk-4.0/$f"; done
+# GTK theme: Catppuccin Latte Maroon, official release, installed per-user (no sudo)
+gtk_theme=catppuccin-latte-maroon-standard+default
+gtk_dir="$HOME/.local/share/themes/$gtk_theme"
+if [ ! -d "$gtk_dir" ]; then
+    tmp=$(mktemp -d)
+    curl -fsSL -o "$tmp/theme.zip" "https://github.com/catppuccin/gtk/releases/download/v1.0.3/$gtk_theme.zip"
+    mkdir -p "$HOME/.local/share/themes"; unzip -qo "$tmp/theme.zip" -d "$HOME/.local/share/themes/"; rm -r "$tmp"
+fi
+# GTK 4 apps read the theme from ~/.config/gtk-4.0 (links into the theme)
+for f in assets gtk.css gtk-dark.css; do ln -sfn "$gtk_dir/gtk-4.0/$f" "$HOME/.config/gtk-4.0/$f"; done
 
 echo ":: Desktop settings that live outside files"
 gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-latte-maroon-standard+default'
