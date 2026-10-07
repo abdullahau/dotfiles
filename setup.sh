@@ -25,7 +25,7 @@ for f in assets gtk.css gtk-dark.css; do ln -sfn "$theme/$f" "$HOME/.config/gtk-
 
 echo ":: Desktop settings that live outside files"
 gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-latte-peach-standard+default'
-gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Light'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
 gsettings set org.gnome.desktop.interface enable-animations false
 gsettings set org.blueman.general plugin-list "['!StatusIcon', '!ShowConnected']"
