@@ -52,6 +52,17 @@ for dm in ly@tty2.service ly.service sddm.service lightdm.service gdm.service; d
     systemctl is-enabled "$dm" >/dev/null 2>&1 && sudo systemctl disable "$dm"
 done
 
+step "Touchpad: natural scrolling in every app (libinput)"
+sudo install -d /etc/X11/xorg.conf.d
+sudo tee /etc/X11/xorg.conf.d/30-touchpad.conf >/dev/null <<'XORG'
+Section "InputClass"
+    Identifier "touchpad natural scrolling"
+    MatchIsTouchpad "on"
+    Driver "libinput"
+    Option "NaturalScrolling" "true"
+EndSection
+XORG
+
 step "SSH server + firewall (port 22 allowed)"
 sudo systemctl enable --now sshd
 sudo ufw allow 22

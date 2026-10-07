@@ -9,7 +9,7 @@ maroon `#e64553` (the one accent: borders, current workspace, selections), red `
 |---|---|
 | `home/` | `~`, as symlinks made by GNU Stow (edit files here or via `~/.config/…`, same file) |
 | `packages.txt` | packages the setup relies on |
-| `system.sh` | **sudo part**: packages (pacman + AUR), GRUB, no splash, locale, tty1 auto-login, SSH + firewall, background services, cache cleanup |
+| `system.sh` | **sudo part**: packages (pacman + AUR), GRUB, no splash, touchpad, locale, tty1 auto-login, SSH + firewall, background services, cache cleanup |
 | `setup.sh` | **personal part**: stows `home/` into `~`, applies desktop settings |
 
 Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
@@ -23,7 +23,7 @@ Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 - **GTK 3/4, Kvantum, Papirus**: Catppuccin Latte (maroon), no animations. The GTK theme is the official release zip in `~/.local/share/themes` (setup.sh downloads it), not an AUR package
 - **Login**: tty1 auto-login (getty override written by `system.sh`) → fish `conf.d/startx.fish` → `~/.xinitrc` (loads `~/.profile`) → i3. No display manager.
 - **yazi**: hidden files shown, micro as editor
-- **System** (`system.sh`): GRUB hidden menu with 0s timeout, no boot splash (Plymouth removed), `LC_TIME=en_GB.UTF-8`, sshd + ufw (port 22), paccache.timer; cups only on demand (socket), avahi and NetworkManager-wait-online off
+- **System** (`system.sh`): GRUB hidden menu with 0s timeout, no boot splash (Plymouth removed), touchpad natural scrolling (`/etc/X11/xorg.conf.d/30-touchpad.conf`), `LC_TIME=en_GB.UTF-8`, sshd + ufw (port 22), paccache.timer; cups only on demand (socket), avahi and NetworkManager-wait-online off
 
 ## Settings not stored in files (applied by setup.sh)
 - gsettings: GTK theme, Papirus-Light icons, light colour scheme, animations off
