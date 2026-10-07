@@ -16,7 +16,7 @@ window {
     width:            640px;
     background-color: @bg;
     border:           2px;
-    border-color:     @coral;
+    border-color:     rgba(194, 105, 103, 70%);   /* like i3 window borders under picom frame-opacity 0.7 */
     border-radius:    10px;
     padding:          14px;
 }
