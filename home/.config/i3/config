@@ -10,16 +10,16 @@ floating_modifier $mod
 
 # Catppuccin Latte
 # class                 border  backgr. text    indicator child_border
-client.focused          #e64553 #e64553 #eff1f5 #e64553   #e64553
+client.focused          #7287fd #7287fd #eff1f5 #7287fd   #7287fd
 client.focused_inactive #bcc0cc #bcc0cc #4c4f69 #bcc0cc   #bcc0cc
 client.unfocused        #dce0e8 #dce0e8 #8c8fa1 #dce0e8   #dce0e8
 client.urgent           #d20f39 #d20f39 #eff1f5 #d20f39   #d20f39
 client.placeholder      #eff1f5 #eff1f5 #4c4f69 #eff1f5   #eff1f5
 client.background       #eff1f5
 
-# 2px borders, 10px gaps between windows and around the screen edges
+# 2px borders, 8px gaps between windows and around the screen edges
 for_window [class="^.*"] border pixel 2
-gaps inner 10
+gaps inner 8
 gaps outer 0
 
 ########################################################################

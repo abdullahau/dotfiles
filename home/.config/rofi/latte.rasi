@@ -4,8 +4,8 @@
     bg-alt:    #ccd0daE6;
     fg:        #4c4f69;
     muted:     #8c8fa1;
-    accent:    #e64553;
-    coral:     #e64553;
+    accent:    #7287fd;
+    coral:     #7287fd;
 
     background-color: transparent;
     text-color:       @fg;
@@ -16,7 +16,7 @@ window {
     width:            640px;
     background-color: @bg;
     border:           2px;
-    border-color:     rgba(230, 69, 83, 70%);   /* like i3 window borders under picom frame-opacity 0.7 */
+    border-color:     rgba(114, 135, 253, 70%);   /* like i3 window borders under picom frame-opacity 0.7 */
     border-radius:    10px;
     padding:          14px;
 }

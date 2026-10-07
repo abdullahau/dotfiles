@@ -19,8 +19,8 @@ done
 [ -d "$backup" ] && echo "   previous files moved to $backup"
 stow -d "$PWD" -t "$HOME" --restow home
 
-# GTK theme: Catppuccin Latte Maroon, official release, installed per-user (no sudo)
-gtk_theme=catppuccin-latte-maroon-standard+default
+# GTK theme: Catppuccin Latte Lavender, official release, installed per-user (no sudo)
+gtk_theme=catppuccin-latte-lavender-standard+default
 gtk_dir="$HOME/.local/share/themes/$gtk_theme"
 if [ ! -d "$gtk_dir" ]; then
     tmp=$(mktemp -d)
@@ -31,7 +31,7 @@ fi
 for f in assets gtk.css gtk-dark.css; do ln -sfn "$gtk_dir/gtk-4.0/$f" "$HOME/.config/gtk-4.0/$f"; done
 
 echo ":: Desktop settings that live outside files"
-gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-latte-maroon-standard+default'
+gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-latte-lavender-standard+default'
 gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Light'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
 gsettings set org.gnome.desktop.interface enable-animations false

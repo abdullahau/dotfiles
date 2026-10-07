@@ -18,13 +18,13 @@
 
 [colors]
 ; Catppuccin Latte
-; current workspace: maroon, same as the focused window border
-background = #e64553
+; current workspace: lavender, same as the focused window border
+background = #7287fd
 background-alt = #eff1f5
 foreground = #eff1f5
 foreground-alt = #4c4f69
-primary = #e64553
-secondary = #e64553
+primary = #7287fd
+secondary = #7287fd
 alert = #d20f39
 muted = #8c8fa1
 
