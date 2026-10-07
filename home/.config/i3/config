@@ -174,7 +174,7 @@ for_window [class="(?i)thunar" title="^(File Operation Progress|Confirm to repla
 ########################################################################
 #  Startup
 ########################################################################
-exec --no-startup-id feh --bg-fill ~/Pictures/wallpapers/cat-street.jpg
+exec --no-startup-id feh --bg-fill ~/Pictures/wallpapers/RxMZu6A.png
 exec --no-startup-id picom
 exec --no-startup-id dunst
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
