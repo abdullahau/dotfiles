@@ -26,6 +26,14 @@ paru -S --needed $(pkgs 'AUR')
 step "GRUB: hidden menu, no wait (hold Shift / tap Esc at boot to see it)"
 set_conf /etc/default/grub GRUB_TIMEOUT 0
 set_conf /etc/default/grub GRUB_TIMEOUT_STYLE hidden
+
+step "Boot: no splash screen (Plymouth removed, ~3s faster)"
+# 1. kernel option, 2. initramfs hook, 3. packages (hook must go before the package)
+sudo sed -i -E '/^GRUB_CMDLINE_LINUX_DEFAULT=/ { s/(["'"'"' ])splash( |(["'"'"']))/\1\3/; s/  +/ /g }' /etc/default/grub
+sudo sed -i -E '/^HOOKS=/ s/ plymouth//' /etc/mkinitcpio.conf
+plymouth_pkgs=$(pacman -Qq plymouth cachyos-plymouth-bootanimation cachyos-plymouth-theme 2>/dev/null || true)
+[ -n "$plymouth_pkgs" ] && sudo pacman -Rns --noconfirm $plymouth_pkgs
+sudo mkinitcpio -P
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 step "Locale: English (UK) time format, other regional formats unchanged"
@@ -49,6 +57,15 @@ sudo systemctl enable --now sshd
 sudo ufw allow 22
 sudo ufw --force enable
 sudo systemctl enable ufw
+
+step "Background services: off unless needed"
+# Printing starts on demand through the socket; nothing runs until you print
+sudo systemctl disable --now cups.service cups.path 2>/dev/null || true
+sudo systemctl enable cups.socket 2>/dev/null || true
+# Network device discovery (printers/AirPlay) and boot-time wait for network
+for u in avahi-daemon.service avahi-daemon.socket NetworkManager-wait-online.service; do
+    sudo systemctl disable --now "$u" 2>/dev/null || true
+done
 
 step "Weekly package cache cleanup"
 sudo systemctl enable --now paccache.timer
