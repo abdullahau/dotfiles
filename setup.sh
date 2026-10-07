@@ -10,6 +10,8 @@ backup="$HOME/.dotfiles-backup-$(date +%Y%m%d-%H%M%S)"
 ( cd home && find . -mindepth 1 -type f -print0 ) |
 while IFS= read -r -d '' f; do
     f="${f#./}"
+    # Skip anything that already resolves into this repo (incl. via a linked folder)
+    [ "$(readlink -f "$HOME/$f")" = "$PWD/home/$f" ] && continue
     if [ -e "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
         mkdir -p "$backup/$(dirname "$f")"; mv "$HOME/$f" "$backup/$f"
     fi
