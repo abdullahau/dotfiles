@@ -9,7 +9,7 @@
 
     background-color: transparent;
     text-color:       @fg;
-    font:             "Hack 11";
+    font:             "JetBrainsMono Nerd Font 11";
 }
 
 window {
