@@ -10,4 +10,4 @@ micro ufw openssh
 mpv ffmpeg imagemagick poppler ueberzugpp 7zip resvg
 
 # AUR (paru)
-catppuccin-gtk-theme-mocha kvantum-theme-catppuccin-git visual-studio-code-bin
+catppuccin-gtk-theme-latte kvantum-theme-catppuccin-git visual-studio-code-bin

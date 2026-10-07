@@ -22,7 +22,7 @@ if [ "$1" = toggle ]; then
 fi
 
 if ! bluetoothctl show 2>/dev/null | grep -q 'Powered: yes'; then
-    echo "%{F#7D8799}%{T2}󰂲%{T-} off%{F-}"
+    echo "%{F#8c8fa1}%{T2}󰂲%{T-} off%{F-}"
     exit
 fi
 

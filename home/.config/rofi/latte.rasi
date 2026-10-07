@@ -1,11 +1,11 @@
-/* Sunset theme, matched to axyl-bspwm-tower-sunset.jpg and polybar */
+/* Catppuccin Latte, matched to polybar and the terminal */
 * {
-    bg:        #17232CCC;
-    bg-alt:    #2F3849CC;
-    fg:        #E8DCE0;
-    muted:     #7D8799;
-    accent:    #E6B18B;
-    coral:     #C26967;
+    bg:        #eff1f5E6;
+    bg-alt:    #ccd0daE6;
+    fg:        #4c4f69;
+    muted:     #8c8fa1;
+    accent:    #fe640b;
+    coral:     #e64553;
 
     background-color: transparent;
     text-color:       @fg;
@@ -16,7 +16,7 @@ window {
     width:            640px;
     background-color: @bg;
     border:           2px;
-    border-color:     rgba(194, 105, 103, 70%);   /* like i3 window borders under picom frame-opacity 0.7 */
+    border-color:     rgba(230, 69, 83, 70%);   /* like i3 window borders under picom frame-opacity 0.7 */
     border-radius:    10px;
     padding:          14px;
 }
@@ -51,9 +51,9 @@ element normal.active, element alternate.active { text-color: @accent; }
 element normal.urgent, element alternate.urgent { text-color: @coral; }
 element selected.normal, element selected.active {
     background-color: @accent;
-    text-color:       #17232C;
+    text-color:       #eff1f5;
 }
-element selected.urgent { background-color: @coral; text-color: #17232C; }
+element selected.urgent { background-color: @coral; text-color: #eff1f5; }
 element-icon { size: 1.1em; }
 element-text { text-color: inherit; vertical-align: 0.5; }
 

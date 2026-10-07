@@ -10,7 +10,7 @@ WINIT_X11_SCALE_FACTOR = "1.0"
 dimensions = { columns = 100, lines = 30 }
 dynamic_padding = true
 decorations = "Full"
-opacity = 0.8
+opacity = 0.9
 title = "Alacritty@CachyOS"
 class = { instance = "Alacritty", general = "Alacritty" }
 decorations_theme_variant = "Dark"
@@ -30,36 +30,70 @@ size = 12.0
 draw_bold_text_with_bright_colors = true
 
 [colors.primary]
-background = "0x17232C"
-foreground = "0xE8DCE0"
+background = "#eff1f5"
+foreground = "#4c4f69"
+dim_foreground = "#8c8fa1"
+bright_foreground = "#4c4f69"
 
 [colors.cursor]
-text = "0x17232C"
-cursor = "0xE6B18B"
+text = "#eff1f5"
+cursor = "#dc8a78"
+
+[colors.vi_mode_cursor]
+text = "#eff1f5"
+cursor = "#7287fd"
+
+[colors.search.matches]
+foreground = "#eff1f5"
+background = "#6c6f85"
+
+[colors.search.focused_match]
+foreground = "#eff1f5"
+background = "#40a02b"
+
+[colors.footer_bar]
+foreground = "#eff1f5"
+background = "#6c6f85"
+
+[colors.hints.start]
+foreground = "#eff1f5"
+background = "#df8e1d"
+
+[colors.hints.end]
+foreground = "#eff1f5"
+background = "#6c6f85"
 
 [colors.selection]
-text = "0x17232C"
-background = "0xE6B18B"
+text = "#eff1f5"
+background = "#dc8a78"
 
 [colors.normal]
-black = "0x2F3849"
-red = "0xC26967"
-green = "0x8FB394"
-yellow = "0xE6B18B"
-blue = "0x7A9CC6"
-magenta = "0xB48EAD"
-cyan = "0x7FB3B5"
-white = "0xD8CCD2"
+black = "#bcc0cc"
+red = "#d20f39"
+green = "#40a02b"
+yellow = "#df8e1d"
+blue = "#1e66f5"
+magenta = "#ea76cb"
+cyan = "#179299"
+white = "#5c5f77"
 
 [colors.bright]
-black = "0x5F6B80"
-red = "0xE0838B"
-green = "0xA9CBA9"
-yellow = "0xF0C6A4"
-blue = "0x95B4DB"
-magenta = "0xCBA6C3"
-cyan = "0x9CCBCB"
-white = "0xF3EAEE"
+black = "#acb0be"
+red = "#d20f39"
+green = "#40a02b"
+yellow = "#df8e1d"
+blue = "#1e66f5"
+magenta = "#ea76cb"
+cyan = "#179299"
+white = "#6c6f85"
+
+[[colors.indexed_colors]]
+index = 16
+color = "#fe640b"
+
+[[colors.indexed_colors]]
+index = 17
+color = "#dc8a78"
 
 [selection]
 semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"

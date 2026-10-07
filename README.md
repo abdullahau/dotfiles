@@ -1,8 +1,8 @@
-# dotfiles: i3 "sunset" setup (CachyOS, Dell Latitude)
+# dotfiles: i3 + Catppuccin Latte (CachyOS, Dell Latitude)
 
-i3 + polybar + rofi + picom, themed from the Axyl OS sunset wallpaper.
-Palette: navy `#17232C`, slate `#2F3849`, text `#E8DCE0`, muted `#7D8799`,
-peach `#E6B18B`, coral `#C26967`.
+i3 + polybar + rofi + picom, all on Catppuccin Latte (light) with the peach accent.
+Main colours: base `#eff1f5`, text `#4c4f69`, muted `#8c8fa1`, surface `#ccd0da`,
+peach `#fe640b` (accent), maroon `#e64553` (focused borders), red `#d20f39` (alerts).
 
 ## Layout
 | Path | Goes to |
@@ -17,9 +17,10 @@ Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 ## What's in it
 - **i3**: `~/.config/i3/config` (sections: basics, apps, windows, workspaces, Fn keys, rules, startup), `xob.sh` (volume/brightness OSD)
 - **polybar**: config, `launch.sh` (single start at login, logs to `$XDG_RUNTIME_DIR/polybar-*.log`), `scripts/arch_updates.sh` (cached update count), `scripts/bluetooth.sh`
-- **rofi**: `sunset.rasi` theme, `keyhelp.py` (Super+/ shortcut list built from the i3 config), `powermenu.sh` (Super+Esc / Super+Shift+E)
-- **picom, dunst, alacritty, xob, flameshot**: sunset colours, no animations
-- **GTK 2/3/4, Kvantum, Papirus**: Catppuccin Mocha (peach), no animations
+- **rofi**: `latte.rasi` theme, `keyhelp.py` (Super+/ shortcut list built from the i3 config), `powermenu.sh` (Super+Esc / Super+Shift+E)
+- **alacritty, dunst, btop, micro, VS Code**: official Catppuccin Latte colours; btop and micro have no background so the terminal's 90% opacity shows through
+- **picom, xob, flameshot**: Latte colours, no animations
+- **GTK 3/4, Kvantum, Papirus**: Catppuccin Latte (peach), no animations
 - **Login**: tty1 auto-login (getty override written by `system.sh`) → fish `conf.d/startx.fish` → `~/.xinitrc` (loads `~/.profile`) → i3. No display manager.
 - **yazi**: hidden files shown, micro as editor
 - **System** (`system.sh`): GRUB hidden menu with 0s timeout, `LC_TIME=en_GB.UTF-8`, sshd + ufw (port 22), paccache.timer

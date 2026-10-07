@@ -8,4 +8,4 @@ configuration {
     drun-display-format: "{name}";
     matching:          "fuzzy";
 }
-@theme "~/.config/rofi/sunset.rasi"
+@theme "~/.config/rofi/latte.rasi"

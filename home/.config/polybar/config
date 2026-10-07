@@ -17,15 +17,15 @@
 ;==========================================================
 
 [colors]
-; Sunset palette (from axyl-bspwm-tower-sunset.jpg)
-background = #E6B18B
-background-alt = #17232C
-foreground = #17232C
-foreground-alt = #E8DCE0
-primary = #E6B18B
-secondary = #C26967
-alert = #E0605F
-muted = #7D8799
+; Catppuccin Latte
+background = #fe640b
+background-alt = #eff1f5
+foreground = #eff1f5
+foreground-alt = #4c4f69
+primary = #fe640b
+secondary = #e64553
+alert = #d20f39
+muted = #8c8fa1
 
 [bar/example]
 monitor = ${env:MONITOR:}

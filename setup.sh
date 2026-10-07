@@ -20,13 +20,13 @@ done
 stow -d "$PWD" -t "$HOME" --restow home
 
 # GTK 4 apps read the theme from ~/.config/gtk-4.0 (links into the installed theme)
-theme=/usr/share/themes/catppuccin-mocha-peach-standard+default/gtk-4.0
+theme=/usr/share/themes/catppuccin-latte-peach-standard+default/gtk-4.0
 for f in assets gtk.css gtk-dark.css; do ln -sfn "$theme/$f" "$HOME/.config/gtk-4.0/$f"; done
 
 echo ":: Desktop settings that live outside files"
-gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-mocha-peach-standard+default'
-gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-latte-peach-standard+default'
+gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
 gsettings set org.gnome.desktop.interface enable-animations false
 gsettings set org.blueman.general plugin-list "['!StatusIcon', '!ShowConnected']"
 # clipmenud is started by i3 once the display exists, not at systemd login

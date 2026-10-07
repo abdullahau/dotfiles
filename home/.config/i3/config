@@ -8,14 +8,14 @@ set $term alacritty
 font pango:JetBrainsMono Nerd Font 10
 floating_modifier $mod
 
-# Sunset palette
+# Catppuccin Latte
 # class                 border  backgr. text    indicator child_border
-client.focused          #C26967 #C26967 #17232C #E6B18B   #C26967
-client.focused_inactive #2F3849 #2F3849 #E8DCE0 #2F3849   #2F3849
-client.unfocused        #17232C #17232C #7D8799 #17232C   #17232C
-client.urgent           #E0605F #E0605F #17232C #E0605F   #E0605F
-client.placeholder      #17232C #17232C #E8DCE0 #17232C   #17232C
-client.background       #17232C
+client.focused          #e64553 #e64553 #eff1f5 #fe640b   #e64553
+client.focused_inactive #bcc0cc #bcc0cc #4c4f69 #bcc0cc   #bcc0cc
+client.unfocused        #dce0e8 #dce0e8 #8c8fa1 #dce0e8   #dce0e8
+client.urgent           #d20f39 #d20f39 #eff1f5 #d20f39   #d20f39
+client.placeholder      #eff1f5 #eff1f5 #4c4f69 #eff1f5   #eff1f5
+client.background       #eff1f5
 
 # 2px borders, 10px gaps between windows and around the screen edges
 for_window [class="^.*"] border pixel 2
