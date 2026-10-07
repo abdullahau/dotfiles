@@ -5,7 +5,7 @@ thunar thunar-volman gvfs tumbler yazi pavucontrol
 network-manager-applet blueman dex polkit-gnome
 papirus-icon-theme kvantum capitaine-cursors ttf-jetbrains-mono-nerd ttf-dejavu ttf-fira-sans
 xorg-xinit pacman-contrib python libreoffice-fresh paru stow git uv
-micro ufw openssh unzip curl jq libnotify
+micro ufw openssh unzip curl jq libnotify tailscale
 # base the configs rely on (CachyOS installs these, listed for other installs)
 xorg-server xorg-xrandr networkmanager nm-connection-editor bluez bluez-utils
 pipewire-pulse wireplumber fish vim firefox btop fastfetch

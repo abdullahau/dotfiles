@@ -69,6 +69,13 @@ sudo ufw allow 22
 sudo ufw --force enable
 sudo systemctl enable ufw
 
+step "Tailscale: start at boot (run 'sudo tailscale up' once to log in)"
+sudo systemctl enable --now tailscaled
+# DNS through systemd-resolved: with resolv.conf linked to its stub, NetworkManager
+# hands DNS over instead of writing the file itself, and Tailscale MagicDNS works
+sudo systemctl enable --now systemd-resolved
+sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
 step "Background services: off unless needed"
 # Printing starts on demand through the socket; nothing runs until you print
 sudo systemctl disable --now cups.service cups.path 2>/dev/null || true
