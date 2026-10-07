@@ -1,8 +1,8 @@
 # dotfiles: i3 + Catppuccin Latte (CachyOS, Dell Latitude)
 
-i3 + polybar + rofi + picom, all on Catppuccin Latte (light) with the peach accent.
+i3 + polybar + rofi + picom, all on Catppuccin Latte (light) with the maroon accent.
 Main colours: base `#eff1f5`, text `#4c4f69`, muted `#8c8fa1`, surface `#ccd0da`,
-peach `#fe640b` (accent), maroon `#e64553` (focused borders), red `#d20f39` (alerts).
+maroon `#e64553` (the one accent: borders, current workspace, selections), red `#d20f39` (alerts).
 
 ## Layout
 | Path | Goes to |
@@ -20,7 +20,7 @@ Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 - **rofi**: `latte.rasi` theme, `keyhelp.py` (Super+/ shortcut list built from the i3 config), `powermenu.sh` (Super+Esc / Super+Shift+E)
 - **alacritty, dunst, btop, micro, VS Code**: official Catppuccin Latte colours; btop and micro have no background so the terminal's 90% opacity shows through
 - **picom, xob, flameshot**: Latte colours, no animations
-- **GTK 3/4, Kvantum, Papirus**: Catppuccin Latte (peach), no animations
+- **GTK 3/4, Kvantum, Papirus**: Catppuccin Latte (maroon), no animations
 - **Login**: tty1 auto-login (getty override written by `system.sh`) → fish `conf.d/startx.fish` → `~/.xinitrc` (loads `~/.profile`) → i3. No display manager.
 - **yazi**: hidden files shown, micro as editor
 - **System** (`system.sh`): GRUB hidden menu with 0s timeout, `LC_TIME=en_GB.UTF-8`, sshd + ufw (port 22), paccache.timer

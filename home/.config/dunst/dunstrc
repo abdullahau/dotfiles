@@ -1,7 +1,7 @@
 [global]
     font = JetBrainsMono Nerd Font 10
     padding = 1
-    frame_color = "#fe640b"
+    frame_color = "#e64553"
     frame_width = 2
     corner_radius = 8
 
@@ -160,7 +160,7 @@
 [urgency_normal]
     background = "#eff1f5"
     foreground = "#4c4f69"
-    frame_color = "#fe640b"
+    frame_color = "#e64553"
     timeout = 10
 
 [urgency_critical]

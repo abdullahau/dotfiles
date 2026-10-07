@@ -1,8 +1,8 @@
 {
-    // Matches the desktop: Catppuccin Latte (peach accent) + JetBrains Mono
+    // Matches the desktop: Catppuccin Latte (maroon accent) + JetBrains Mono
     "workbench.colorTheme": "Solarized Dark",
     "workbench.iconTheme": "catppuccin-latte",
-    "catppuccin.accentColor": "peach",
+    "catppuccin.accentColor": "maroon",
 
     "editor.fontFamily": "'JetBrainsMono Nerd Font', monospace",
     "editor.fontLigatures": true,

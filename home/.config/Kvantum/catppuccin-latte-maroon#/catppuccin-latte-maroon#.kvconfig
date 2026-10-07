@@ -1,6 +1,6 @@
 [%General]
 author=elkrien based on Arc Dark style
-comment=Catppuccin-Latte-Peach
+comment=Catppuccin-Latte-Maroon
 combo_focus_rect=true
 spread_menuitems=true
 left_tabs=true
@@ -80,7 +80,7 @@ light.color=#BCC0CC
 mid.light.color=#BCC0CC
 dark.color=#E6E9EF
 mid.color=#E6E9EF
-highlight.color=#FE640B4D
+highlight.color=#E645534D
 inactive.highlight.color=#BCC0CC
 tooltip.base.color=#E6E9EF
 text.color=#4C4F69
@@ -89,8 +89,8 @@ button.text.color=#4C4F69
 disabled.text.color=#ACB0BE
 tooltip.text.color=#4C4F69
 highlight.text.color=#4C4F69
-link.color=#FE640B
-link.visited.color=#DA601E
+link.color=#E64553
+link.visited.color=#C74757
 
 [ItemView]
 inherits=PanelButtonCommand
@@ -273,7 +273,7 @@ frame.left=1
 frame.right=1
 frame.expansion=0
 text.normal.color=#4C4F69
-text.focus.color=#FE640B
+text.focus.color=#E64553
 text.press.color=#4C4F69
 text.toggle.color=#4C4F69
 indicator.element=harrow
@@ -295,8 +295,8 @@ frame.left=4
 frame.right=4
 text.normal.color=#4C4F69
 text.focus.color=#4C4F69
-text.press.color=#FE640B
-text.toggle.color=#FE640B
+text.press.color=#E64553
+text.toggle.color=#E64553
 text.bold=false
 
 [MenuBar]

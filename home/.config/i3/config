@@ -10,7 +10,7 @@ floating_modifier $mod
 
 # Catppuccin Latte
 # class                 border  backgr. text    indicator child_border
-client.focused          #e64553 #e64553 #eff1f5 #fe640b   #e64553
+client.focused          #e64553 #e64553 #eff1f5 #e64553   #e64553
 client.focused_inactive #bcc0cc #bcc0cc #4c4f69 #bcc0cc   #bcc0cc
 client.unfocused        #dce0e8 #dce0e8 #8c8fa1 #dce0e8   #dce0e8
 client.urgent           #d20f39 #d20f39 #eff1f5 #d20f39   #d20f39

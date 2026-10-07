@@ -20,11 +20,11 @@ done
 stow -d "$PWD" -t "$HOME" --restow home
 
 # GTK 4 apps read the theme from ~/.config/gtk-4.0 (links into the installed theme)
-theme=/usr/share/themes/catppuccin-latte-peach-standard+default/gtk-4.0
+theme=/usr/share/themes/catppuccin-latte-maroon-standard+default/gtk-4.0
 for f in assets gtk.css gtk-dark.css; do ln -sfn "$theme/$f" "$HOME/.config/gtk-4.0/$f"; done
 
 echo ":: Desktop settings that live outside files"
-gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-latte-peach-standard+default'
+gsettings set org.gnome.desktop.interface gtk-theme 'catppuccin-latte-maroon-standard+default'
 gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Light'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
 gsettings set org.gnome.desktop.interface enable-animations false
