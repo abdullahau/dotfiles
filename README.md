@@ -26,7 +26,7 @@ Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 - **System** (`system.sh`): GRUB hidden menu with 0s timeout, `LC_TIME=en_GB.UTF-8`, sshd + ufw (port 22), paccache.timer
 
 ## Settings not stored in files (applied by setup.sh)
-- gsettings: GTK theme, Papirus-Dark icons, dark colour scheme, animations off
+- gsettings: GTK theme, Papirus-Light icons, light colour scheme, animations off
 - blueman: tray icon plugins off (`!StatusIcon`, `!ShowConnected`)
 - `clipmenud` user service disabled at login (i3 starts it once X is up)
 

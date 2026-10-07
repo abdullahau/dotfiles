@@ -179,7 +179,8 @@ exec --no-startup-id picom
 exec --no-startup-id dunst
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 # nm-applet and blueman-applet start from /etc/xdg/autostart via dex
-exec --no-startup-id dex -a -s /etc/xdg/autostart/:~/.config/autostart/
+# plain -a: ~/.config/autostart overrides (Hidden=true) beat /etc/xdg/autostart
+exec --no-startup-id dex -a
 # clipboard history needs the X display, so start it once i3 is up
 exec --no-startup-id sh -c 'systemctl --user import-environment DISPLAY XAUTHORITY && systemctl --user start clipmenud'
 
