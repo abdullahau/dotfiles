@@ -18,7 +18,8 @@
 
 [colors]
 ; Catppuccin Latte
-background = #fe640b
+; current workspace: maroon, same as the focused window border
+background = #e64553
 background-alt = #eff1f5
 foreground = #eff1f5
 foreground-alt = #4c4f69
