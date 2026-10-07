@@ -132,6 +132,9 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 workspace_auto_back_and_forth yes
 bindsym $mod+Tab workspace back_and_forth
 
+# Dev layout on the current (empty) workspace: VS Code left, Firefox top right, Alacritty bottom right
+bindsym $mod+F2 exec --no-startup-id ~/.config/i3/dev.sh
+
 ########################################################################
 #  i3 itself
 ########################################################################

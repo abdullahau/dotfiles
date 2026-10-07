@@ -15,7 +15,7 @@ maroon `#e64553` (the one accent: borders, current workspace, selections), red `
 Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 
 ## What's in it
-- **i3**: `~/.config/i3/config` (sections: basics, apps, windows, workspaces, Fn keys, rules, startup), `xob.sh` (volume/brightness OSD)
+- **i3**: `~/.config/i3/config` (sections: basics, apps, windows, workspaces, Fn keys, rules, startup), `xob.sh` (volume/brightness OSD), `dev.json` + `dev.sh` (Super+F2: dev layout on the current empty workspace, VS Code left, Firefox top right, Alacritty bottom right)
 - **polybar**: config, `launch.sh` (single start at login, logs to `$XDG_RUNTIME_DIR/polybar-*.log`), `scripts/arch_updates.sh` (cached update count), `scripts/bluetooth.sh`
 - **rofi**: `latte.rasi` theme, `keyhelp.py` (Super+/ shortcut list built from the i3 config), `powermenu.sh` (Super+Esc / Super+Shift+E)
 - **alacritty, dunst, btop, micro, VS Code**: official Catppuccin Latte colours; btop and micro have no background so the terminal's 90% opacity shows through

@@ -9,6 +9,7 @@ CONF = os.path.expanduser("~/.config/i3/config")
 DESCRIBE = [
     (r"powermenu", "Power menu (suspend, log out, reboot, shut down)"),
     (r"keyhelp", "This shortcut list"),
+    (r"dev\.sh", "Dev layout on this workspace (VS Code, Firefox, Alacritty)"),
     (r"rofi -show calc", "Calculator"),
     (r"rofi -show drun", "App launcher (apps only)"),
     (r"rofi -show combi", "Launcher: apps + open windows"),
