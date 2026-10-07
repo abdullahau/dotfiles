@@ -8,9 +8,11 @@ peach `#E6B18B`, coral `#C26967`.
 | Path | Goes to |
 |---|---|
 | `home/` | `~`, as symlinks made by GNU Stow (edit files here or via `~/.config/…`, same file) |
-| `system/` | `/` (needs sudo) |
 | `packages.txt` | packages the setup relies on |
-| `setup.sh` | installs packages, stows `home/`, applies settings; `--system` also installs `system/` |
+| `system.sh` | **sudo part**: packages (pacman + AUR), GRUB, locale, tty1 auto-login, SSH + firewall, cache cleanup |
+| `setup.sh` | **personal part**: stows `home/` into `~`, applies desktop settings |
+
+Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 
 ## What's in it
 - **i3**: `~/.config/i3/config` (sections: basics, apps, windows, workspaces, Fn keys, rules, startup), `xob.sh` (volume/brightness OSD)
@@ -18,8 +20,9 @@ peach `#E6B18B`, coral `#C26967`.
 - **rofi**: `sunset.rasi` theme, `keyhelp.py` (Super+/ shortcut list built from the i3 config), `powermenu.sh` (Super+Esc / Super+Shift+E)
 - **picom, dunst, alacritty, xob, flameshot**: sunset colours, no animations
 - **GTK 2/3/4, Kvantum, Papirus**: Catppuccin Mocha (peach), no animations
-- **Login**: tty1 auto-login (`system/.../getty@tty1.service.d/autologin.conf`) → fish `conf.d/startx.fish` → `~/.xinitrc` (loads `~/.profile`) → i3. No display manager.
-- **System**: `/etc/default/grub` (hidden menu, 0s), `/etc/locale.conf` (English time format, UAE regional formats)
+- **Login**: tty1 auto-login (getty override written by `system.sh`) → fish `conf.d/startx.fish` → `~/.xinitrc` (loads `~/.profile`) → i3. No display manager.
+- **yazi**: hidden files shown, micro as editor
+- **System** (`system.sh`): GRUB hidden menu with 0s timeout, `LC_TIME=en_GB.UTF-8`, sshd + ufw (port 22), paccache.timer
 
 ## Settings not stored in files (applied by setup.sh)
 - gsettings: GTK theme, Papirus-Dark icons, dark colour scheme, animations off

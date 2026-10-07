@@ -5,6 +5,7 @@ thunar thunar-volman gvfs tumbler yazi pavucontrol
 network-manager-applet blueman dex polkit-gnome
 papirus-icon-theme kvantum capitaine-cursors ttf-hack ttf-meslo-nerd ttf-fira-sans
 xorg-xinit pacman-contrib python libreoffice-fresh paru stow git
+micro ufw openssh
 
 # AUR (paru)
 catppuccin-gtk-theme-mocha kvantum-theme-catppuccin-git

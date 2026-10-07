@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
-# Restore this i3 setup on a fresh CachyOS/Arch install.
-#   ./setup.sh            install packages + symlink home/ with stow + apply settings
-#   ./setup.sh --system   also install the files under system/ (needs sudo)
+# Personal setup (no sudo). Run after ./system.sh:
+#   ./setup.sh    symlink home/ into ~ with GNU Stow + apply desktop settings
 set -euo pipefail
 cd "$(dirname "$0")"
-
-pkgs() { sed -n "/^# $1/,/^$/p" packages.txt | grep -v '^#' | tr -s ' \n' ' '; }
-
-echo ":: Installing packages"
-sudo pacman -S --needed $(pkgs 'Official')
-paru -S --needed $(pkgs 'AUR')
 
 echo ":: Linking configs into $HOME with GNU Stow"
 # Back up any real (non-link) files Stow would otherwise refuse to replace
@@ -37,15 +30,5 @@ gsettings set org.blueman.general plugin-list "['!StatusIcon', '!ShowConnected']
 # clipmenud is started by i3 once the display exists, not at systemd login
 systemctl --user disable clipmenud 2>/dev/null || true
 
-if [ "${1:-}" = "--system" ]; then
-    echo ":: System files (sudo)"
-    sudo install -Dm644 system/etc/systemd/system/getty@tty1.service.d/autologin.conf \
-        /etc/systemd/system/getty@tty1.service.d/autologin.conf
-    sudo install -Dm644 system/etc/locale.conf /etc/locale.conf
-    sudo install -Dm644 system/etc/default/grub /etc/default/grub
-    sudo grub-mkconfig -o /boot/grub/grub.cfg
-    sudo systemctl disable ly@tty2.service 2>/dev/null || true
-    sudo systemctl enable --now paccache.timer
-fi
 
 echo ":: Done. Reboot to start in i3."

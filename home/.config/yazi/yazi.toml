@@ -1,0 +1,10 @@
+# Yazi file manager (Super+Y). Only the changes from Yazi's defaults.
+
+[mgr]
+show_hidden = true          # show dotfiles and hidden folders (toggle with .)
+
+[opener]
+# "edit" is what Yazi uses for text files and the o/Enter "Open with" editor
+edit = [
+    { run = 'micro "$@"', desc = "micro", block = true, for = "unix" },
+]
