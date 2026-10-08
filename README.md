@@ -4,6 +4,8 @@ i3 + polybar + rofi + picom, all on Catppuccin Latte (light) with the lavender a
 Main colours: base `#eff1f5`, text `#4c4f69`, muted `#8c8fa1`, surface `#ccd0da`,
 lavender `#7287fd` (the one accent: borders, current workspace, selections), red `#d20f39` (alerts).
 
+![Desktop: fastfetch and yazi on the left, btop on the right](assets/screenshot.png)
+
 ## Layout
 | Path | Goes to |
 |---|---|
