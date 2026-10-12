@@ -24,18 +24,8 @@
 - `paru -Syu` updates everything except idevicerestore. Then run `./mvt/install.sh --rebuild` for idevicerestore.
 - `uv tool upgrade mvt` (also done by the script).
 
-## Using it
-```fish
-idevice_id -l                # device UDID (phone unlocked, "Trust" tapped)
-idevicepair validate         # SUCCESS = paired
-ideviceinfo -k ProductVersion
-ideviceinstaller list        # installed apps
+## Running a scan
+Step-by-step walkthrough (connect, encrypted backup, decrypt, check, read results, troubleshooting):
+**[`docs/mvt-iphone-scan.md`](../docs/mvt-iphone-scan.md)**
 
-# MVT: encrypted backup, then decrypt, then check
-idevicebackup2 -i encryption on                  # once; sets a backup password
-idevicebackup2 backup --full ~/ios-backup
-mvt-ios decrypt-backup -d ~/ios-backup-dec ~/ios-backup/<UDID>
-mvt-ios download-iocs
-mvt-ios check-backup -o ~/mvt-results ~/ios-backup-dec
-```
-`usbmuxd` shows as inactive until a device is plugged in (udev starts it). If `idevice_id -l` shows nothing, run `sudo systemctl restart usbmuxd`.
+Quick check after installing: plug in the phone, unlock it, tap Trust, then `idevice_id -l && idevicepair validate`.
