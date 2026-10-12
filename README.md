@@ -12,9 +12,22 @@ lavender `#7287fd` (the one accent: borders, current workspace, selections), red
 | `home/` | `~`, as symlinks made by GNU Stow (edit files here or via `~/.config/…`, same file) |
 | `packages.txt` | packages the setup relies on |
 | `system.sh` | **sudo part**: packages (pacman + AUR), GRUB, no splash, touchpad, locale, tty1 auto-login, SSH + firewall, background services, cache cleanup |
+| `harden.sh` | **sudo part**, privacy + security (run by `system.sh`, or on its own): see below |
 | `setup.sh` | **personal part**: stows `home/` into `~`, applies desktop settings |
 
 Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
+
+## Hardening (`harden.sh`)
+- **DNS**: everything goes to AdGuard on `homelab` via Tailscale. No Google/Cloudflare fallback, no LLMNR/mDNS.
+  `dns-failover.timer` turns Tailscale DNS off while AdGuard doesn't answer, so the Wi-Fi router's DNS takes over,
+  and back on when it does (`journalctl -t dns-failover`). With Tailscale down, the router's DNS is used.
+- **Network**: no NetworkManager connectivity check (`ping.archlinux.org`), random-but-stable MAC per network, hostname not sent over DHCP, IPv6 privacy addresses.
+  Hotel/airport login page: open any `http://` site by hand.
+- **Firewall**: incoming denied; SSH (keys only, no root) only over `tailscale0`.
+- **OpenSnitch**: the daemon always enforces saved allow/deny rules. Prompts for new programs only while the UI is open (rofi: "OpenSnitch"; not started at login so it stays off polybar; quit it from its tray menu). Tray icons: Papirus-Light set in Latte colours (`assets/opensnitch`), re-applied by a pacman hook after updates. Pre-allowed: tailscaled, resolved, NetworkManager, timesyncd, pacman, localhost, tailnet.
+- **Firefox** (`/etc/firefox/policies`): telemetry, studies, sponsored items, Firefox's own DoH off and locked. **VS Code**: telemetry and experiments off.
+- **Kernel**: extra sysctls (`/etc/sysctl.d/90-hardening.conf`), no core dumps on disk.
+- Not covered: the disk is not encrypted (needs a reinstall with LUKS).
 
 ## What's in it
 - **i3**: `~/.config/i3/config` (sections: basics, apps, windows, workspaces, Fn keys, rules, startup), `xob.sh` (volume/brightness OSD), `dev.json` + `dev.sh` (Super+F2: dev layout on the current empty workspace, VS Code left, Firefox top right, Alacritty bottom right)

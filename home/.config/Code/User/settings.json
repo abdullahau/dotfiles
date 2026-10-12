@@ -13,5 +13,16 @@
     "workbench.reduceMotion": "on",
     "editor.smoothScrolling": false,
     "editor.cursorSmoothCaretAnimation": "off",
-    "terminal.integrated.smoothScrolling": false
+    "terminal.integrated.smoothScrolling": false,
+
+    // Privacy: no telemetry, A/B experiments or background lookups (Python/Jupyter follow telemetryLevel)
+    "telemetry.telemetryLevel": "off",
+    "telemetry.feedback.enabled": false,
+    "workbench.enableExperiments": false,
+    "workbench.settings.enableNaturalLanguageSearch": false,
+    "python.experiments.enabled": false,
+    "jupyter.experiments.enabled": false,
+    "npm.fetchOnlinePackageInfo": false,
+    // Updates come from the AUR package
+    "update.mode": "none"
 }

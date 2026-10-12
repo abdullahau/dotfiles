@@ -63,9 +63,8 @@ Section "InputClass"
 EndSection
 XORG
 
-step "SSH server + firewall (port 22 allowed)"
+step "SSH server + firewall (port 22 opened to the tailnet only, by harden.sh)"
 sudo systemctl enable --now sshd
-sudo ufw allow 22
 sudo ufw --force enable
 sudo systemctl enable ufw
 
@@ -87,5 +86,7 @@ done
 
 step "Weekly package cache cleanup"
 sudo systemctl enable --now paccache.timer
+
+./harden.sh
 
 printf '\n:: System setup done. Next: ./setup.sh, then reboot.\n'
