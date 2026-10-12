@@ -18,6 +18,7 @@ color-link type "#1E66F5"
 color-link type.keyword "#DF8E1D"
 
 color-link special "#EA76CB"
+color-link special.code "#1E66F5"
 color-link statement "#8839EF"
 color-link preproc "#EA76CB"
 
