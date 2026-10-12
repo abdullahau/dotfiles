@@ -15,6 +15,7 @@ lavender `#7287fd` (the one accent: borders, current workspace, selections), red
 | `system.sh` | **sudo part**: packages (pacman + AUR), GRUB, no splash, touchpad, locale, tty1 auto-login, SSH + firewall, background services, cache cleanup |
 | `harden.sh` | **sudo part**, privacy + security (run by `system.sh`, or on its own): see below |
 | `setup.sh` | **personal part**: stows `home/` into `~`, applies desktop settings |
+| `mvt/` | optional: iPhone tools (libimobiledevice, idevicerestore) + MVT, `./mvt/install.sh` (see `mvt/README.md`) |
 
 Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 
