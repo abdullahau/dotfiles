@@ -11,6 +11,8 @@ xorg-server xorg-xrandr networkmanager nm-connection-editor bluez bluez-utils
 pipewire-pulse wireplumber fish vim firefox btop fastfetch
 # media + yazi previews
 mpv ffmpeg imagemagick poppler ueberzugpp 7zip resvg
+# network testing (see docs/network.md)
+iperf3 iw ethtool wavemon nmap arp-scan mtr bandwhich
 
 # AUR (paru)
-kvantum-theme-catppuccin-git visual-studio-code-bin
+kvantum-theme-catppuccin-git visual-studio-code-bin ookla-speedtest-bin

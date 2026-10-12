@@ -11,6 +11,7 @@ lavender `#7287fd` (the one accent: borders, current workspace, selections), red
 |---|---|
 | `home/` | `~`, as symlinks made by GNU Stow (edit files here or via `~/.config/…`, same file) |
 | `packages.txt` | packages the setup relies on |
+| `docs/` | cheatsheets (`network.md`: speed, signal, device scans) |
 | `system.sh` | **sudo part**: packages (pacman + AUR), GRUB, no splash, touchpad, locale, tty1 auto-login, SSH + firewall, background services, cache cleanup |
 | `harden.sh` | **sudo part**, privacy + security (run by `system.sh`, or on its own): see below |
 | `setup.sh` | **personal part**: stows `home/` into `~`, applies desktop settings |
