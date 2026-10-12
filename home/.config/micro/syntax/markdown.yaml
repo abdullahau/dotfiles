@@ -1,4 +1,4 @@
-# micro's markdown.yaml (v2.0.15) with fenced code blocks fixed; code and headings in their own groups (special.code, special.heading)
+# micro's markdown.yaml (v2.0.15) with fenced code blocks fixed and code in its own group (special.code)
 filetype: markdown
 
 detect:
@@ -24,7 +24,7 @@ rules:
     - special: "^(---+|===+|___+|\\*\\*\\*+)\\s*$"
 
       # headlines
-    - special.heading:  "^#{1,6}.*"
+    - special:  "^#{1,6}.*"
 
       # lists
     - identifier:   "^[[:space:]]*[\\*+-] |^[[:space:]]*[0-9]+\\. "
