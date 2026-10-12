@@ -42,6 +42,19 @@ sudo ethtool -S enp0s31f6 | grep -i err # error counters (rising = bad cable/por
 ```
 100Mb/s on a gigabit port usually means a damaged cable or one with only 4 wires connected.
 
+Is the cable plugged in and is it being used?
+```fish
+ip -br link                  # enp0s31f6 UP,LOWER_UP = linked; NO-CARRIER = no cable / dead link
+nmcli device status          # enp0s31f6 "connected" = active; "unavailable" = no cable
+ip route get 1.1.1.1         # which interface internet traffic is using right now
+ip monitor link              # live: a line each time a link goes up/down (also: nmcli monitor)
+journalctl -u NetworkManager --since today | grep enp0s31f6   # when it connected/disconnected
+```
+Polybar shows the Ethernet icon and IP when it's linked, and a grey icon when it isn't (`[module/eth]`).
+Wi-Fi and Ethernet can both be connected at once. Traffic uses the default route with the lowest metric:
+NetworkManager gives Ethernet ~100 and Wi-Fi ~600, so a plugged-in cable wins and Wi-Fi stays up as a fallback (check with `ip route`).
+For Ethernet only: `nmcli radio wifi off` (`on` to undo).
+
 ## LAN throughput: iperf3
 Needs iperf3 at both ends: one machine is the server, the other the client.
 Best: server on a **wired** machine (e.g. `homelab`), client on the device being tested.
