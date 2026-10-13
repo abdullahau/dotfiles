@@ -26,7 +26,7 @@ Fresh install: `./system.sh`, then `./setup.sh`, then reboot.
 - **Network**: no NetworkManager connectivity check (`ping.archlinux.org`), random-but-stable MAC per network, hostname not sent over DHCP, IPv6 privacy addresses.
   Hotel/airport login page: open any `http://` site by hand.
 - **Firewall**: incoming denied; SSH (keys only, no root) only over `tailscale0`.
-- **OpenSnitch**: the daemon always enforces saved allow/deny rules. Prompts for new programs only while the UI is open (rofi: "OpenSnitch"; not started at login so it stays off polybar; quit it from its tray menu). Tray icons: Papirus-Light set in Latte colours (`assets/opensnitch`), re-applied by a pacman hook after updates. Pre-allowed: tailscaled, resolved, NetworkManager, timesyncd, pacman, localhost, tailnet.
+- **OpenSnitch**: the daemon always enforces saved allow/deny rules. The UI starts at login as a tray icon only, no window (`harden.sh` writes `~/.config/autostart/opensnitch_ui.desktop`, run by `dex -a`; it waits for polybar so the icon sits right of Wi-Fi) and prompts for new programs. If you quit it from its tray menu, new connections are allowed until you reopen it (rofi: "OpenSnitch"). Tray icons: Papirus-Light set in Latte colours (`assets/opensnitch`), re-applied by a pacman hook after updates. Pre-allowed: tailscaled, resolved, NetworkManager, timesyncd, pacman, localhost, tailnet.
 - **Firefox** (`/etc/firefox/policies`): telemetry, studies, sponsored items, Firefox's own DoH off and locked. **VS Code**: telemetry and experiments off.
 - **Kernel**: extra sysctls (`/etc/sysctl.d/90-hardening.conf`), no core dumps on disk.
 - Not covered: the disk is not encrypted (needs a reinstall with LUKS).

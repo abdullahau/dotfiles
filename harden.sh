@@ -191,11 +191,26 @@ allow 001-loopback-v4     dest.network 127.0.0.0/8
 allow 001-loopback-v6     dest.network ::1/128
 allow 001-tailnet-v4      dest.network 100.64.0.0/10
 allow 001-tailnet-v6      dest.network fd7a:115c:a1e0::/48
-# UI closed: saved rules still apply, new connections are allowed. Open "OpenSnitch" from rofi for prompts
+# UI closed (quit, or not yet started): saved rules still apply, new connections are allowed
 cfg=/etc/opensnitchd/default-config.json
 [ -f "$cfg" ] && sudo sh -c "jq '.DefaultAction=\"allow\"' $cfg > $cfg.new && mv $cfg.new $cfg"
 sudo systemctl enable --now opensnitchd
 sudo systemctl restart opensnitchd
+# The UI (prompts + tray icon) starts at login: i3 runs `dex -a`, which reads ~/.config/autostart.
+# --background: without it the UI opens its main window if polybar's tray isn't up 10s after
+# login (the bar can take ~6s). Waiting for polybar first makes the icon dock after nm-applet's,
+# so it sits right of the Wi-Fi icon (the tray orders icons by when they dock).
+mkdir -p "$HOME/.config/autostart"
+rm -f "$HOME/.config/autostart/opensnitch_ui.desktop"   # may be an old symlink to /usr/share
+cat > "$HOME/.config/autostart/opensnitch_ui.desktop" <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=OpenSnitch
+Exec=sh -c 'until pgrep -x polybar >/dev/null; do sleep 1; done; sleep 3; exec opensnitch-ui --background'
+Icon=opensnitch-ui
+Terminal=false
+NoDisplay=true
+EOF
 
 # Tray icons: Papirus-Light's OpenSnitch set in Latte colours (assets/opensnitch), copied over the
 # stock ones after every opensnitch install/upgrade. The app reads them from its own res/ dir.
