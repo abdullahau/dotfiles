@@ -66,7 +66,7 @@ font-2 = DejaVu Sans:pixelsize=11;3
 
 
 modules-left = i3 sp1 xwindow
-modules-right = updates sp1 cpu sp1 memory sp1 disk sp1 backlight sp1 pulseaudio sp1 bluetooth sp1 eth sp1 wlan tray sp1 battery sp1 date
+modules-right = updates sp1 cpu sp1 memory sp1 disk sp1 backlight sp1 pulseaudio sp1 bluetooth sp1 eth sp1 wlan tray sp1 powerprofile sp1 battery sp1 date
 
 
 
@@ -238,6 +238,15 @@ exec = ~/.config/polybar/scripts/bluetooth.sh
 interval = 2
 click-left = blueman-manager &
 click-right = ~/.config/polybar/scripts/bluetooth.sh toggle
+
+; Power profile: left-click next, right-click previous
+; (power-saver -> balanced -> performance)
+[module/powerprofile]
+type = custom/script
+exec = ~/.config/polybar/scripts/power_profile.sh
+tail = true
+click-left = ~/.config/polybar/scripts/power_profile.sh next
+click-right = ~/.config/polybar/scripts/power_profile.sh prev
 
 [module/tray]
 type = internal/tray
