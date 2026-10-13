@@ -11,7 +11,7 @@ Tools (in `packages.txt`): `iperf3 iw ethtool wavemon nmap arp-scan mtr bandwhic
 ip -br addr                  # interfaces, up/down, IPs
 iw dev wlan0 link            # Wi-Fi: SSID, freq, signal dBm, tx/rx bitrate, MCS, channel width
 nmcli dev wifi               # nearby networks: channel, rate, signal, security (* = connected)
-sudo ethtool enp0s31f6       # wired: Speed, Duplex, Auto-negotiation, Link detected
+ethtool enp0s31f6            # wired: Speed, Duplex, Auto-negotiation, Link detected
 ```
 
 ## Wi-Fi signal and link
@@ -37,10 +37,13 @@ Busy channel? Compare channels in `nmcli dev wifi` and move the router off the c
 
 ## Wired link
 ```fish
-sudo ethtool enp0s31f6                  # Speed: 1000Mb/s, Duplex: Full is what you want
-sudo ethtool -S enp0s31f6 | grep -i err # error counters (rising = bad cable/port)
+cat /sys/class/net/enp0s31f6/speed      # just the speed: 1000 = gigabit
+ethtool enp0s31f6                       # Speed: 1000Mb/s, Duplex: Full is what you want
+ethtool -S enp0s31f6 | grep -i err      # error counters (rising = bad cable/port)
 ```
-100Mb/s on a gigabit port usually means a damaged cable or one with only 4 wires connected.
+`ethtool` works without sudo; it just prints one `netlink error: Operation not permitted` line first.
+"Link partner advertised link modes" shows what the switch/router port can do; if both sides list `1000baseT/Full`, gigabit is possible.
+Stuck at 100Mb/s on a gigabit port usually means a broken pair in the cable or a Cat5 cable with only two pairs. Check whether the `ethtool -S` error counters are rising.
 
 Is the cable plugged in and is it being used?
 ```fish
@@ -53,6 +56,13 @@ journalctl -u NetworkManager --since today | grep enp0s31f6   # when it connecte
 Polybar shows the Ethernet icon and IP when it's linked, and a grey icon when it isn't (`[module/eth]`).
 Wi-Fi and Ethernet can both be connected at once. Traffic uses the default route with the lowest metric:
 NetworkManager gives Ethernet ~100 and Wi-Fi ~600, so a plugged-in cable wins and Wi-Fi stays up as a fallback (check with `ip route`).
+That's only the **default route (internet)**. Traffic to the LAN itself follows the `192.168.0.0/24` subnet route, which can still be on Wi-Fi:
+```fish
+ip route get 192.168.0.1     # want: dev enp0s31f6. If it says wlan0, LAN tests (ping, iperf3) are measuring Wi-Fi
+ip route | grep 192.168.0.0  # there should be a /24 route for enp0s31f6 (metric 100)
+```
+If the enp0s31f6 /24 route is missing, reconnect the cable: `nmcli connection up "Wired connection 1"`.
+(Seen once after `conflict detected for IP address ... with host <wlan0's MAC>` in the NetworkManager log: a false conflict caused by the laptop's own Wi-Fi.)
 For Ethernet only: `nmcli radio wifi off` (`on` to undo).
 
 ## LAN throughput: iperf3
@@ -87,7 +97,7 @@ speedtest -L                 # nearby servers
 speedtest -s <id>            # test against a specific server
 mtr 1.1.1.1                  # live per-hop latency/loss; find where it goes bad
 mtr -rwc 100 1.1.1.1         # 100-cycle report (good to paste into a support ticket)
-ping -c 20 192.168.0.1       # latency to the router (should be ~1–5 ms on Wi-Fi)
+ping -c 20 192.168.0.1       # latency to the router: ~1–5 ms on Wi-Fi, under 1 ms wired
 ```
 - Loss at a middle hop that doesn't carry on to the last hop is just that router slowing down its replies. Ignore it.
 - Lag when someone is uploading or downloading is **bufferbloat**: compare idle vs loaded latency in `speedtest`, or use the Waveform bufferbloat test in a browser.
@@ -116,6 +126,7 @@ ss -tunp                     # open connections and which process owns them
 
 ## Troubleshooting order
 1. `iw dev wlan0 link`: is the signal OK (better than −67) and is the bitrate sensible?
+   Wired: is `ethtool enp0s31f6` showing 1000Mb/s, and is LAN traffic really on the cable (`ip route get 192.168.0.1` → `enp0s31f6`)?
 2. `ping 192.168.0.1`: can I reach the router? Look at latency and loss.
 3. `iperf3 -c homelab -R`: is LAN throughput close to what the link should give?
 4. `speedtest`: does the internet match the plan?
